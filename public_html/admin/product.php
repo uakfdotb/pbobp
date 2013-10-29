@@ -26,6 +26,7 @@ include("../include/include.php");
 require_once("../include/product.php");
 require_once("../include/field.php");
 require_once("../include/currency.php");
+require_once("../include/plugin.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['product_id'])) {
 	$message = "";
@@ -66,11 +67,19 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 		pbobp_redirect("product.php?product_id=$product_id&message=" . urlencode($message));
 	}
 	
-	$product = product_get_details($product_id);
+	//get list of service interfaces that we can use
+	$interfaces_friendly = array();
+	$service_interfaces = plugin_interface_list('service');
+
+	foreach($service_interfaces as $name => $obj) {
+		$interfaces_friendly[$name] = $obj->friendly_name();
+	}
+	
+	$product = product_list(array('product_id' => $product_id))[0];
 	$prices = product_prices($product_id);
 	$fields = product_fields($product_id);
 	$currencies = currency_list();
-	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'fields' => $fields, 'currencies' => $currencies));
+	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'fields' => $fields, 'currencies' => $currencies, 'interfaces' => $interfaces_friendly));
 } else {
 	pbobp_redirect("../");
 }

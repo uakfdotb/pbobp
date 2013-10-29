@@ -22,17 +22,17 @@
 */
 
 function product_get_details($product_id) {
-	$result = database_query("SELECT name, description, uniqueid, interface, addon FROM pbobp_products WHERE id = ?", array($product_id));
+	$result = database_query("SELECT name, description, uniqueid, plugin_id, addon FROM pbobp_products WHERE id = ?", array($product_id));
 
 	if($row = $result->fetch()) {
-		return array('name' => $row[0], 'description' => $row[1], 'uniqueid' => $row[2], 'interface' => $row[3], 'addon' => $row[4]);
+		return array('name' => $row[0], 'description' => $row[1], 'uniqueid' => $row[2], 'plugin_id' => $row[3], 'addon' => $row[4]);
 	} else {
 		return false;
 	}
 }
 
 function product_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_products.id AS product_id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.interface, pbobp_products.addon FROM pbobp_products";
+	$select = "SELECT pbobp_products.id AS product_id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.plugin_id, pbobp_products.addon, pbobp_plugins.name AS plugin_name FROM pbobp_products LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id";
 	$where_vars = array('name' => 'pbobp_products.name', 'product_id' => 'pbobp_products.id', 'uniqueid' => 'pbobp_products.uniqueid', 'addon' => 'pbobp_products.addon');
 	$orderby_vars = array('product_id' => 'pbobp_products.id');
 	$arguments['limit_type'] = 'product';
@@ -87,8 +87,19 @@ function product_prices($product_id) {
 //creates a new product or edits an existing one (depending on $product_id setting)
 //prices is a list of prices, groups is a list of group_id
 function product_create($name, $uniqueid, $description, $interface, $prices, $groups, $product_id = false) {
+	//validate the interface
+	if(!empty($interface)) {
+		require_once(includePath() . 'plugin.php');
+		$plugin_id = plugin_id_by_name($interface);
+		if($plugin_id === false) {
+			return false;
+		}
+	} else {
+		$plugin_id = NULL;
+	}
+	
 	if($product_id === false) {
-		database_query("INSERT INTO pbobp_products (name, description, uniqueid, interface) VALUES (?, ?, ?, ?)", array($name, $description, $uniqueid, $interface));
+		database_query("INSERT INTO pbobp_products (name, description, uniqueid, plugin_id) VALUES (?, ?, ?, ?)", array($name, $description, $uniqueid, $plugin_id));
 		$product_id = database_insert_id();
 	} else {
 		//confirm that product id exists
@@ -99,7 +110,7 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 			return false;
 		}
 		
-		database_query("UPDATE pbobp_products SET name = ?, uniqueid = ?, description = ?, interface = ? WHERE id = ?", array($name, $uniqueid, $description, $interface, $product_id));
+		database_query("UPDATE pbobp_products SET name = ?, uniqueid = ?, description = ?, plugin_id = ? WHERE id = ?", array($name, $uniqueid, $description, $plugin_id, $product_id));
 		database_query("DELETE FROM pbobp_products_prices WHERE product_id = ?", array($product_id));
 		database_query("DELETE FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
 	}
@@ -120,13 +131,22 @@ function product_delete($product_id) {
 }
 
 function product_fields($product_id) {
-	//union fields of product with those of it's groups
+	//merge fields of product with those of its groups and its service interface
+	//note that we use array_merge instead of union operator (+) since the array keys overlap
 	require_once(includePath() . 'field.php');
 	$fields = field_list('product', $product_id);
 	$result = database_query("SELECT group_id FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
 	
 	while($row = $result->fetch()) {
-		$fields += field_list('group', $row[0]);
+		$fields = array_merge($fields, field_list('group', $row[0]));
+	}
+	
+	$result = database_query("SELECT plugin_id FROM pbobp_products WHERE id = ?", array($product_id));
+	
+	if($row = $result->fetch()) {
+		if(!is_null($row[0])) {
+			$fields = array_merge($fields, field_list('plugin', $row[0]));
+		}
 	}
 	
 	return $fields;
@@ -162,11 +182,11 @@ function product_group_list($constraints = array(), $arguments = array()) {
 
 //lists products in a given group
 function product_group_members($group_id) {
-	$result = database_query("SELECT pbobp_products.id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.interface, pbobp_products.addon FROM pbobp_products_groups_members LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_products_groups_members.product_id WHERE pbobp_products_groups_members.group_id = ?", array($group_id));
+	$result = database_query("SELECT pbobp_products.id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.plugin_id, pbobp_products.addon FROM pbobp_products_groups_members LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_products_groups_members.product_id WHERE pbobp_products_groups_members.group_id = ?", array($group_id));
 	$products = array();
 	
 	while($row = $result->fetch()) {
-		$products[] = array('product_id' => $row[0], 'name' => $row[1], 'description' => $row[2], 'uniqueid' => $row[3], 'interface' => $row[4], 'addon' => $row[5]);
+		$products[] = array('product_id' => $row[0], 'name' => $row[1], 'description' => $row[2], 'uniqueid' => $row[3], 'plugin_id' => $row[4], 'addon' => $row[5]);
 	}
 }
 

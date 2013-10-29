@@ -24,7 +24,7 @@
 
 <h1><?= lang('service_add') ?></h1>
 
-<? if(isset($message)) { ?>
+<? if(!empty($message)) { ?>
 <p><b><i><?= lang($message) ?></i></b></p>
 <? } ?>
 

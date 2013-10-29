@@ -35,7 +35,12 @@
 <p><input type="hidden" name="action" value="edit" />
 <?= lang('product_name') ?>: <input type="text" name="name" value="<?= $product['name'] ?>" />
 <br /><?= lang('uniqueid') ?>: <input type="text" name="uniqueid" value="<?= $product['uniqueid'] ?>" />
-<br /><?= lang('interface') ?>: <input type="text" name="interface" value="<?= $product['interface'] ?>" />
+<br /><?= lang('interface') ?>: <select name="interface">
+	<option value=""><?= lang('select_service_interface') ?></option>
+	<? foreach($interfaces as $interface_name => $interface_friendly) { ?>
+	<option value="<?= $interface_name ?>" <?= ($interface_name == $product['plugin_name']) ? "selected" : "" ?>><?= $interface_friendly ?></option>
+	<? } ?>
+	</select>
 <br /><?= lang('description') ?>: <textarea name="description"><?= $product['description'] ?></textarea></p>
 
 <h3><?= lang('pricing') ?></h3>

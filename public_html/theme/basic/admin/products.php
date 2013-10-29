@@ -46,7 +46,7 @@
 <tr>
 	<td><a href="product.php?product_id=<?= $product['product_id']?>"><?= $product['name'] ?></a></td>
 	<td><?= $product['uniqueid'] ?></td>
-	<td><?= $product['interface'] ?></td>
+	<td><?= $product['plugin_name'] ?></td>
 	<td><form method="POST">
 		<input type="hidden" name="product_id" value="<?= $product['product_id'] ?>" />
 		<input type="hidden" name="action" value="delete" />

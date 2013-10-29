@@ -75,6 +75,7 @@ $lang['service_select_if_any'] = 'Select affected service if any';
 $lang['service_add_new'] = 'Add a new service';
 $lang['service_add'] = 'Add service';
 $lang['service_details'] = 'Service details';
+$lang['select_service_interface'] = 'Select a service interface';
 
 $lang['invoices'] = 'Invoices';
 $lang['invoice'] = 'Invoice';

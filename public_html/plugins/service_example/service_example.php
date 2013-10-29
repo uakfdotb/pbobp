@@ -2,16 +2,16 @@
 
 /*
 
-This serves as an example service module.
-When the service is created, the user 
+* This serves as an example service module.
+* When the service is created, the user enters an integer from 0-255.
+* When the user selects the single button in this module, the module will compare the service value to the highest-order byte of md5sum(time). If equal, the user wins for that button press.
 
 */
 
-class plugin_payment_debug {
+class plugin_service_example {
 	function __construct() {
-		$this->plugin_name = 'payment_debug';
-		plugin_register_interface('payment', $this->plugin_name, $this);
-		plugin_register_view($this->plugin_name, 'pay', 'view_pay', $this);
+		$this->plugin_name = 'service_example';
+		plugin_register_interface('service', $this->plugin_name, $this);
 		
 		$language_name = language_name();
 		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
@@ -22,33 +22,20 @@ class plugin_payment_debug {
 		$this->id = $id;
 	}
 	
-	function get_payment_code($invoice, $lines, $user) {
-		$url = basePath() . "/plugin.php?plugin={$this->plugin_name}&view=pay&invoice_id={$invoice['invoice_id']}";
-		$url = htmlspecialchars($url);
-		return "<a href=\"$url\">*Pay*</a>";
+	function install() {
+		//we want to create our fields in the pbobp_fields table
+		//this way, any products created with our service module will have our fields included
+		//since install may be called multiple times, delete all our tables first
+		
+		if(isset($this->id)) { //should always be true
+			require_once(includePath() . 'field.php');
+			database_query("DELETE FROM pbobp_fields WHERE context = 'plugin' AND context_id = ?", array($this->id));
+			field_add('plugin', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
+		}
 	}
 	
 	function friendly_name() {
-		return 'Debug';
-	}
-	
-	function view_pay() {
-		if(isset($_GET['invoice_id']) && isset($_SESSION['user_id'])) {
-			$message = "";
-			
-			if(isset($_POST['amount'])) {
-				require_once(includePath() . 'invoice.php');
-				$result = invoice_payment($_GET['invoice_id'], $_POST['amount'], $_SESSION['user_id']);
-				
-				if($result !== true) {
-					$message = lang($result);
-				} else {
-					$message = $this->language['payment_success_message'];
-				}
-			}
-			
-			get_page("pay", "main", array('message' => $message, 'invoice_id' => $_GET['invoice_id'], 'lang_plugin' => $this->language), "/plugins/{$this->plugin_name}");
-		}
+		return 'Example';
 	}
 }
 

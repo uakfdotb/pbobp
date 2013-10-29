@@ -7,7 +7,7 @@
 </tr>
 </table>
 
-<? if($invoice['status'] == 'unpaid') { ?>
+<? if($invoice['status_nice'] == 'unpaid') { ?>
 
 <h3><?= lang('payment_make') ?></h3>
 

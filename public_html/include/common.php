@@ -97,7 +97,8 @@ function pbobp_html_sanitize($x, $root = true) {
 //  special args['unsanitized_data'] won't be sanitized for HTML output; use with extreme caution
 // override_path: override the directory that the page is in
 // noheader: don't display the theme header/footer
-function get_page($page, $context, $args = array(), $override_path = false, $noheader = false) {
+// return_data: buffer and return the output data instead of outputting
+function get_page($page, $context, $args = array(), $override_path = false, $noheader = false, $return_data = false) {
 	//let pages use some variables
 	$config = $GLOBALS['config'];
 	$lang = $GLOBALS['lang'];
@@ -132,11 +133,15 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 	$basePath = basePath();
 	$themePath = $basePath . "/theme/basic";
 	
-	
 	if($override_path !== false) {
 		$themePageInclude = basePath() . "$override_path/$page.php";
 	} else {
 		$themePageInclude = "$themePath/$context/$page.php";
+	}
+
+	//enable output buffering if desired
+	if($return_data) {
+		ob_start(); //this will create a new buffer for us even if someone else is using ob_start already
 	}
 
 	if(!$noheader && file_exists("$themePath/header.php")) {
@@ -149,6 +154,16 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 
 	if(!$noheader && file_exists("$themePath/footer.php")) {
 		include("$themePath/footer.php");
+	}
+
+	//return the data if desired
+	if($return_data) {
+		//this will return the current buffer created above and return it, adding fields for CSRF protection
+		//note that when we launch we also make a call to create a buffer
+		// however, the above call to ob_start creates a new buffer stacked on top
+		// then, the below call will ONLY close the stacked buffer
+		//this means that we can csrfguard a return_data and also csrfguard outputted contents later!
+		return csrfguard_inject_helper();
 	}
 }
 

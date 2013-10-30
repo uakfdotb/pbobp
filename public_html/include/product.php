@@ -130,23 +130,38 @@ function product_delete($product_id) {
 	database_query("DELETE FROM pbobp_products WHERE id = ?", array($product_id));
 }
 
-function product_fields($product_id) {
-	//merge fields of product with those of its groups and its service interface
-	//note that we use array_merge instead of union operator (+) since the array keys overlap
+//returns list of (context, context_id)
+// finds all field contexts that a product should include
+function product_field_contexts($product_id) {
 	require_once(includePath() . 'field.php');
-	$fields = field_list('product', $product_id);
+	$array = array();
+	$array[] = array('context' => 'product', 'context_id' => $product_id);
 	$result = database_query("SELECT group_id FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
 	
 	while($row = $result->fetch()) {
-		$fields = array_merge($fields, field_list('group', $row[0]));
+		$array[] = array('context' => 'group', 'context_id' => $row[0]);
 	}
 	
 	$result = database_query("SELECT plugin_id FROM pbobp_products WHERE id = ?", array($product_id));
 	
 	if($row = $result->fetch()) {
 		if(!is_null($row[0])) {
-			$fields = array_merge($fields, field_list('plugin', $row[0]));
+			$array[] = array('context' => 'plugin', 'context_id' => $row[0]);
 		}
+	}
+
+	return $array;
+		}
+
+function product_fields($product_id) {
+	//merge fields of product with those of its groups and its service interface
+	//note that we use array_merge instead of union operator (+) since the array keys overlap
+	require_once(includePath() . 'field.php');
+	$fields = array();
+	$contexts = product_field_contexts($product_id);
+
+	foreach($contexts as $context_array) {
+		$fields = array_merge($fields, field_list($context_array['context'], $context_array['context_id']));
 	}
 	
 	return $fields;

@@ -205,14 +205,21 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	}
 	
 	//validate fields
+	// we need to go through each involved product group, as well as plugin fields and service interface fields
 	require_once(includePath() . 'field.php');
 	$new_fields = array();
-	$result = field_parse($fields, 'product', $new_fields, $product_id);
-	$fields = $new_fields;
+
+	foreach(product_field_contexts($product_id) as $context_array) {
+		$tmp_fields = array();
+		$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
+		$new_fields += $tmp_fields;
 
 	if($result !== true) {
 		return $result;
 	}
+	}
+
+	$fields = $new_fields;
 	
 	//seems like we might just be all good!
 	database_query("INSERT INTO pbobp_services (user_id, product_id, name, recurring_date, recurring_duration, recurring_amount, parent_service, currency_id) VALUES (?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY), ?, ?, ?, ?)", array($user_id, $product_id, $name, $price_array['duration'], $price_array['recurring_amount'], $parent_service, $price_array['currency_id']));

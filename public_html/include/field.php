@@ -1,5 +1,16 @@
 <?php
 
+//this is the field module
+// it handles configuration of fields for users, products, etc
+// it also handles storage of those fields for specific user/service/etc instances
+//some things to note:
+// * there are two kinds of contexts in this module:
+//   - field context used in most functions pertains to an overall field (e.g., product hostname)
+//   - field value context in functions on storage of specific fields pertains to a setting of a field (e.g., service hostname)
+//   this distinction is important..
+// * service modules should create fields that they require on plugin installation
+//    their fields should be identified by context='plugin', context_id=the plugin's ID in pbobp_plugins
+
 //extracts field values from GET/POST/etc.
 function field_extract() {
 	$array = array();
@@ -99,8 +110,23 @@ function field_type_map() {
 }
 
 //returns field value on success or false on failure
-function field_get($context, $object_id, $key) {
-	$result = database_query("SELECT pbobp_fields_values.val FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ?", array($key, $context, $object_id));
+//note that context and context ID are contexts of the field VALUE, while field_context and field_context_id are of the field itself
+function field_get($context, $object_id, $key, $context_id = 0, $field_context = false, $field_context_id = false) {
+	//unlike other field functions, here the default behaviour is to _ignore_ the field context and search by the value key/context only
+	//context ID searching functionality is provided in case a single object has multiple context ID's that conflict
+	$query = "SELECT pbobp_fields_values.val FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields_values.context_id = ?";
+	$vars = array($key, $context, $object_id, $context_id);
+
+	if($field_context !== false) {
+		$query .= " AND pbobp_fields.context = ?";
+		$vars[] = $field_context;
+	}
+	if($field_context_id !== false) {
+		$query .= " AND pbobp_fields.context_id = ?";
+		$vars[] = $field_context_id;
+	}
+
+	$result = database_query($query, $vars);
 
 	if($row = $result->fetch()) {
 		return $row[0];

@@ -31,13 +31,13 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['invoice_id'])) {
 	foreach($payment_interfaces as $name => $obj) {
 		$gateways[$name] = $obj->friendly_name();
 	}
-	
+
 	//if the user requested a specific payment gateway, then show that one (if invoice isn't paid)
 	$payment_code = false;
-	
+
 	if(isset($_REQUEST['gateway']) && isset($payment_interfaces[$_REQUEST['gateway']]) && $invoice['status_nice'] != 'paid') {
 		$user_list = user_list(array('user_id' => $_SESSION['user_id']));
-		
+
 		if(!empty($user_list)) {
 			$user_details = $user_list[0];
 			$payment_code = $payment_interfaces[$_REQUEST['gateway']]->get_payment_code($invoice, $lines, $user_details);

@@ -31,7 +31,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	$users = user_list();
 	get_page("users", "admin", array('users' => $users));
 } else {

@@ -31,7 +31,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == 'department_add' && isset($_POST['name'])) {
 			ticket_department_add($_POST['name']);
@@ -40,10 +40,10 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			ticket_department_delete($_POST['department_id']);
 			$message = "Department deleted successfully.";
 		}
-		
+
 		pbobp_redirect("setup_support.php?message=" . urlencode($message));
 	}
-	
+
 	$departments = ticket_departments();
 	get_page("setup_support", "admin", array('departments' => $departments, 'message' => $message));
 } else {

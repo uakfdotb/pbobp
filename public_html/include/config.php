@@ -33,13 +33,13 @@ if(file_exists(dirname(__FILE__) . '/../config.php')) {
 function config_get($key, $default, $object_type = '', $object_id = 0) {
 	$query = "SELECT v FROM pbobp_configuration WHERE k = ? AND object_type = ?";
 	$vars = array($key, $object_type);
-	
+
 	//object id only matters if this is a non-global configuration option
 	if(!empty($object_type)) {
 		$query .= " AND object_id = ?";
 		$vars[] = $object_id;
 	}
-	
+
 	$result = database_query($query, $vars);
 
 	if($row = $result->fetch()) {
@@ -58,13 +58,13 @@ function config_get($key, $default, $object_type = '', $object_id = 0) {
 function config_set($key, $val, $object_type = '', $object_id = 0) {
 	$query = "SELECT id FROM pbobp_configuration WHERE k = ? AND object_type = ?";
 	$vars = array($key, $object_type);
-	
+
 	//object id only matters if this is a non-global configuration option
 	if(!empty($object_type)) {
 		$query .= " AND object_id = ?";
 		$vars[] = $object_id;
 	}
-	
+
 	$result = database_query($query, $vars);
 
 	if($row = $result->fetch()) {

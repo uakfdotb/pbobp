@@ -2,7 +2,7 @@
 
 function currency_get_details($currency_id) {
 	$result = database_query("SELECT iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies WHERE id = ?", array($currency_id), true);
-	
+
 	if($row = $result->fetch()) {
 		return $row;
 	} else {
@@ -14,11 +14,11 @@ function currency_get_details($currency_id) {
 function currency_list() {
 	$result = database_query("SELECT id, iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies", array(), true);
 	$array = array();
-	
+
 	while($row = $result->fetch()) {
 		$array[] = $row;
 	}
-	
+
 	return $array;
 }
 
@@ -32,12 +32,12 @@ function currency_create($iso_code, $prefix, $suffix, $primary, $rate, $currency
 	if($primary && $rate != 1.0) {
 		return 'invalid_rate_primary';
 	}
-	
+
 	//remove currenty primary if this is primary
 	if($primary) {
 		database_query("UPDATE pbobp_currencies SET `primary` = 0");
 	}
-	
+
 	if($currency_id === false) {
 		database_query("INSERT INTO pbobp_currencies (iso_code, prefix, suffix, `primary`, rate) VALUES (?, ?, ?, ?, ?)", array($iso_code, $prefix, $suffix, $primary, $rate));
 	} else {

@@ -31,11 +31,11 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == 'add' && isset($_POST['name'])) {
 			$result = plugin_add($_POST['name']);
-			
+
 			if($result) {
 				$message = "Plugin added successfully.";
 			} else {
@@ -45,10 +45,10 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			plugin_delete($_POST['name']);
 			$message = "Plugin deleted successfully.";
 		}
-		
+
 		pbobp_redirect('plugins.php?message=' . urlencode($message));
 	}
-	
+
 	$plugins = plugin_list();
 	$found_plugins = plugin_search();
 	get_page("plugins", "admin", array('plugins' => $plugins, 'message' => $message, 'found_plugins' => $found_plugins));

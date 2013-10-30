@@ -12,28 +12,28 @@ class plugin_service_example {
 	function __construct() {
 		$this->plugin_name = 'service_example';
 		plugin_register_interface('service', $this->plugin_name, $this);
-		
+
 		$language_name = language_name();
 		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
 		$this->language = $lang;
 	}
-	
+
 	function set_plugin_id($id) {
 		$this->id = $id;
 	}
-	
+
 	function install() {
 		//we want to create our fields in the pbobp_fields table
 		//this way, any products created with our service module will have our fields included
 		//since install may be called multiple times, delete all our tables first
-		
+
 		if(isset($this->id)) { //should always be true
 			require_once(includePath() . 'field.php');
 			database_query("DELETE FROM pbobp_fields WHERE context = 'plugin' AND context_id = ?", array($this->id));
 			field_add('plugin', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
 		}
 	}
-	
+
 	//a friendly name to describe this service interace
 	function friendly_name() {
 		return 'Example';

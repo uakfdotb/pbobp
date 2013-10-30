@@ -21,7 +21,7 @@ function get_from_session($key)
 	if (isset($_SESSION))
 	{
 		if(isset($_SESSION[$key])) {
-		return $_SESSION[$key];
+			 return $_SESSION[$key];
 		} else {
 			return ''; //key not set, CSRF validation failure
 		}
@@ -46,9 +46,9 @@ function csrfguard_generate_token($unique_form_name)
 				$c=chr(ord('a')+$r);
 			}
 			else
-			{ 
+			{
 				$c=chr(ord('0')+$r-26);
-			} 
+			}
 			$token.=$c;
 		}
 	}
@@ -67,9 +67,9 @@ function csrfguard_validate_token($unique_form_name,$token_value)
 		$result=true;
 	}
 	else
-	{ 
+	{
 		$result=false;
-	} 
+	}
 	unset_session($unique_form_name);
 	return $result;
 }
@@ -107,17 +107,17 @@ function csrfguard_start()
 	{
 		if (!isset($_POST['CSRFName']) || !isset($_POST['CSRFToken']))
 		{
-			trigger_error("Missing CSRF token.",E_USER_ERROR);		
-		} 
+			trigger_error("Missing CSRF token.",E_USER_ERROR);
+		}
 		$name =$_POST['CSRFName'];
 		$token=$_POST['CSRFToken'];
 		if (!csrfguard_validate_token($name, $token))
-		{ 
+		{
 			trigger_error("Invalid CSRF token.",E_USER_ERROR);
 		}
 	}
 	ob_start();
-	register_shutdown_function('csrfguard_inject');	
+	register_shutdown_function('csrfguard_inject');
 }
 csrfguard_start();
 

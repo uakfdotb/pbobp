@@ -26,11 +26,11 @@ include("include/include.php");
 if(isset($_REQUEST['view'])) {
 	$view = $_REQUEST['view'];
 	$plugin = false;
-	
+
 	if(isset($_REQUEST['plugin'])) {
 		$plugin = $_REQUEST['plugin'];
 	}
-	
+
 	plugin_view($view, $plugin);
 }
 

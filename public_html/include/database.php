@@ -45,7 +45,7 @@ function database_query($command, $array = array(), $assoc = false) {
 	if(!is_array($array)) {
 		database_die();
 	}
-	
+
 	//convert false/true to numbers
 	foreach($array as $k => $v) {
 		if($v === false) {
@@ -113,23 +113,23 @@ function database_create_where($key_map, $constraints, &$vars) {
 		} else {
 			$where .= " AND ";
 		}
-		
+
 		if($constraint[0] == 'in') {
 			//if this is IN, then constraint[1] should be a list of possibilities "('a', 'b', 'c')"
 			$where .= $key . " " . $constraint[0] . " (";
 			$first = true;
-			
+
 			foreach($constraint[1] as $x) {
 				if(!$first) {
 					$where .= ', ';
 				} else {
 					$first = false;
 				}
-				
+
 				$where .= "?";
 				$vars[] = $x;
 			}
-			
+
 			$where .= ")";
 		} else {
 			$where .= $key . " " . $constraint[0] . " ?";
@@ -167,34 +167,34 @@ function database_create_limit($context, &$limit_max, $limit_page = 0) {
 function database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, $f_extra = false, $groupby = '') {
 	$vars = array();
 	$where = database_create_where($where_vars, $constraints, $vars);
-	
+
 	$limit_type = 'generic';
 	$limit_max = -1;
 	$limit_page = 0;
-	
+
 	if(isset($arguments['limit_type'])) {
 		$limit_type = $arguments['limit_type'];
 	}
-	
+
 	if(isset($arguments['limit_max'])) {
 		$limit_max = $arguments['limit_max'];
 	}
-	
+
 	if(isset($arguments['limit_page'])) {
 		$limit_page = $arguments['limit_page'];
 	}
-	
+
 	$limit = database_create_limit($limit_type, $limit_max, $limit_page);
 
 	//orderby
 	$orderby = "";
-	
+
 	if(isset($arguments['order_by']) && isset($orderby_vars[$arguments['order_by']])) {
 		$orderby = "ORDER BY " . $orderby_vars[$arguments['order_by']];
 	} else if(!empty($orderby_vars)) {
 		$orderby = "ORDER BY " . reset($orderby_vars);
 	}
-	
+
 	if(!isset($arguments['order_asc']) || !$arguments['order_asc']) {
 		$orderby .= " DESC";
 	}
@@ -206,20 +206,20 @@ function database_object_list($select, $where_vars, $orderby_vars, $constraints,
 		if($f_extra !== false) {
 			$f_extra($row);
 		}
-		
+
 		$array[] = $row;
 	}
-	
+
 	//check if we should return other information
 	if(isset($arguments['extended']) && isset($arguments['table'])) {
 		$extended_array = array();
 		$extended_array['list'] = &$array;
-		
+
 		//get number of pages
 		$result = database_query("SELECT COUNT(*) FROM " . $arguments['table'] . " " . $where, $vars);
 		$row = $result->fetch();
 		$extended_array['count'] = $row[0] / $limit_max;
-		
+
 		return $extended_array;
 	} else {
 		return $array;

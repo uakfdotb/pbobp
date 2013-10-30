@@ -69,12 +69,12 @@ function plugin_load($name, $id) {
 		$class_name = 'plugin_' . $name;
 		$obj = new $class_name;
 		$plugin_loaded[] = $obj;
-	
+
 		//send the plugin it's id if it wants it
 		if(method_exists($obj, 'set_plugin_id')) {
 			$obj->set_plugin_id($id);
 		}
-		
+
 		return $obj;
 	}
 }
@@ -109,7 +109,7 @@ function plugin_register_interface($interface, $name, $obj) {
 
 function plugin_register_view($plugin_name, $view_name, $f, $obj = false) {
 	global $plugin_views;
-	
+
 	if(($obj === false && function_exists($f)) || ($obj !== false && method_exists($obj, $f))) {
 		if(!isset($plugin_views[$view_name])) {
 			$plugin_views[$view_name] = array();
@@ -164,7 +164,7 @@ function plugin_interface_get($interface, $name) {
 
 function plugin_view($view_name, $plugin_name = false) {
 	global $plugin_views;
-	
+
 	if(isset($plugin_views[$view_name])) {
 		if($plugin_name === false) {
 			call_user_func(reset($plugin_views[$view_name]));
@@ -182,35 +182,35 @@ function plugin_view($view_name, $plugin_name = false) {
 function plugin_list() {
 	$array = array();
 	$result = database_query("SELECT id, name FROM pbobp_plugins ORDER BY id", array(), true);
-	
+
 	while($row = $result->fetch()) {
 		$array[$row['id']] = $row['name'];
 	}
-	
+
 	return $array;
 }
 
 function plugin_add($name) {
 	$name = plugin_sanitize($name);
-	
+
 	if(file_exists(includePath() . "../plugins/$name/$name.php")) {
 		$result = database_query("SELECT COUNT(*) FROM pbobp_plugins WHERE name = ?", array($name));
 		$row = $result->fetch();
-		
+
 		if($row[0] == 0) {
 			database_query("INSERT INTO pbobp_plugins (name) VALUES (?)", array($name));
 			$plugin_id = database_insert_id();
-			
+
 			//call plugin's install function if it exists
 			//note that the install function should be able to be called multiple times
 			// without causing any issues
 			$obj = plugin_load($name, $plugin_id);
-			
+
 			if(method_exists($obj, 'install')) {
 				$obj->install();
 			}
 		}
-		
+
 		return true;
 	} else {
 		return false;
@@ -225,7 +225,7 @@ function plugin_delete($name) {
 function plugin_search() {
 	$plugin_directory = includePath() . '../plugins/';
 	$array = array();
-	
+
 	if($handle = opendir($plugin_directory)) {
 		while(($entry = readdir($handle)) !== false) {
 			//make sure that the plugin name is sanitized already
@@ -235,14 +235,14 @@ function plugin_search() {
 			}
 		}
 	}
-	
+
 	return $array;
 }
 
 //returns plugin name by the table id value
 function plugin_name_by_id($plugin_id) {
 	$result = database_query("SELECT name FROM pbobp_plugins WHERE id = ?", array($plugin_id));
-	
+
 	if($row = $result->fetch()) {
 		return $row[0];
 	} else {
@@ -253,7 +253,7 @@ function plugin_name_by_id($plugin_id) {
 //returns table id value from the plugin name
 function plugin_id_by_name($name) {
 	$result = database_query("SELECT id FROM pbobp_plugins WHERE name = ?", array($name));
-	
+
 	if($row = $result->fetch()) {
 		return $row[0];
 	} else {

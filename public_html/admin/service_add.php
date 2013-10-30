@@ -35,48 +35,48 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	//verify user exists
 	$user_id = $_REQUEST['user_id'];
 	if(user_get_details($user_id) === false) {
 		die('Invalid user.');
 	}
-	
+
 	//we have two views here
 	// 1. select product
 	// 2. configure product and add to user
-	
+
 	if(!isset($_REQUEST['product_id'])) {
 		$product_selection_list = product_selection_list();
 		get_page('service_add_select', 'admin', array('products' => $product_selection_list, 'user_id' => $user_id));
 	} else {
 		$product_id = $_REQUEST['product_id'];
-		
+
 		//confirm the product exists
 		if(product_get_details($product_id) == false) {
 			die('Invalid product');
 		}
-	
+
 		//process actions
 		if(isset($_POST['action'])) {
 			if($_POST['action'] == 'create' && isset($_POST['name']) && isset($_POST['price_id'])) {
 				$price_id = $_POST['price_id'];
-				
+
 				//override price if needed
 				$fail = false;
-				
+
 				if($price_id === "override") {
 					if(!empty($_POST['override_amount']) && !empty($_POST['override_recurring_amount']) && !empty($_POST['override_duration'])) {
 						$price_id = array('amount' => $_POST['override_amount'], 'recurring_amount' => $_POST['override_recurring_amount'], 'duration' => $_POST['override_duration'], 'currency_id' => $_POST['override_currency_id']);
 					} else {
 						$message = "invalid_price";
 						$fail = true;
-					}	
+					}
 				}
-				
+
 				if(!$fail) {
 					$result = service_create($_POST['name'], $user_id, $product_id, $price_id, field_extract());
-					
+
 					if($result === true) {
 						$message = "Service created successfully.";
 						pbobp_redirect("service.php?service_id=$service_id&message=" . urlencode($message));
@@ -85,10 +85,10 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 					}
 				}
 			}
-		
+
 			pbobp_redirect("service_add.php?user_id=$user_id&product_id=$product_id&message=" . urlencode($message));
 		}
-	
+
 		$product = product_get_details($product_id);
 		$prices = product_prices($product_id);
 		$fields = product_fields($product_id);

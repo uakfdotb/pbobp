@@ -87,11 +87,11 @@ function auth_register($email, $password, $fields) {
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		return "invalid_email";
 	}
-	
+
 	//ensure email not taken
 	$result = database_query("SELECT COUNT(*) FROM pbobp_users WHERE email = ?", array($email));
 	$row = $result->fetch();
-	
+
 	if($row[0] > 0) {
 		return "used_email";
 	}

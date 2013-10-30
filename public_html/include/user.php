@@ -73,7 +73,7 @@ function user_list($constraints = array(), $arguments = array()) {
 	$orderby_vars = array('user_id' => 'pbobp_users.id');
 	$arguments['limit_type'] = 'user';
 	$arguments['table'] = 'pbobp_users';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, false, 'GROUP BY pbobp_users.id');
 }
 

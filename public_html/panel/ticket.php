@@ -26,7 +26,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['ticket_id'])) {
 			} else {
 				//set the ticket status to open, unless it's been forced open
 				$ticket_details = ticket_get_details($ticket_id);
-				
+
 				if($ticket_details !== false && $ticket_details['status'] != -1) {
 					ticket_change_status($ticket_id, 0);
 				}
@@ -45,7 +45,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['ticket_id'])) {
 			ticket_change_status($ticket_id, 1);
 			$message = "ticket_closed_successfully";
 		}
-		
+
 		pbobp_redirect('ticket.php?message=' . urlencode($message) . "&ticket_id=" . urlencode($ticket_id));
 	}
 

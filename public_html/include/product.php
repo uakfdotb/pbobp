@@ -37,7 +37,7 @@ function product_list($constraints = array(), $arguments = array()) {
 	$orderby_vars = array('product_id' => 'pbobp_products.id');
 	$arguments['limit_type'] = 'product';
 	$arguments['table'] = 'pbobp_products';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments);
 }
 
@@ -46,24 +46,24 @@ function product_list($constraints = array(), $arguments = array()) {
 function product_selection_list() {
 	$product_list = product_list(array('addon' => 0));
 	$groups = array();
-	
+
 	//sort into groups
 	foreach($product_list as $product) {
 		$product_membership = product_membership($product['product_id']);
-		
+
 		if(!empty($product_membership)) {
 			$product_group = $product_membership[0];
 		} else {
 			$product_group = array(-1, "Other");
 		}
-		
+
 		if(!isset($groups[$product_group[0]])) {
 			$groups[$product_group[0]] = array('name' => $product_group[1], 'list' => array());
 		}
-		
+
 		$groups[$product_group[0]]['list'][] = $product;
 	}
-	
+
 	return $groups;
 }
 
@@ -73,14 +73,14 @@ function product_prices($product_id) {
 	$array = array();
 	require_once(includePath() . 'service.php'); //for service_duration_nice
 	require_once(includePath() . 'currency.php'); //for currency_format
-	
+
 	while($row = $result->fetch()) {
 		$row['duration_nice'] = service_duration_nice($row['duration']);
 		$row['amount_nice'] = currency_format($row['amount'], $row['currency_prefix'], $row['currency_suffix']);
 		$row['recurring_amount_nice'] = currency_format($row['recurring_amount'], $row['currency_prefix'], $row['currency_suffix']);
 		$array[] = $row;
 	}
-	
+
 	return $array;
 }
 
@@ -97,7 +97,7 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 	} else {
 		$plugin_id = NULL;
 	}
-	
+
 	if($product_id === false) {
 		database_query("INSERT INTO pbobp_products (name, description, uniqueid, plugin_id) VALUES (?, ?, ?, ?)", array($name, $description, $uniqueid, $plugin_id));
 		$product_id = database_insert_id();
@@ -105,24 +105,24 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 		//confirm that product id exists
 		$result = database_query("SELECT COUNT(*) FROM pbobp_products WHERE id = ?", array($product_id));
 		$row = $result->fetch();
-		
+
 		if($row[0] == 0) {
 			return false;
 		}
-		
+
 		database_query("UPDATE pbobp_products SET name = ?, uniqueid = ?, description = ?, plugin_id = ? WHERE id = ?", array($name, $uniqueid, $description, $plugin_id, $product_id));
 		database_query("DELETE FROM pbobp_products_prices WHERE product_id = ?", array($product_id));
 		database_query("DELETE FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
 	}
-	
+
 	foreach($prices as $price) {
 		database_query("INSERT INTO pbobp_products_prices (product_id, duration, amount, recurring_amount, currency_id) VALUES (?, ?, ?, ?, ?)", array($product_id, $price['duration'], $price['amount'], $price['recurring_amount'], $price['currency_id']));
 	}
-	
+
 	foreach($groups as $group_id) {
 		database_query("INSERT INTO pbobp_products_groups_members (group_id, product_id) VALUES (?, ?)", array($group_id, $product_id));
 	}
-	
+
 	return true;
 }
 
@@ -137,13 +137,13 @@ function product_field_contexts($product_id) {
 	$array = array();
 	$array[] = array('context' => 'product', 'context_id' => $product_id);
 	$result = database_query("SELECT group_id FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
-	
+
 	while($row = $result->fetch()) {
 		$array[] = array('context' => 'group', 'context_id' => $row[0]);
 	}
-	
+
 	$result = database_query("SELECT plugin_id FROM pbobp_products WHERE id = ?", array($product_id));
-	
+
 	if($row = $result->fetch()) {
 		if(!is_null($row[0])) {
 			$array[] = array('context' => 'plugin', 'context_id' => $row[0]);
@@ -151,7 +151,7 @@ function product_field_contexts($product_id) {
 	}
 
 	return $array;
-		}
+}
 
 function product_fields($product_id) {
 	//merge fields of product with those of its groups and its service interface
@@ -163,7 +163,7 @@ function product_fields($product_id) {
 	foreach($contexts as $context_array) {
 		$fields = array_merge($fields, field_list($context_array['context'], $context_array['context_id']));
 	}
-	
+
 	return $fields;
 }
 
@@ -191,7 +191,7 @@ function product_group_list($constraints = array(), $arguments = array()) {
 	$orderby_vars = array('group_id' => 'pbobp_products_groups.id');
 	$arguments['limit_type'] = 'pgroup';
 	$arguments['table'] = 'pbobp_products_groups';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments);
 }
 
@@ -199,7 +199,7 @@ function product_group_list($constraints = array(), $arguments = array()) {
 function product_group_members($group_id) {
 	$result = database_query("SELECT pbobp_products.id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.plugin_id, pbobp_products.addon FROM pbobp_products_groups_members LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_products_groups_members.product_id WHERE pbobp_products_groups_members.group_id = ?", array($group_id));
 	$products = array();
-	
+
 	while($row = $result->fetch()) {
 		$products[] = array('product_id' => $row[0], 'name' => $row[1], 'description' => $row[2], 'uniqueid' => $row[3], 'plugin_id' => $row[4], 'addon' => $row[5]);
 	}
@@ -208,18 +208,18 @@ function product_group_members($group_id) {
 //lists groups that a given product are in
 function product_membership($product_id, $limit_max = false) {
 	$limit = "";
-	
+
 	if($limit_max !== false) {
 		$limit = "LIMIT " . intval($limit_max);
 	}
-	
+
 	$result = database_query("SELECT pbobp_products_groups.id, pbobp_products_groups.name FROM pbobp_products_groups_members, pbobp_products_groups WHERE pbobp_products_groups_members.product_id = ? AND pbobp_products_groups.id = pbobp_products_groups_members.group_id ORDER BY pbobp_products_groups_members.id $limit", array($product_id));
 	$groups = array();
-	
+
 	while($row = $result->fetch()) {
 		$groups[] = array('group_id' => $row[0], 'name' => $row[1]);
 	}
-	
+
 	return $groups;
 }
 
@@ -228,12 +228,12 @@ function product_membership($product_id, $limit_max = false) {
 function product_addon_parents($product_id, $expand = false) {
 	$result = database_query("SELECT pbobp_products_addons.id, pbobp_products_addons.parent_id, pbobp_products_addons.parent_type FROM pbobp_products_addons WHERE child_id = ?", array($product_id));
 	$addon_parents = array();
-	
+
 	while($row = $result->fetch()) {
 		if($row[2] == 1) { //product group
 			if($expand) {
 				$group_members = product_group_members($row[1]);
-				
+
 				foreach($group_members as $member) {
 					$addon_parents[] = array('addon_id' => $row[0], 'parent_id' => $member['product_id'], 'parent_type' => 0, 'parent' => $member);
 				}
@@ -244,7 +244,7 @@ function product_addon_parents($product_id, $expand = false) {
 			$addon_parents[] = array('addon_id' => $row[0], 'product_id' => $row[1], 'parent_type' => $row[2], 'parent' => product_get_details($row[1]));
 		}
 	}
-	
+
 	return $addon_parents;
 }
 

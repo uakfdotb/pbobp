@@ -45,7 +45,7 @@ function invoice_check_access($user_id, $invoice_id) {
 function invoice_list_extra(&$row) {
 	$row['status_nice'] = invoice_status_nice($row['status']);
 	$row['due'] = $row['amount'] - $row['paid'];
-	
+
 	require_once(includePath() . 'currency.php');
 	$row['amount_nice'] = currency_format($row['amount'], $row['currency_prefix'], $row['currency_suffix']);
 	$row['due_nice'] = currency_format($row['due'], $row['currency_prefix'], $row['currency_suffix']);
@@ -58,25 +58,25 @@ function invoice_list($constraints = array(), $arguments = array()) {
 	$orderby_vars = array('invoice_id' => 'pbobp_invoices.id', 'status' => 'pbobp_invoices.status, pbobp_invoices.id');
 	$arguments['limit_type'] = 'invoice';
 	$arguments['table'] = 'pbobp_invoices';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'invoice_list_extra');
 }
 
 function invoice_lines($invoice_id) {
 	//get params for currency format
 	$invoice_details = invoice_get_details($invoice_id);
-	
+
 	if($invoice_details === false) {
 		return array();
 	}
-	
+
 	require_once(includePath() . 'currency.php');
 	$currency_details = currency_get_details($invoice_details['currency_id']);
-	
+
 	if($currency_details === false) {
 		return array();
 	}
-	
+
 	$result = database_query("SELECT id, amount, service_id, description FROM pbobp_invoices_lines WHERE invoice_id = ? ORDER BY id", array($invoice_id), true);
 	$array = array();
 
@@ -94,7 +94,7 @@ function invoice_create($user_id, $due_date, $items, $currency_id) {
 	if(user_get_details($user_id) === false) {
 		return 'invalid_user';
 	}
-	
+
 	//validate currency
 	require_once(includePath() . 'currency.php');
 	if(currency_get_details($currency_id) === false) {
@@ -106,7 +106,7 @@ function invoice_create($user_id, $due_date, $items, $currency_id) {
 	foreach($items as $item) {
 		$total += $item['amount'];
 	}
-	
+
 	if($due_date !== false) {
 		database_query("INSERT INTO pbobp_invoices (user_id, due_date, status, paid, amount, currency_id) VALUES (?, ?, ?, ?, ?, ?)", array($user_id, $due_date, 0, 0, $total, $currency_id));
 	} else {
@@ -114,7 +114,7 @@ function invoice_create($user_id, $due_date, $items, $currency_id) {
 		//by default we give user one day to pay the invoice
 		database_query("INSERT INTO pbobp_invoices (user_id, due_date, status, paid, amount, currency_id) VALUES (?, DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY), ?, ?, ?, ?)", array($user_id, 0, 0, $total, $currency_id));
 	}
-	
+
 	$invoice_id = database_insert_id();
 
 	foreach($items as $item) {
@@ -136,16 +136,16 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 	if(!is_numeric($amount) || $amount < 0) {
 		return 'invalid_amount';
 	}
-	
+
 	//validate invoice and user id
 	$invoice_details = invoice_get_details($invoice_id);
-	
+
 	if($invoice_details === false) {
 		return 'invalid_invoice';
 	} else if($user_id !== false && $invoice_details['user_id'] !== $user_id) {
 		return 'invalid_user';
 	}
-	
+
 	//update invoice
 	$new_paid = $invoice_details['paid'] + $amount;
 
@@ -154,7 +154,7 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 		require_once(includePath() . 'user.php');
 		$extra = $new_paid - $invoice_details['amount'];
 		$new_paid = $invoice_details['amount'];
-		
+
 		if($user_id !== false) {
 			user_apply_credit($user_id, $extra);
 		}
@@ -162,7 +162,7 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 
 	$set = "SET paid = ?";
 	$paid_invoice = false;
-	
+
 	//mark the invoice as paid if our total paid is above the amount
 	// but only if it is currently marked as unpaid!
 	if($new_paid >= $invoice_details['amount'] && $invoice_details['status'] == 0) {
@@ -183,7 +183,7 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 			}
 		}
 	}
-	
+
 	return true;
 }
 

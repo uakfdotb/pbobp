@@ -26,23 +26,23 @@ require_once(dirname(__FILE__) . '/../language/' . $config['language'] . '.php')
 
 function lang($key, $args = array()) {
 	global $lang;
-	
+
 	if(is_array($key) && empty($args) && isset($key[0])) {
 		//this indicates that the key is actually array(key, args_array)
 		if(isset($key[1])) {
 			$args = $key[1];
 		}
-		
+
 		$key = $key[0];
 	}
-	
+
 	if(isset($lang[$key])) {
 		$str = $lang[$key];
-	
+
 		foreach($args as $k => $v) {
 			$str = str_replace('$' . $k . '$', $v, $str);
 		}
-	
+
 		return $str;
 	} else {
 		return $key . ' ' . print_r($args, true);

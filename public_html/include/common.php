@@ -113,7 +113,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 				//have to adjust URL's
 				$url_pre = "panel/";
 			}
-			
+
 			$navbar = array("Home" => "{$url_pre}index.php", "Account" => "{$url_pre}account.php", "Services" => "{$url_pre}services.php", "Billing" => array("Invoices" => "{$url_pre}invoices.php", "Add credit" => "{$url_pre}credit.php"), "Support" => array("Tickets" => "{$url_pre}tickets.php"), "Logout" => "{$url_pre}index.php?action=logout");
 		}
 	} else if($context == "admin") {
@@ -132,7 +132,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 
 	$basePath = basePath();
 	$themePath = $basePath . "/theme/basic";
-	
+
 	if($override_path !== false) {
 		$themePageInclude = basePath() . "$override_path/$page.php";
 	} else {
@@ -225,10 +225,10 @@ function pbobp_get_backtrace() {
 	$array = debug_backtrace();
 	$str = "";
 	$counter = 0;
-	
+
 	foreach($array as $el) {
 		$str .= "#$counter\t" . $el['function'] . '(';
-		
+
 		$first = true;
 		foreach($el['args'] as $arg) {
 			if($first) {
@@ -236,14 +236,14 @@ function pbobp_get_backtrace() {
 			} else {
 				$str .= ',';
 			}
-			
+
 			$str .= print_r($arg, true);
 		}
-		
+
 		$str .= ") called at {$el['file']}:{$el['line']}\n";
 		$counter++;
 	}
-	
+
 	return htmlspecialchars($str);
 }
 

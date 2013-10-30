@@ -31,16 +31,16 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == "update") {
 			field_process_updates('user', 0, $_POST);
 			$message = "User fields updated successfully.";
 		}
-		
+
 		pbobp_redirect("userfields.php?product_id=$product_id&message=" . urlencode($message));
 	}
-	
+
 	$fields = field_list('user');
 	get_page("userfields", "admin", array('fields' => $fields, 'field_type_map' => field_type_map()));
 } else {

@@ -31,7 +31,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == 'create' && isset($_POST['name'])) {
 			product_create($_POST['name'], '', '', '', array(), array());
@@ -43,7 +43,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			pbobp_redirect('products.php?message=' . urlencode($message));
 		}
 	}
-	
+
 	$products = product_list();
 	get_page("products", "admin", array('products' => $products, 'message' => $message));
 } else {

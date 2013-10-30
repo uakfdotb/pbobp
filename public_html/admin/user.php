@@ -34,13 +34,13 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	$users = user_list(array('user_id' => $user_id));
-	
+
 	if(empty($users)) {
 		die('Invalid user specified.');
 	}
-	
+
 	$user = $users[0];
 	$name = user_get_name($user_id);
 	$fields = field_list_object('user', $user_id);

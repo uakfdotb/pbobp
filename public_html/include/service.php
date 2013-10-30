@@ -44,7 +44,7 @@ function service_check_access($user_id, $service_id) {
 
 function service_duration_nice($duration) {
 	$service_duration_map = service_duration_map();
-	
+
 	if(isset($service_duration_map[$duration])) {
 		return $service_duration_map[$duration];
 	} else {
@@ -81,11 +81,11 @@ function service_paid($service_id) {
 	//we want to update the due date and, possibly, the status
 	//but don't update if the service is inactivated (or doesn't exist)
 	$service_details = service_get_details($service_id);
-	
+
 	if($service_details === false) {
 		return;
 	}
-	
+
 	if($service_details['status'] == 0) {
 		//set next due date to one duration from now
 		//don't use recurring_date since it may be in the future or the past
@@ -119,7 +119,7 @@ function service_inactivate($service_id) {
 function service_list_extra(&$row) {
 	$row['status_nice'] = service_status_nice($row['status']);
 	$row['duration_nice'] = service_duration_nice($row['recurring_duration']);
-	
+
 	require_once(includePath() . "currency.php");
 	$row['recurring_amount_nice'] = currency_format($row['recurring_amount'], $row['currency_prefix'], $row['currency_suffix']);
 }
@@ -130,7 +130,7 @@ function service_list($constraints = array(), $arguments = array()) {
 	$orderby_vars = array('service_id' => 'pbobp_services.id');
 	$arguments['limit_type'] = 'service';
 	$arguments['table'] = 'pbobp_services';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'service_list_extra');
 }
 
@@ -138,20 +138,20 @@ function service_list($constraints = array(), $arguments = array()) {
 //price_id is either a pbobp_products_prices.id or an array(duration, amount, recurring_amount)
 function service_create($name, $user_id, $product_id, $price_id, $fields, $parent_service = NULL) {
 	global $const;
-	
+
 	//verify user exists
 	require_once(includePath() . 'user.php');
 	if(user_get_details($user_id) === false) {
 		return 'invalid_user';
 	}
-	
+
 	//verify product exists
 	require_once(includePath() . 'product.php');
 	$product_details = product_get_details($product_id);
 	if($product_details === false) {
 		return 'invalid_product';
 	}
-	
+
 	//verify parent service exists if set, and is valid
 	if($parent_service !== NULL) {
 		$parent_service_details = service_get_details($parent_service);
@@ -161,13 +161,13 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 			//make sure the product of the parent service is a valid parent product for product_id
 			$parents = product_addon_parents($product_id, true);
 			$fail = true;
-			
+
 			foreach($parents as $parent) {
 				if($parent['parent_id'] == $parent_service_details['product_id']) {
 					$fail = false;
 				}
 			}
-			
+
 			if($fail) {
 				return 'invalid_parent';
 			}
@@ -175,18 +175,18 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	} else if($product_details['addon'] == 1) { //product requires parent but no parent set
 		return 'missing_parent';
 	}
-	
+
 	//validate name
 	if(!isAscii($name) || empty($name) || strlen($name) > $const['service_name_maxlen']) {
 		return 'invalid_name';
 	}
-	
+
 	//verify price
 	$price_array = array();
-	
+
 	if(!is_array($price_id)) {
 		$result = database_query("SELECT duration, amount, recurring_amount, currency_id FROM pbobp_products_prices WHERE id = ?", array($price_id), true);
-		
+
 		if($row = $result->fetch()) {
 			$price_array = $row;
 		} else {
@@ -194,16 +194,16 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 		}
 	} else {
 		require_once(includePath() . 'currency.php');
-		
+
 		if(!isset($price_id['duration']) || !isset($price_id['amount']) || !isset($price_id['recurring_amount']) || !isset($price_id['currency_id'])) {
 			return 'invalid_price';
 		} else if($price_id['duration'] < 0 || $price_id['amount'] < 0 || $price_id['recurring_amount'] < 0 || currency_get_details($price_id['currency_id']) === false) {
 			return 'invalid_price';
 		}
-		
+
 		$price_array = $price_id;
 	}
-	
+
 	//validate fields
 	// we need to go through each involved product group, as well as plugin fields and service interface fields
 	require_once(includePath() . 'field.php');
@@ -214,23 +214,23 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 		$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
 		$new_fields += $tmp_fields;
 
-	if($result !== true) {
-		return $result;
-	}
+		if($result !== true) {
+			return $result;
+		}
 	}
 
 	$fields = $new_fields;
-	
+
 	//seems like we might just be all good!
 	database_query("INSERT INTO pbobp_services (user_id, product_id, name, recurring_date, recurring_duration, recurring_amount, parent_service, currency_id) VALUES (?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY), ?, ?, ?, ?)", array($user_id, $product_id, $name, $price_array['duration'], $price_array['recurring_amount'], $parent_service, $price_array['currency_id']));
 	$service_id = database_insert_id();
 	field_store($fields, $service_id, 'service');
-	
+
 	//create the initial invoice
 	require_once(includePath() . 'invoice.php');
 	$item = array('amount' => $price_array['amount'], 'service_id' => $service_id, 'description' => "Payment for $name (" . service_duration_nice($price_array['duration']) . ").");
 	invoice_create($user_id, false, array($item), $price_array['currency_id']); //false indicates due asap
-	
+
 	return true;
 }
 

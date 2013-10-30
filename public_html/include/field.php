@@ -32,7 +32,7 @@ function field_extract() {
 //returns true on success or string error on failure
 function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 	global $const;
-	
+
 	$result = database_query("SELECT id, name, type, required, adminonly, `default` FROM pbobp_fields WHERE context = ? AND context_id = ?", array($context, $context_id), true);
 
 	while($row = $result->fetch()) {
@@ -73,7 +73,7 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 				if($row['required'] != 0 && empty($fields[$row['id']])) {
 					return "empty_field_" . $row['id'];
 				}
-				
+
 				$new_fields[$row['id']] = $fields[$row['id']];
 			}
 		}
@@ -91,7 +91,7 @@ function field_store($new_fields, $object_id, $context, $context_id = 0) {
 
 function field_type_nice($type) {
 	$field_type_map = field_type_map();
-	
+
 	if(isset($field_type_map[$type])) {
 		return $field_type_map[$type];
 	} else {
@@ -173,17 +173,17 @@ function field_add($context, $context_id, $name, $default, $description, $type, 
 		//make sure field exists
 		$result = database_query("SELECT COUNT(*) FROM pbobp_fields WHERE id = ?", array($field_id));
 		$row = $result->fetch();
-		
+
 		if($row[0] == 0) {
 			return;
 		}
-		
+
 		database_query("UPDATE pbobp_fields SET name = ?, `default` = ?, description = ?, type = ?, required = ?, adminonly = ? WHERE id = ?", array($name, $default, $description, $type, $required, $adminonly, $field_id));
-		
+
 		//clear field options because we'll re-add them
 		database_query("DELETE FROM pbobp_fields_options WHERE field_id = ?", array($field_id));
 	}
-	
+
 	foreach($options as $option) {
 		database_query("INSERT INTO pbobp_fields_options (field_id, val) VALUES (?, ?)", array($field_id, $option));
 	}
@@ -230,31 +230,31 @@ function field_process_updates($context, $context_id, $reqvars) {
 			}
 		}
 	}
-	
+
 	foreach($field_ids as $field_id) {
 		if(!empty($reqvars["field_{$field_id}_name"]) && isset($reqvars["field_{$field_id}_default"]) && isset($reqvars["field_{$field_id}_description"]) && isset($reqvars["field_{$field_id}_type"]) && isset($reqvars["field_{$field_id}_options"]) && !isset($reqvars["delete_field_{$field_id}"])) {
 			$field_id_actual = $field_id;
-			
+
 			if($field_id_actual == "new") { //this actually indicates we want to insert a field
 				$field_id_actual = false;
 			}
-			
+
 			//only include non-empty options
 			$field_options = array();
 			$field_options_raw = explode("\n", $reqvars["field_{$field_id}_options"]);
-			
+
 			foreach($field_options_raw as $option) {
 				$option = trim($option);
-				
+
 				if(!empty($option)) {
 					$field_options[] = $option;
 				}
 			}
-			
+
 			field_add($context, $context_id, $reqvars["field_{$field_id}_name"], $reqvars["field_{$field_id}_default"], $reqvars["field_{$field_id}_description"], $reqvars["field_{$field_id}_type"], isset($reqvars["field_{$field_id}_required"]), isset($reqvars["field_{$field_id}_adminonly"]), $field_options, $field_id_actual);
 		}
 	}
-	
+
 	//delete any fields
 	//deletion is marked by presence of delete_field_{id} data
 	foreach($reqvars as $k => $v) {

@@ -29,19 +29,19 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$message = "";
 	$arguments = array('limit_page' => 0, 'order_by' => 'status');
 	$constraints = array();
-	
+
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(isset($_REQUEST['limit_page'])) {
 		$arguments['limit_page'] = $_REQUEST['limit_page'];
 	}
-	
+
 	if(isset($_REQUEST['user_id'])) {
 		$constraints['user_id'] = $_REQUEST['user_id'];
 	}
-	
+
 	if(isset($_REQUEST['status'])) {
 		if($_REQUEST['status'] == 'active') {
 			$constraints['status'] = array('!=', 1);
@@ -49,11 +49,11 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$constraints['status'] = array('in', array(-1, 0));
 		}
 	}
-	
+
 	if(isset($_POST['action'])) {
-		
+
 	}
-	
+
 	$tickets = ticket_list($constraints, $arguments);
 	get_page("tickets", "admin", array('tickets' => $tickets, 'message' => $message));
 } else {

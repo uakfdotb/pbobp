@@ -141,12 +141,12 @@ function ticket_list_extra(&$row) {
 function ticket_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_tickets.id AS ticket_id, pbobp_tickets.user_id, pbobp_tickets.department_id, pbobp_tickets.service_id, pbobp_tickets.subject, pbobp_tickets.email, pbobp_tickets.time, pbobp_tickets.modify_time, pbobp_tickets_departments.name AS department_name, pbobp_tickets.status, pbobp_services.product_id, pbobp_services.name AS service_name, pbobp_products.name AS product_name FROM pbobp_tickets LEFT JOIN pbobp_tickets_departments ON pbobp_tickets_departments.id = pbobp_tickets.department_id LEFT JOIN pbobp_services ON pbobp_services.id = pbobp_tickets.id LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_services.product_id";
 	$where_vars = array('user_id' => 'pbobp_tickets.user_id', 'department_id' => 'pbobp_tickets.department_id', 'service_id' => 'pbobp_tickets.service_id', 'ticket_id' => 'pbobp_tickets.id', 'status' => 'pbobp_tickets.status');
-	
+
 	//for status order by, want opened tickets on top, then replied tickets, then closed last
 	$orderby_vars = array('modify_time' => 'pbobp_tickets.modify_time', 'status' => '(CASE WHEN pbobp_tickets.status = -2 THEN -1 WHEN (pbobp_tickets.status = -1 OR pbobp_tickets.status = 0) THEN 0 ELSE -2 END) DESC, pbobp_tickets.modify_time');
 	$arguments['limit_type'] = 'ticket';
 	$arguments['table'] = 'pbobp_tickets';
-	
+
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'ticket_list_extra');
 }
 

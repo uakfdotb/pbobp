@@ -42,7 +42,7 @@
 	$price_setup_lang = lang('setup_fee_amount', array('amount' => $price['amount_nice']));
 	$price_recurring_lang = lang('recurring_fee_amount', array('amount' => $price['recurring_amount_nice']));
 	?>
-	
+
 	<? if($price['amount'] > 0 && $price['recurring_amount'] > 0) { ?><?= $price_setup_lang ?>; <?= $price_recurring_lang ?>
 	<? } else if($price['amount'] > 0) { ?><?= $price_recurring_lang ?>
 	<? } else if($price['recurring_amount'] > 0) { ?><?= $price_setup_lang ?>

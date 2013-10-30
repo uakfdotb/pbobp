@@ -11,7 +11,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
-	
+
 	if(ticket_get_details($ticket_id) === false) {
 		die('Ticket does not exist.');
 	}
@@ -19,7 +19,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == "reply" && isset($_POST['content'])) {
 			$result = true;
-			
+
 			if(!empty($_POST['content'])) { //only reply if reply has been composed
 				$result = ticket_reply($_SESSION['user_id'], $ticket_id, $_POST['content']);
 			}
@@ -42,7 +42,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 				$message = "ticket_opened_successfully";
 			}
 		}
-		
+
 		pbobp_redirect('ticket.php?message=' . urlencode($message) . "&ticket_id=" . urlencode($ticket_id));
 	}
 

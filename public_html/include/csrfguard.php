@@ -20,7 +20,11 @@ function get_from_session($key)
 {
 	if (isset($_SESSION))
 	{
+		if(isset($_SESSION[$key])) {
 		return $_SESSION[$key];
+		} else {
+			return ''; //key not set, CSRF validation failure
+		}
 	}
 	else {  return false; } //no session data, no CSRF risk
 }
@@ -89,9 +93,13 @@ function csrfguard_replace_forms($form_data_html)
 }
 function csrfguard_inject()
 {
+	echo csrfguard_inject_helper();
+}
+function csrfguard_inject_helper()
+{
 	$data=ob_get_clean();
 	$data=csrfguard_replace_forms($data);
-	echo $data;
+	return $data;
 }
 function csrfguard_start()
 {

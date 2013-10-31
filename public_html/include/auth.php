@@ -122,6 +122,9 @@ function auth_register($email, $password, $fields) {
 	$user_id = database_insert_id();
 	field_store($fields, $user_id, 'user');
 
+	//notify plugins about the new user
+	plugin_call('auth_register_success', array($user_id));
+
 	return true;
 }
 

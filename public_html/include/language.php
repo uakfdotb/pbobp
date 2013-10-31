@@ -24,8 +24,10 @@
 $lang = array();
 require_once(dirname(__FILE__) . '/../language/' . $config['language'] . '.php');
 
-function lang($key, $args = array()) {
-	global $lang;
+function lang($key, $args = array(), $lang = false) {
+	if($lang === false) {
+		$lang = $GLOBALS['lang'];
+	}
 
 	if(is_array($key) && empty($args) && isset($key[0])) {
 		//this indicates that the key is actually array(key, args_array)

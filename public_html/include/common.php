@@ -57,6 +57,27 @@ function basePath() {
 	return $basePath;
 }
 
+//returns a URL to the web root directory, without trailing slash
+function webPath() {
+	//duplicate code with basePath to get the number of directories we have to go up
+	$commonPath = __FILE__;
+	$requestPath = $_SERVER['SCRIPT_FILENAME'];
+	$commonSlashes = substr_count($commonPath, '/');
+	$requestSlashes = substr_count($requestPath, '/');
+	$numParent = $requestSlashes - $commonSlashes + 1;
+
+	$webPath = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
+	$webPath .= $_SERVER['SERVER_NAME'];
+	$webPath .= $_SERVER['REQUEST_URI'];
+	$webPath = dirname($webPath);
+
+	for($i = 0; $i < $numParent; $i++) {
+		$webPath = dirname($webPath);
+	}
+
+	return $webPath;
+}
+
 function uid($length) {
 	$characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 	$string = "";
@@ -118,6 +139,8 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 		}
 	} else if($context == "admin") {
 		$navbar = array("Home" => "index.php", "Users" => "users.php", "Billing" => array("Invoices" => "invoices.php", "Transactions" => "transactions.php"), "Services" => "services.php", "Support" => array("Tickets" => "tickets.php"), "Setup" => array("Plugins" => "plugins.php", "Products" => "products.php", "User fields" => "userfields.php", "Currencies" => "currency.php", "Support" => "setup_support.php"), "Configuration" => "config.php", "Logout" => "index.php?action=logout", "Extra" => array());
+	} else if($context == "none") {
+		//this is a special context denoting a non-page-type page
 	} else {
 		//oops, context should be one of the above
 		return;

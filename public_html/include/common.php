@@ -247,22 +247,23 @@ function pbobp_get_backtrace() {
 	return htmlspecialchars($str);
 }
 
-function gpgmw_mail($subject, $body, $to) { //returns true=ok, false=notok
+//returns true on success or false on failure
+function pbobp_mail($subject, $body, $to) {
 	$config = $GLOBALS['config'];
-	$from = filter_var($config['email_from'], FILTER_SANITIZE_EMAIL);
+	$from = filter_var(config_get('mail_from', 'noreply@example.com'), FILTER_SANITIZE_EMAIL);
 	$to = filter_var($to, FILTER_SANITIZE_EMAIL);
 
 	if($to === false || $from === false) {
 		return false;
 	}
 
-	if(isset($config['mail_smtp']) && $config['mail_smtp']) {
+	if(config_get('mail_smtp', false)) {
 		require_once "Mail.php";
 
-		$host = $config['mail_smtp_host'];
-		$port = $config['mail_smtp_port'];
-		$username = $config['mail_smtp_username'];
-		$password = $config['mail_smtp_password'];
+		$host = config_get('mail_smtp_host', 'localhost');
+		$port = config_get('mail_smtp_port', 25);
+		$username = config_get('mail_smtp_username', '');
+		$password = config_get('mail_smtp_password', '');
 		$headers = array ('From' => $from,
 						  'To' => $to,
 						  'Subject' => $subject,

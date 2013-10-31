@@ -20,7 +20,7 @@
 
 <? foreach($services as $service) { ?>
 <tr>
-	<td><a href="service.php?id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
+	<td><a href="service.php?service_id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
 	<td><?= $service['product_name'] ?></td>
 	<td><?= $service['status_nice'] ?></td>
 </tr>

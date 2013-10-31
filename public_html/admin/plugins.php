@@ -50,7 +50,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	}
 
 	$plugins = plugin_list();
-	$found_plugins = plugin_search();
+	$found_plugins = array_diff(plugin_search(), $plugins); //search for plugins in plugins directory and exclude already-linked ones
 	get_page("plugins", "admin", array('plugins' => $plugins, 'message' => $message, 'found_plugins' => $found_plugins));
 } else {
 	pbobp_redirect("../");

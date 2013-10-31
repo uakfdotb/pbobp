@@ -36,6 +36,8 @@ if(file_exists(dirname(__FILE__) . '/../config.php')) {
 // object_type, object_id: for product/user/plugin-specific settings, use these
 // tryglobal: whether to return the configuration with blank object_type/id if key for specific doesn't exist
 function config_get($key, $default, $object_type = '', $object_id = 0, $tryglobal = true) {
+	global $config;
+
 	$query = "SELECT v FROM pbobp_configuration WHERE k = ? AND object_type = ?";
 	$vars = array($key, $object_type);
 
@@ -50,6 +52,11 @@ function config_get($key, $default, $object_type = '', $object_id = 0, $trygloba
 	if($row = $result->fetch()) {
 		return $row[0];
 	} else {
+		//if query was for global and we have a local config setting, return it
+		if(empty($object_type) && isset($config[$key])) {
+			return $config[$key];
+		}
+
 		//if query was for non-global, try global
 		//otherwise return default
 		if(empty($object_type) || !$tryglobal) {

@@ -49,7 +49,7 @@ class plugin_service_example {
 	//get the winning number for the current time()
 	function get_winner() {
 		$md5sum = md5(time());
-		return hexdec(substr($md5sum, 0, 1));
+		return hexdec(substr($md5sum, 0, 2));
 	}
 
 	function do_check_win($service) {

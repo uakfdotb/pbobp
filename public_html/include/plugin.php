@@ -126,7 +126,24 @@ function plugin_register_view($plugin_name, $view_name, $f, $obj = false) {
 }
 
 //internal calls plugin
-function plugin_call($callback, &$args) {
+function plugin_call($callback, $args) {
+	global $plugin_callbacks;
+
+	if(isset($plugin_callbacks[$callback])) {
+		foreach($plugin_callbacks[$callback] as $f => $obj) {
+			if($obj === false) {
+				call_user_func_array($f, $args);
+			} else {
+				call_user_func_array(array($obj, $f), $args);
+			}
+		}
+	}
+}
+
+//same as above but takes in parameters by reference
+// this is useful if you want to allow plugins to change variables
+// note that the plugin will also have to accept the parameters by reference
+function plugin_call_reference($callback, &$args) {
 	global $plugin_callbacks;
 
 	if(isset($plugin_callbacks[$callback])) {

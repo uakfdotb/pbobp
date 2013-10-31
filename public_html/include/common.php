@@ -125,7 +125,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 
 	//extend navbar with plugins
 	$plugin_args = array($context, &$navbar);
-	plugin_call("pbobp_navbar", $plugin_args);
+	plugin_call_reference("pbobp_navbar", $plugin_args);
 
 	//sanitize arguments, and put in local variable space
 	extract(pbobp_html_sanitize($args));

@@ -6,6 +6,8 @@
 // 3. cart (add package / edit package / login_to/create account)
 // 4. submit (auto-create service/invoice, redirect to invoice page)
 
+//note that products MUST be in a group for this cart to display them, as they are displayed by group
+
 class plugin_cart_republicofchina {
 	function __construct() {
 		$this->plugin_name = 'cart_republicofchina';
@@ -28,8 +30,18 @@ class plugin_cart_republicofchina {
 	function view_list() {
 		require_once(includePath() . "product.php");
 
-		$products = product_list();
-		get_page("list", "main", array('products' => $products), "/plugins/{$this->plugin_name}");
+		$groups = product_group_list(array('hidden' => false));
+		$selected_group = false;
+
+		if(isset($_REQUEST['group'])) {
+			$selected_group = $_REQUEST['group'];
+		} else if(!empty($groups)) {
+			$selected_group = $groups[0]['group_id'];
+		}
+
+		$products = product_group_members($selected_group);
+
+		get_page("list", "main", array('groups' => $groups, 'products' => $products, 'selected_group' => $selected_group), "/plugins/{$this->plugin_name}");
 	}
 
 	function view_configure() {

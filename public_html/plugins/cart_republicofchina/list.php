@@ -1,5 +1,15 @@
 <h1>Cart</h1>
 
+<form method="GET">
+<? $form_target = pbobp_create_form_target(array('group')); echo $form_target['form_string']; ?>
+<p>Group: <select name="group">
+	<? foreach($groups as $group) { ?>
+	<option value="<?= $group['group_id'] ?>" <?= ($group['group_id'] == $selected_group) ? "selected" : "" ?>><?= $group['name'] ?></option>
+	<? } ?>
+	</select>
+<input type="submit" value="Change group" /></p>
+</form>
+
 <? foreach($products as $product) { ?>
 <h3><?= $product['name'] ?></h3>
 <pre><?= $product['description'] ?></pre>

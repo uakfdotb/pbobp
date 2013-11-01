@@ -15,6 +15,10 @@ class plugin_cart_republicofchina {
 		plugin_register_view($this->plugin_name, 'list', 'view_list', $this);
 		plugin_register_view($this->plugin_name, 'configure', 'view_configure', $this);
 		plugin_register_view($this->plugin_name, 'cart', 'view_cart', $this);
+
+		$language_name = language_name();
+		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
+		$this->language = $lang;
 	}
 
 	function add_to_navbar($context, &$navbar) {
@@ -41,14 +45,22 @@ class plugin_cart_republicofchina {
 
 		$products = product_group_members($selected_group);
 
-		get_page("list", "main", array('groups' => $groups, 'products' => $products, 'selected_group' => $selected_group), "/plugins/{$this->plugin_name}");
+		get_page("list", "main", array('groups' => $groups, 'products' => $products, 'selected_group' => $selected_group, 'plugin_name' => $this->plugin_name, 'lang_plugin' => $this->language), "/plugins/{$this->plugin_name}");
 	}
 
 	function view_configure() {
 		require_once(includePath() . "product.php");
 
-		$products = product_list();
-		get_page("list", "main", array('products' => $products), "/plugins/{$this->plugin_name}");
+		if(isset($_REQUEST['product_id'])) {
+			$product_id = $_REQUEST['product_id'];
+			$product = product_get_details($product_id);
+
+			if($product !== null) {
+				$prices = product_prices($product_id);
+				$fields = product_fields($product_id);
+				get_page("configure", "main", array('product' => $product, 'prices' => $prices, 'fields' => $fields, 'lang_plugin' => $this->language), "/plugins/{$this->plugin_name}");
+			}
+		}
 	}
 
 	function view_cart() {

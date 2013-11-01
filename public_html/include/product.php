@@ -67,23 +67,6 @@ function product_selection_list() {
 	return $groups;
 }
 
-//returns a list of possible pricing schemes for a given product
-function product_prices($product_id) {
-	$result = database_query("SELECT pbobp_products_prices.id AS price_id, pbobp_products_prices.duration, pbobp_products_prices.amount, pbobp_products_prices.recurring_amount, pbobp_products_prices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.iso_code AS currency_code FROM pbobp_products_prices LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_products_prices.currency_id WHERE product_id = ?", array($product_id), true);
-	$array = array();
-	require_once(includePath() . 'service.php'); //for service_duration_nice
-	require_once(includePath() . 'currency.php'); //for currency_format
-
-	while($row = $result->fetch()) {
-		$row['duration_nice'] = service_duration_nice($row['duration']);
-		$row['amount_nice'] = currency_format($row['amount'], $row['currency_prefix'], $row['currency_suffix']);
-		$row['recurring_amount_nice'] = currency_format($row['recurring_amount'], $row['currency_prefix'], $row['currency_suffix']);
-		$array[] = $row;
-	}
-
-	return $array;
-}
-
 //creates a new product or edits an existing one (depending on $product_id setting)
 //prices is a list of prices, groups is a list of group_id
 function product_create($name, $uniqueid, $description, $interface, $prices, $groups, $product_id = false) {
@@ -111,17 +94,15 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 		}
 
 		database_query("UPDATE pbobp_products SET name = ?, uniqueid = ?, description = ?, plugin_id = ? WHERE id = ?", array($name, $uniqueid, $description, $plugin_id, $product_id));
-		database_query("DELETE FROM pbobp_products_prices WHERE product_id = ?", array($product_id));
 		database_query("DELETE FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
-	}
-
-	foreach($prices as $price) {
-		database_query("INSERT INTO pbobp_products_prices (product_id, duration, amount, recurring_amount, currency_id) VALUES (?, ?, ?, ?, ?)", array($product_id, $price['duration'], $price['amount'], $price['recurring_amount'], $price['currency_id']));
 	}
 
 	foreach($groups as $group_id) {
 		database_query("INSERT INTO pbobp_products_groups_members (group_id, product_id) VALUES (?, ?)", array($group_id, $product_id));
 	}
+
+	require_once(includePath() . 'price.php');
+	price_set('product', $product_id, $prices);
 
 	return true;
 }

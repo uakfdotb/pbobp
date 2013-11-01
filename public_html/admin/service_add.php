@@ -24,6 +24,7 @@
 include("../include/include.php");
 
 require_once("../include/product.php");
+require_once("../include/price.php");
 require_once("../include/field.php");
 require_once("../include/user.php");
 require_once("../include/service.php");
@@ -90,7 +91,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 		}
 
 		$product = product_get_details($product_id);
-		$prices = product_prices($product_id);
+		$prices = price_list('product', $product_id);
 		$fields = product_fields($product_id);
 		$currencies = currency_list();
 		get_page("service_add", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'fields' => $fields, 'service_duration_map' => service_duration_map(), 'user_id' => $user_id, 'product_id' => $product_id, 'currencies' => $currencies));

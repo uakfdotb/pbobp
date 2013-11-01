@@ -26,7 +26,7 @@ include("../include/include.php");
 require_once("../include/product.php");
 require_once("../include/field.php");
 require_once("../include/currency.php");
-require_once("../include/plugin.php");
+require_once("../include/price.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['product_id'])) {
 	$message = "";
@@ -90,7 +90,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	}
 
 	$product = product_list(array('product_id' => $product_id))[0];
-	$prices = product_prices($product_id);
+	$prices = price_list('product', $product_id);
 	$fields = product_fields($product_id);
 	$currencies = currency_list();
 	$membership = product_membership($product_id); //groups that the product is currently in

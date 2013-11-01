@@ -35,11 +35,11 @@ CREATE TABLE pbobp_fields_options (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, f
 CREATE TABLE pbobp_fields_values (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, object_id INT NOT NULL, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
 
 CREATE TABLE pbobp_currencies (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, iso_code VARCHAR(3) NOT NULL, prefix VARCHAR(32) NOT NULL, suffix VARCHAR(32) NOT NULL, `primary` INT NOT NULL DEFAULT 0, rate FLOAT NOT NULL DEFAULT 1);
-
-CREATE TABLE pbobp_products (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(128) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', uniqueid VARCHAR(32) NOT NULL DEFAULT '', plugin_id INT, addon INT NOT NULL DEFAULT 0);
 -- duration is 1=monthly, 3=quarterly, 6=semi-annually, 12=yearly, 0=one-time
 -- amount is setup fee for recurring products
-CREATE TABLE pbobp_products_prices (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, product_id INT NOT NULL, duration INT NOT NULL DEFAULT 0, amount FLOAT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, currency_id INT NOT NULL);
+CREATE TABLE pbobp_prices (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, duration INT NOT NULL DEFAULT 0, amount FLOAT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, currency_id INT NOT NULL);
+
+CREATE TABLE pbobp_products (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(128) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', uniqueid VARCHAR(32) NOT NULL DEFAULT '', plugin_id INT, addon INT NOT NULL DEFAULT 0);
 CREATE TABLE pbobp_products_groups (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', hidden NOT NULL DEFAULT 0);
 CREATE TABLE pbobp_products_groups_members (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, product_id INT NOT NULL, group_id INT NOT NULL);
 -- parent_type is 0=product, 1=product group

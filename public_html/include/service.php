@@ -135,7 +135,7 @@ function service_list($constraints = array(), $arguments = array()) {
 }
 
 //creates a new service with the given parameters
-//price_id is either a pbobp_products_prices.id or an array(duration, amount, recurring_amount)
+//price_id is either a pbobp_prices.id or an array(duration, amount, recurring_amount)
 function service_create($name, $user_id, $product_id, $price_id, $fields, $parent_service = NULL) {
 	global $const;
 
@@ -185,11 +185,10 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	$price_array = array();
 
 	if(!is_array($price_id)) {
-		$result = database_query("SELECT duration, amount, recurring_amount, currency_id FROM pbobp_products_prices WHERE id = ?", array($price_id), true);
+		require_once(includePath() . 'price.php');
+		$price_array = price_get($price_id, 'product', $product_id);
 
-		if($row = $result->fetch()) {
-			$price_array = $row;
-		} else {
+		if($price_array === false) {
 			return "invalid_price";
 		}
 	} else {

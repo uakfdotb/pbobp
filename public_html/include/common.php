@@ -82,7 +82,7 @@ function webPath() {
 //strips certain GET variables that are specified
 //returns array(link_string, input for form string)
 // both return values are sanitized
-function pbobp_create_form_target($ignore_get) {
+function pbobp_create_form_target($ignore_get = array()) {
 	$form_string = "";
 	$link_string = "?";
 	foreach($_GET as $key => $val) {

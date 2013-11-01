@@ -24,15 +24,14 @@
 
 <h1><?= lang('service_add') ?></h1>
 
-<? foreach($products as $group_products) { ?>
-	<h2><?= $group_products['name'] ?></h2>
-	<? foreach($group_products['list'] as $product) { ?>
-	<h4><?= $product['name'] ?></h4>
-	<pre><?= $product['description'] ?></pre>
-	<form method="GET" action="service_add.php">
-	<input type="hidden" name="user_id" value="<?= $user_id ?>" />
-	<input type="hidden" name="product_id" value="<?= $product['product_id'] ?>" />
-	<input type="submit" value="<?= lang('product_select') ?>" />
-	</form>
+<form method="GET">
+<? $form_target = pbobp_create_form_target(); echo $form_target['form_string']; ?>
+Product: <select name="product_id">
+	<? foreach($products as $group_products) { ?>
+		<? foreach($group_products['list'] as $product) { ?>
+		<option value="<?= $product['product_id'] ?>"><?= $product['name'] ?></option>
+		<? } ?>
 	<? } ?>
-<? } ?>
+	</select>
+<input type="submit" value="<?= $lang['product_select'] ?>" />
+</form>

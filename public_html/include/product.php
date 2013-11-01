@@ -54,14 +54,14 @@ function product_selection_list() {
 		if(!empty($product_membership)) {
 			$product_group = $product_membership[0];
 		} else {
-			$product_group = array(-1, "Other");
+			$product_group = array('group_id' => -1, 'name' => "Other");
 		}
 
-		if(!isset($groups[$product_group[0]])) {
-			$groups[$product_group[0]] = array('name' => $product_group[1], 'list' => array());
+		if(!isset($groups[$product_group['group_id']])) {
+			$groups[$product_group['group_id']] = array('name' => $product_group['name'], 'list' => array());
 		}
 
-		$groups[$product_group[0]]['list'][] = $product;
+		$groups[$product_group['group_id']]['list'][] = $product;
 	}
 
 	return $groups;

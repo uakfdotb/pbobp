@@ -228,7 +228,7 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 
 	//create the initial invoice
 	require_once(includePath() . 'invoice.php');
-	$item = array('amount' => $price_array['amount'], 'service_id' => $service_id, 'description' => "Payment for $name (" . service_duration_nice($price_array['duration']) . ").");
+	$item = array('amount' => $price_array['amount'] + $price_array['recurring_amount'], 'service_id' => $service_id, 'description' => "Payment for $name (" . service_duration_nice($price_array['duration']) . ").");
 	invoice_create($user_id, false, array($item), $price_array['currency_id']); //false indicates due asap
 
 	return true;

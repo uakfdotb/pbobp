@@ -104,7 +104,7 @@ foreach($prices as $price) {
 
 <h3><?= lang('fields') ?></h3>
 
-<p>For field options (applicable to drop-down and radio types only), use new line for each option.</p>
+<p><?= lang('product_manager_fields_description') ?></p>
 
 <table>
 <tr>
@@ -152,6 +152,32 @@ foreach($prices as $price) {
 	<td><input type="checkbox" name="field_new_adminonly" /></td>
 	<td><textarea name="field_new_options"></textarea></td>
 	<td></td>
+</tr>
+</table>
+
+<h3><?= lang('groups') ?></h3>
+
+<table>
+<tr>
+	<th><?= lang('name') ?></th>
+	<th><?= lang('delete') ?></th>
+</tr>
+
+<? foreach($membership as $group) { ?>
+<tr>
+	<td><?= $group['name'] ?></td>
+	<td><input type="checkbox" name="delete_group_<?= $group['group_id'] ?>" value="true" /></td>
+</tr>
+<? } ?>
+
+<tr>
+	<td><select name="group_new">
+		<option value="">None</option>
+		<? foreach($groups as $group) { ?>
+		<option value="<?= $group['group_id'] ?>"><?= $group['name'] ?></option>
+		<? } ?>
+		</select></td>
+	<td><?= lang('add') ?></td>
 </tr>
 </table>
 

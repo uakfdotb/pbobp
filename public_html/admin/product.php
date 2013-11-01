@@ -51,7 +51,21 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 				}
 			}
 
-			$result = product_create($_POST['name'], $_POST['uniqueid'], $_POST['description'], $_POST['interface'], $prices, array(), $product_id);
+			//get groups
+			//take existing ones and add new ones, remove old ones
+			$groups = array();
+			foreach(product_membership($product_id) as $group) {
+				$group_id = $group['group_id'];
+				if(!isset($_POST["delete_group_{$group_id}"]) && !in_array($group_id, $groups)) {
+					$groups[] = $group_id;
+				}
+			}
+
+			if(!empty($_POST['group_new']) && !in_array($_POST['group_new'], $groups)) {
+				$groups[] = $_POST['group_new'];
+			}
+
+			$result = product_create($_POST['name'], $_POST['uniqueid'], $_POST['description'], $_POST['interface'], $prices, $groups, $product_id);
 			field_process_updates('product', $product_id, $_POST);
 
 			if($result) {
@@ -79,7 +93,9 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	$prices = product_prices($product_id);
 	$fields = product_fields($product_id);
 	$currencies = currency_list();
-	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'fields' => $fields, 'currencies' => $currencies, 'interfaces' => $interfaces_friendly));
+	$membership = product_membership($product_id); //groups that the product is currently in
+	$groups = product_group_list();
+	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'fields' => $fields, 'currencies' => $currencies, 'interfaces' => $interfaces_friendly, 'membership' => $membership, 'groups' => $groups));
 } else {
 	pbobp_redirect("../");
 }

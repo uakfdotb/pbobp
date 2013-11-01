@@ -177,8 +177,12 @@ function product_group_get_details($group_id) {
 	}
 }
 
-function product_group_create($name, $description) {
-	database_query("INSERT INTO pbobp_products_groups (name, description) VALUES (?, ?)", array($name, $description));
+function product_group_create($name, $description, $hidden, $group_id = false) {
+	if($group_id === false) {
+		database_query("INSERT INTO pbobp_products_groups (name, description, hidden) VALUES (?, ?, ?)", array($name, $description, $hidden));
+	} else {
+		database_query("UPDATE pbobp_products_groups SET name = ?, description = ?, hidden = ? WHERE id = ?", array($name, $description, $hidden, $group_id));
+	}
 }
 
 function product_group_delete($group_id) {
@@ -186,8 +190,8 @@ function product_group_delete($group_id) {
 }
 
 function product_group_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_products_groups.id AS group_id, pbobp_products_groups.name, pbobp_products_groups.description FROM pbobp_products_groups";
-	$where_vars = array('group_id' => 'pbobp_products_groups.id');
+	$select = "SELECT pbobp_products_groups.id AS group_id, pbobp_products_groups.name, pbobp_products_groups.description, pbobp_products_groups.hidden FROM pbobp_products_groups";
+	$where_vars = array('group_id' => 'pbobp_products_groups.id', 'hidden' => 'pbobp_products_groups.hidden');
 	$orderby_vars = array('group_id' => 'pbobp_products_groups.id');
 	$arguments['limit_type'] = 'pgroup';
 	$arguments['table'] = 'pbobp_products_groups';
@@ -203,6 +207,8 @@ function product_group_members($group_id) {
 	while($row = $result->fetch()) {
 		$products[] = array('product_id' => $row[0], 'name' => $row[1], 'description' => $row[2], 'uniqueid' => $row[3], 'plugin_id' => $row[4], 'addon' => $row[5]);
 	}
+
+	return $products;
 }
 
 //lists groups that a given product are in

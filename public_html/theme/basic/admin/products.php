@@ -56,3 +56,36 @@
 </tr>
 <? } ?>
 </table>
+
+<table>
+<tr>
+	<th><?= lang('name') ?></th>
+	<th><?= lang('description') ?></th>
+	<th><?= lang('hidden') ?></th>
+	<th><?= lang('update') ?></th>
+	<th><?= lang('delete') ?></th>
+</tr>
+
+<? foreach($groups as $group) { ?>
+<tr>
+<form method="POST">
+<input type="hidden" name="group_id" value="<?= $group['group_id'] ?>" />
+	<td><input type="text" name="name" value="<?= $group['name'] ?>" /></td>
+	<td><input type="text" name="description" value="<?= $group['description'] ?>" /></td>
+	<td><input type="checkbox" name="hidden" value="true" <?= $group['hidden'] ? "checked" : "" ?> /></td>
+	<td><button type="submit" name="action" value="update_group">Update</button></td>
+	<td><button type="submit" name="action" value="delete_group">Delete</button></td>
+</form>
+</tr>
+<? } ?>
+
+<tr>
+<form method="POST">
+	<td><input type="text" name="name" /></td>
+	<td><input type="text" name="description" /></td>
+	<td><input type="checkbox" name="hidden" value="true" /></td>
+	<td><button type="submit" name="action" value="create_group"><?= lang('add') ?></button></td>
+	<td></td>
+</form>
+</tr>
+</table>

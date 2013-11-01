@@ -26,7 +26,7 @@ include("include/include.php");
 require_once("include/field.php");
 require_once("include/auth.php");
 
-if(isset($_SESSION['account_id'])) {
+if(isset($_SESSION['user_id'])) {
 	pbobp_redirect("panel/");
 } else if(isset($_POST['email']) && isset($_POST['password'])) {
 	$result = auth_register($_POST['email'], $_POST['password'], field_extract());

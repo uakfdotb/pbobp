@@ -25,30 +25,19 @@
 // $pagination_current: current page in the table that we're looking at
 // $pagination_total: total number of pages in the table
 
-$pagination_sanitized_get = array();
-$pagination_url_get = "?";
-foreach($_GET as $get_key => $get_val) {
-	if($get_key != 'limit_page') {
-		$pagination_sanitized_get[htmlspecialchars($get_key)] = htmlspecialchars($get_val);
-		$pagination_url_get .= "$get_key=$get_val&";
-	}
-}
-
-$pagination_url_pre = htmlspecialchars(pbobp_page_requested() . $pagination_url_get);
+$form_target = pbobp_create_form_target(array('limit_page'));
 ?>
 
 <table>
 <tr>
 	<td>
 		<? if($pagination_current > 0) { ?>
-		<a href="<?= $pagination_url_pre ?>limit_page=<?= $pagination_current - 1 ?>">&lt;</a>
+		<a href="<?= $form_target['link_string'] ?>limit_page=<?= $pagination_current - 1 ?>">&lt;</a>
 		<? } ?>
 	</td>
 	<td>
 		<form method="GET">
-			<? foreach($pagination_sanitized_get as $get_key => $get_val) { ?>
-				<input type="hidden" name="<?= $get_key ?>" value="<?= $get_val ?>" />
-			<? } ?>
+			<?= $form_target['form_string'] ?>
 			<select name="limit_page">
 				<? for($i = 0; $i < $pagination_total; $i++) { ?>
 				<option value="<?= $i ?>" <?= ($pagination_current == $i) ? "selected" : "" ?>><?= $i + 1 ?></option>
@@ -59,7 +48,7 @@ $pagination_url_pre = htmlspecialchars(pbobp_page_requested() . $pagination_url_
 	</td>
 	<td>
 		<? if($pagination_current < $pagination_total - 1) { ?>
-		<a href="<?= $pagination_url_pre ?>limit_page=<?= $pagination_current + 1 ?>">&gt;</a>
+		<a href="<?= $form_target['link_string'] ?>limit_page=<?= $pagination_current + 1 ?>">&gt;</a>
 		<? } ?>
 	</td>
 </tr>

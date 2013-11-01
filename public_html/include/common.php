@@ -78,6 +78,24 @@ function webPath() {
 	return $webPath;
 }
 
+//creates a link or form target based on current URL
+//strips certain GET variables that are specified
+//returns array(link_string, input for form string)
+// both return values are sanitized
+function pbobp_create_form_target($ignore_get) {
+	$form_string = "";
+	$link_string = "?";
+	foreach($_GET as $key => $val) {
+		if(!in_array($key, $ignore_get)) {
+			$form_string .= '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($val) . '" />';
+			$link_string .= urlencode($key) . '=' . urlencode($val) . '&';
+		}
+	}
+
+	$link_string = htmlspecialchars(pbobp_page_requested() . $link_string);
+	return array('link_string' => $link_string, 'form_string' => $form_string);
+}
+
 function uid($length) {
 	$characters = "0123456789abcdefghijklmnopqrstuvwxyz";
 	$string = "";
@@ -240,7 +258,7 @@ function pbobp_redirect($url, $statusCode = 303) {
 
 function pbobp_page_requested() {
 	$this_page = basename($_SERVER['REQUEST_URI']);
-	if (strpos($this_page, "?") !== false) $this_page = reset(explode("?", $this_page));
+	if (strpos($this_page, "?") !== false) $this_page = explode("?", $this_page)[0];
 	return $this_page;
 }
 

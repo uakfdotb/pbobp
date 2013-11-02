@@ -111,6 +111,14 @@ $lang['rate'] = 'Rate';
 $lang['primary'] = 'Primary';
 $lang['update'] = 'Update';
 
+$lang['account'] = 'Account';
+$lang['change_password'] = 'Change password';
+$lang['new_password'] = 'New password';
+$lang['confirm_password'] = 'Confirm password';
+$lang['old_password'] = 'Old password';
+$lang['password_change_success'] = 'Your password was changed successfully.';
+$lang['error_passwords_no_match'] = 'Error: your passwords do not match!';
+
 $lang['tickets'] = 'Tickets';
 $lang['ticket'] = 'Ticket';
 $lang['tickets_open_none'] = 'You do not have any open tickets.';

@@ -135,4 +135,30 @@ function auth_register($email, $password, $fields) {
 	return true;
 }
 
+function auth_change_password($user_id, $old_password, $new_password) {
+	//validate password
+	// we have a maximum length to prevent hashing long data
+	if(strlen($new_password) < config_get("auth_password_minlen", 6)) {
+		return "short_password";
+	} else if(strlen($new_password) > config_get("auth_password_maxlen", 512)) {
+		return "long_password";
+	}
+
+	//check old password
+	$result = auth_check($user_id, $old_password);
+
+	if($result !== true) {
+		return $result;
+	}
+
+	//hash password
+	require_once(includePath() . 'pbkdf2.php');
+	$password_hash = pbkdf2_create_hash($new_password);
+
+	//update
+	database_query("UPDATE pbobp_users SET password = ? WHERE id = ?", array($password_hash, $user_id));
+
+	return true;
+}
+
 ?>

@@ -151,7 +151,10 @@ function invoice_status_nice($status) {
 	else return "unknown";
 }
 
-function invoice_payment($invoice_id, $amount, $user_id = false) {
+//makes a payment for an invoice
+//false currency means to assume it is in invoice's currency
+//false user ID means to ignore the user owner
+function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = false) {
 	//validate amount
 	if(!is_numeric($amount) || $amount < 0) {
 		return 'invalid_amount';
@@ -164,6 +167,8 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 		return 'invalid_invoice';
 	} else if($user_id !== false && $invoice_details['user_id'] !== $user_id) {
 		return 'invalid_user';
+	} else if($currency_id !== false && $currency_id != $invoice_details['currency_id']) {
+		return 'invalid_currency';
 	}
 
 	//update invoice
@@ -171,12 +176,15 @@ function invoice_payment($invoice_id, $amount, $user_id = false) {
 
 	if($new_paid > $invoice_details['amount']) {
 		//register extra as credit
+		//we'll have to convert the currency though
 		require_once(includePath() . 'user.php');
 		$extra = $new_paid - $invoice_details['amount'];
 		$new_paid = $invoice_details['amount'];
 
 		if($user_id !== false) {
-			user_apply_credit($user_id, $extra);
+			//use invoice's currency here since the parameter may be false and we already did currency validation above
+			require_once(includePath() . 'currency.php');
+			user_apply_credit($user_id, currency_convert($invoice_details['currency_id'], $extra));
 		}
 	}
 

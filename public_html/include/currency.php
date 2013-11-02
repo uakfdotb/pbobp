@@ -74,4 +74,17 @@ function currency_delete($currency_id) {
 	database_query("DELETE FROM pbobp_currencies WHERE id = ?", array($currency_id));
 }
 
+//convert to or from native system currency
+function currency_convert($amount, $currency_id, $to_native = true) {
+	$details = currency_get_details($currency_id);
+
+	if($details === false) {
+		return false;
+	} else if($to_native) {
+		return $amount * (double) $details['rate'];
+	} else {
+		return $amount / (double) $details['rate'];
+	}
+}
+
 ?>

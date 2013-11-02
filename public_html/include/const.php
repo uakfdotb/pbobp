@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 $const = array();
 
 $const['ticket_subject_maxlen'] = 128;

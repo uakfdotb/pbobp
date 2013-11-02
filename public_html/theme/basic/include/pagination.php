@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //input:
 // $pagination_current: current page in the table that we're looking at
 // $pagination_total: total number of pages in the table

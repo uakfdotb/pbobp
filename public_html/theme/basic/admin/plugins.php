@@ -20,6 +20,10 @@
 	along with pbobp source code. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
 ?>
 
 <h1><?= lang('plugins') ?></h1>

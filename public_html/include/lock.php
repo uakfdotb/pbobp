@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //lock.php is basic spam-submit prevention
 //lock_time_initial, lock_time_overload, lock_count_overload, lock_time_reset, and lock_time_max should be defined in $config
 

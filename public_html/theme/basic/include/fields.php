@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //fields will display the fields
 //parameters:
 // include_fields: list of fields to display

@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function user_get_details($user_id) {
 	$result = database_query("SELECT email, password, credit, `access` FROM pbobp_users WHERE id = ?", array($user_id));
 

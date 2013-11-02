@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function service_get_details($service_id) {
 	$result = database_query("SELECT user_id, product_id, creation_date, recurring_date, recurring_duration, recurring_amount, status FROM pbobp_services WHERE id = ?", array($service_id));
 

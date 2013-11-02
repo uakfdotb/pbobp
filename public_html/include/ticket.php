@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function ticket_get_details($ticket_id) {
 	$result = database_query("SELECT user_id, department_id, service_id, subject, email, time, modify_time, status FROM pbobp_tickets WHERE id = ?", array($ticket_id));
 

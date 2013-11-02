@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //returns true on success, -1 on failure, or -2 if try again later
 function auth_login($email, $password) {
 	require_once(includePath() . 'lock.php');

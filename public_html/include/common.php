@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function string_begins_with($string, $search)
 {
 	return (strncmp($string, $search, strlen($search)) == 0);

@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 require_once(dirname(__FILE__) . '/const.php');
 require_once(dirname(__FILE__) . '/../config.default.php');
 
@@ -86,7 +90,5 @@ function config_set($key, $val, $object_type = '', $object_id = 0) {
 		database_query("INSERT INTO pbobp_configuration (k, v, object_type, object_id) VALUES (?, ?, ?, ?)", array($key, $val, $object_type, $object_id));
 	}
 }
-
-$GLOBALS['IN_PBOBP'] = true;
 
 ?>

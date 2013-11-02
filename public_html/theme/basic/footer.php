@@ -20,6 +20,10 @@
 	along with pbobp source code. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
 ?>
 
 <p><?= lang('powered_by', array('link' => '<a href="https://pbobp.lunanode.com/">' . lang('pbobp') . '</a>')) ?></p>

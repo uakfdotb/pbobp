@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //this is a dictionary from callback identifier to an array of functions that are registered to callback to
 //parameters depend on the specific callback
 $plugin_callbacks = array();

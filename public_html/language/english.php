@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 $lang['pbobp'] = 'pbobp';
 $lang['powered_by'] = 'Powered by $link$.';
 $lang['password'] = 'Password';

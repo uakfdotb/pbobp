@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //input:
 // $select_duration_current: selected value by default (not required, will be unset by this script)
 // $select_duration_name: name of the select element

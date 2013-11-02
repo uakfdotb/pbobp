@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function product_get_details($product_id) {
 	$result = database_query("SELECT name, description, uniqueid, plugin_id, addon FROM pbobp_products WHERE id = ?", array($product_id));
 

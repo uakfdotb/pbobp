@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 function invoice_get_details($invoice_id) {
 	$result = database_query("SELECT user_id, due_date, status, paid, amount, `date`, currency_id FROM pbobp_invoices WHERE id = ?", array($invoice_id));
 

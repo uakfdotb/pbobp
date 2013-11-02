@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 $lang = array();
 require_once(dirname(__FILE__) . '/../language/' . $config['language'] . '.php');
 

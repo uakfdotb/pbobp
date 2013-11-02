@@ -21,6 +21,10 @@
 
 */
 
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
+}
+
 //returns a list of possible pricing schemes for a given context
 function price_list($context, $context_id) {
 	$result = database_query("SELECT pbobp_prices.id AS price_id, pbobp_prices.duration, pbobp_prices.amount, pbobp_prices.recurring_amount, pbobp_prices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.iso_code AS currency_code FROM pbobp_prices LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_prices.currency_id WHERE context = ? AND context_id = ?", array($context, $context_id), true);

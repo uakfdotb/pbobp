@@ -76,7 +76,6 @@ function product_selection_list() {
 function product_create($name, $uniqueid, $description, $interface, $prices, $groups, $product_id = false) {
 	//validate the interface
 	if(!empty($interface)) {
-		require_once(includePath() . 'plugin.php');
 		$plugin_id = plugin_id_by_name($interface);
 		if($plugin_id === false) {
 			return false;

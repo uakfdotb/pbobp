@@ -23,8 +23,6 @@
 
 include("../include/include.php");
 
-require_once("../include/plugin.php");
-
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$message = "";
 

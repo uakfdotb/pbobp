@@ -24,7 +24,6 @@
 include("../include/include.php");
 
 require_once("../include/service.php");
-require_once("../include/plugin.php");
 require_once("../include/user.php");
 
 if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {

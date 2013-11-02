@@ -24,7 +24,6 @@
 include("../include/include.php");
 
 require_once("../include/invoice.php");
-require_once("../include/plugin.php");
 require_once("../include/user.php");
 
 if(isset($_SESSION['user_id']) && isset($_REQUEST['invoice_id'])) {

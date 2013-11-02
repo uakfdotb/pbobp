@@ -117,7 +117,7 @@ function service_inactivate($service_id) {
 	}
 
 	//update the service
-	database_query("UPDATE pbobp_services SET status = 2 WHERE id = ?", array($service_id));
+	database_query("UPDATE pbobp_services SET status = -2 WHERE id = ?", array($service_id));
 }
 
 function service_list_extra(&$row) {

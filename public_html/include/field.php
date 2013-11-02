@@ -95,7 +95,7 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 				}
 			} else {
 				//check required
-				if($row['required'] != 0 && empty($fields[$row['id']])) {
+				if($row['required'] != 0 && strlen($fields[$row['id']]) == 0) {
 					return "empty_field_" . $row['id'];
 				}
 

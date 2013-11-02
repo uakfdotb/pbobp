@@ -181,28 +181,6 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 		return 'invalid_name';
 	}
 
-	//verify price
-	$price_array = array();
-
-	if(!is_array($price_id)) {
-		require_once(includePath() . 'price.php');
-		$price_array = price_get($price_id, 'product', $product_id);
-
-		if($price_array === false) {
-			return "invalid_price";
-		}
-	} else {
-		require_once(includePath() . 'currency.php');
-
-		if(!isset($price_id['duration']) || !isset($price_id['amount']) || !isset($price_id['recurring_amount']) || !isset($price_id['currency_id'])) {
-			return 'invalid_price';
-		} else if($price_id['duration'] < 0 || $price_id['amount'] < 0 || $price_id['recurring_amount'] < 0 || currency_get_details($price_id['currency_id']) === false) {
-			return 'invalid_price';
-		}
-
-		$price_array = $price_id;
-	}
-
 	//validate fields
 	// we need to go through each involved product group, as well as plugin fields and service interface fields
 	require_once(includePath() . 'field.php');
@@ -220,6 +198,34 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 
 	$fields = $new_fields;
 
+	//verify price
+	$price_array = array();
+
+	if(!is_array($price_id)) {
+		//get the price from it's id, but only to extract the duration and currency
+		require_once(includePath() . 'price.php');
+		$price_array = price_get($price_id, 'product', $product_id);
+
+		if($price_array === false) {
+			return "invalid_price";
+		}
+
+		//get the product price summary, which includes prices of fields (if any)
+		$price_summary = product_price_summary($product_id, $price_array['duration'], $price_array['currency_id'], $fields);
+		$price_array['recurring_amount'] = $price_summary['total_recurring'];
+		$price_array['amount'] = $price_summary['total_setup'];
+	} else {
+		require_once(includePath() . 'currency.php');
+
+		if(!isset($price_id['duration']) || !isset($price_id['amount']) || !isset($price_id['recurring_amount']) || !isset($price_id['currency_id'])) {
+			return 'invalid_price';
+		} else if($price_id['duration'] < 0 || $price_id['amount'] < 0 || $price_id['recurring_amount'] < 0 || currency_get_details($price_id['currency_id']) === false) {
+			return 'invalid_price';
+		}
+
+		$price_array = $price_id;
+	}
+
 	//seems like we might just be all good!
 	database_query("INSERT INTO pbobp_services (user_id, product_id, name, recurring_date, recurring_duration, recurring_amount, parent_service, currency_id) VALUES (?, ?, ?, DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY), ?, ?, ?, ?)", array($user_id, $product_id, $name, $price_array['duration'], $price_array['recurring_amount'], $parent_service, $price_array['currency_id']));
 	$service_id = database_insert_id();
@@ -228,7 +234,7 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	//create the initial invoice
 	require_once(includePath() . 'invoice.php');
 	$item = array('amount' => $price_array['amount'] + $price_array['recurring_amount'], 'service_id' => $service_id, 'description' => "Payment for $name (" . service_duration_nice($price_array['duration']) . ").");
-	invoice_create($user_id, false, array($item), $price_array['currency_id']); //false indicates due asap
+	invoice_create($user_id, false, array($item), $price_array['currency_id'], true); //false indicates due asap
 
 	return true;
 }

@@ -25,10 +25,11 @@
 <h1><?= $lang_plugin['configure_product'] ?></h1>
 
 <? if(!empty($message)) { ?>
-<p><b><i><?= lang($message) ?></i></b></p>
+<p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
 <form method="POST">
+<input type="hidden" name="act" value="true" />
 
 <h3><?= $product['name'] ?></h3>
 <pre><?= $product['description'] ?></pre>
@@ -53,7 +54,7 @@
 <h3><?= lang('service_details') ?></h3>
 
 <p>Service name: <input type="text" name="name" /><br />
-<? $include_fields = $fields; include($themePath . "/include/fields.php"); ?></p>
+<? $include_fields = $fields; $include_selections = $field_selections; include($themePath . "/include/fields.php"); ?></p>
 
 <input type="submit" value="<?= $lang_plugin['add_to_cart'] ?>" />
 </form>

@@ -50,24 +50,155 @@ class plugin_cart_republicofchina {
 
 	function view_configure() {
 		require_once(includePath() . "product.php");
+		require_once(includePath() . "field.php");
+		require_once(includePath() . "price.php");
 
 		if(isset($_REQUEST['product_id'])) {
 			$product_id = $_REQUEST['product_id'];
 			$product = product_get_details($product_id);
 
 			if($product !== null) {
-				$prices = product_prices($product_id);
+				$message = "";
+				$field_selections = array();
+
+				//we may be trying to edit an existing service, in which case set field selections
+				if(isset($_REQUEST['cart_id']) && !isset($_POST['act'])) {
+					foreach($_SESSION['plugin_cart_republicofchina'] as $key => $service) {
+						if($service['counter'] == $_REQUEST['cart_id']) {
+							$field_selections = $service['field_selections'];
+							break;
+						}
+					}
+				} else {
+					//field selections might also be set to non-defaults based on request variables
+					$field_selections = field_extract();
+				}
+
+				if(isset($_POST['act']) && isset($_POST['price_id']) && isset($_POST['name'])) {
+					//validate fields; this is needed to get the price summary which we want to store for display on the cart page
+					$fields = array();
+					$fail = false;
+
+					foreach(product_field_contexts($product_id) as $context_array) {
+						$tmp_fields = array();
+						$result = field_parse($field_selections, $context_array['context'], $tmp_fields, $context_array['context_id']);
+						$fields += $tmp_fields;
+
+						if($result !== true) {
+							$message = $result;
+							$fail = true;
+							break;
+						}
+					}
+
+					if(!$fail) {
+						//get price summary
+						$price_array = price_get($_POST['price_id'], 'product', $product_id);
+
+						if($price_array !== false) {
+							$price_summary = product_price_summary($product_id, $price_array['duration'], $price_array['currency_id'], $fields);
+
+							if($price_summary !== false) {
+								if(!isset($_SESSION['plugin_cart_republicofchina'])) {
+									$_SESSION['plugin_cart_republicofchina'] = array();
+									$_SESSION['plugin_cart_republicofchina_counter'] = 0;
+								}
+
+								$service = array('price_id' => $_POST['price_id'], 'product_id' => $product_id, 'product' => $product, 'name' => $_POST['name'], 'field_selections' => $field_selections, 'fields' => $fields, 'summary' => $price_summary, 'price' => $price_array, 'counter' => $_SESSION['plugin_cart_republicofchina_counter']++);
+
+								if(isset($_REQUEST['cart_id'])) {
+									foreach($_SESSION['plugin_cart_republicofchina'] as $key => $i_service) {
+										if($i_service['counter'] == $_REQUEST['cart_id']) {
+											$_SESSION['plugin_cart_republicofchina'][$key] = $service;
+											break;
+										}
+									}
+								} else {
+									$_SESSION['plugin_cart_republicofchina'][] = $service;
+								}
+
+								pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=cart");
+							}
+						}
+					} //else continue displaying
+				}
+
+				$prices = price_list('product', $product_id);
 				$fields = product_fields($product_id);
-				get_page("configure", "main", array('product' => $product, 'prices' => $prices, 'fields' => $fields, 'lang_plugin' => $this->language), "/plugins/{$this->plugin_name}");
+				get_page("configure", "main", array('product' => $product, 'prices' => $prices, 'fields' => $fields, 'field_selections' => $field_selections, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'message' => $message), "/plugins/{$this->plugin_name}");
 			}
 		}
 	}
 
 	function view_cart() {
 		require_once(includePath() . "product.php");
+		require_once(includePath() . "service.php");
+		require_once(includePath() . "field.php");
+		require_once(includePath() . "auth.php"); //since the page allows login and registration
 
-		$products = product_list();
-		get_page("list", "main", array('products' => $products), "/plugins/{$this->plugin_name}");
+		//retrieve the services from session
+		if(empty($_SESSION['plugin_cart_republicofchina'])) {
+			pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=list");
+		} else {
+			$message = "";
+
+			if(!empty($_REQUEST['message'])) {
+				$message = $_REQUEST['message'];
+			}
+
+			if(count($_POST)) {
+				if(isset($_POST['action']) && $_POST['action'] == 'delete' && isset($_POST['cart_id'])) {
+					foreach($_SESSION['plugin_cart_republicofchina'] as $key => $service) {
+						if($service['counter'] == $_POST['cart_id']) {
+							unset($_SESSION['plugin_cart_republicofchina'][$key]);
+							break;
+						}
+					}
+				} else if(!empty($_POST['login_email']) && !empty($_POST['login_password'])) {
+					$result = auth_login($_POST['login_email'], $_POST['login_password']);
+
+					if($result === true) {
+						$message = 'Logged in successfully.';
+					} else {
+						$message = lang($result);
+					}
+				} else if((isset($_POST['action']) && $_POST['action'] == 'order') || (!empty($_POST['register_email']) && !empty($_POST['register_password']))) {
+					$fail = false;
+
+					if(!isset($_SESSION['user_id'])) {
+						if(!empty($_POST['register_email']) && !empty($_POST['register_password'])) {
+							$result = auth_register($_POST['register_email'], $_POST['register_password'], field_extract());
+
+							if($result !== true) {
+								$message = lang($result);
+								$fail = true;
+							}
+						} else {
+							$message = $this->language['error_not_logged_in_register_or_login'];
+							$fail = true;
+						}
+					}
+
+					if(!$fail) {
+						//register each service sequentially
+						foreach($_SESSION['plugin_cart_republicofchina'] as $service) {
+							service_create($service['name'], $_SESSION['user_id'], $service['product_id'], $service['price_id'], $service['fields']);
+						}
+
+						unset($_SESSION['plugin_cart_republicofchina']);
+						pbobp_redirect('panel/');
+					}
+				}
+
+				pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=cart&message=" . urlencode($message));
+			}
+
+			$services = $_SESSION['plugin_cart_republicofchina'];
+			$is_loggedin = isset($_SESSION['user_id']);
+			$register_fields = field_list('user');
+
+			get_page("cart", "main", array('services' => $services, 'is_loggedin' => $is_loggedin, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'register_fields' => $register_fields, 'message' => $message), "/plugins/{$this->plugin_name}");
+		}
 	}
 }
 

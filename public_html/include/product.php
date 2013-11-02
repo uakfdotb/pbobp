@@ -134,7 +134,7 @@ function product_field_contexts($product_id) {
 	return $array;
 }
 
-function product_fields($product_id) {
+function product_fields($product_id, $include_prices = false) {
 	//merge fields of product with those of its groups and its service interface
 	//note that we use array_merge instead of union operator (+) since the array keys overlap
 	require_once(includePath() . 'field.php');
@@ -145,7 +145,96 @@ function product_fields($product_id) {
 		$fields = array_merge($fields, field_list($context_array['context'], $context_array['context_id']));
 	}
 
+	if($include_prices) {
+		//now go through fields and add in prices for each id
+		require_once(includePath() . 'price.php');
+		for($i = 0; $i < count($fields); $i++) {
+			$fields[$i]['prices'] = price_list('field', $fields[$i]['field_id']);
+
+			for($j = 0; $j < count($fields[$i]['options']); $j++) {
+				$fields[$i]['options'][$j]['prices'] = price_list('field_option', $fields[$i]['options'][$j]['option_id']);
+			}
+		}
+	}
+
 	return $fields;
+}
+
+function product_price_summary_helper($price_array, $currency_details, $context, $context_id, &$summary, &$total_setup, &$total_recurring) {
+	$amount = $price_array['amount'];
+	$recurring_amount = $price_array['recurring_amount'];
+
+	$total_setup += $amount;
+	$total_recurring += $recurring_amount;
+	$description = $product_details['name'];
+	$summary[] = array('context' => $context, 'context_id' => $context_id, 'amount' => $amount, 'recurring_amount' => $recurring_amount, 'description' => $description, 'amount_nice' => currency_format($amount, $currency_details['prefix'], $currency_details['suffix']), 'recurring_amount_nice' => currency_format($recurring_amount, $currency_details['prefix'], $currency_details['suffix']));
+}
+
+//returns an array (summary, total setup fee, total recurring) price summary for a given product configuration
+// summary is list of array(context, context_id, amount, recurring_amount, description)
+//or, if invalid configuration, returns false
+function product_price_summary($product_id, $duration, $currency_id, $field_values) {
+	require_once(includePath() . 'price.php');
+	require_once(includePath() . 'currency.php');
+
+	//get currency details to show nice prices
+	$currency_details = currency_get_details($currency_id);
+
+	if($currency_details === false) {
+		return false;
+	}
+
+	$summary = array();
+	$total_setup = 0.0;
+	$total_recurring = 0.0;
+
+	//confirm product exists
+	$product_details = product_get_details($product_id);
+	if($product_details === false) {
+		return false;
+	}
+
+	$price_array = price_match('product', $product_id, $duration, $currency_id);
+
+	if($price_array === false) {
+		return false;
+	} else {
+		product_price_summary_helper($price_array, $currency_details, 'product', $product_id, $summary, $total_setup, $total_recurring);
+	}
+
+	$fields = product_fields($product_id);
+
+	foreach($fields as $field) {
+		$field_id = $field['field_id'];
+
+		if($field['type_nice'] == 'checkbox' && isset($field_values[$field_id]) && $field_values[$field_id] == 1) {
+			//check for any prices on the field
+			$price_array = price_match('field', $field_id, $duration, $currency_id);
+
+			if($price_array !== false) {
+				product_price_summary_helper($price_array, $currency_details, 'field', $field_id, $summary, $total_setup, $total_recurring);
+			}
+		} else if(($field['type_nice'] == 'dropdown' || $field['type_nice'] == 'radio') && isset($field_values[$field_id])) {
+			//find the corresponding option id
+			$option_id = false;
+
+			foreach($field['options'] as $option) {
+				if($option['val'] == $field_values[$field_id]) {
+					$option_id = $option['option_id'];
+					break;
+				}
+			}
+
+			//check for prices on the option
+			$price_array = price_match('field_option', $option_id, $duration, $currency_id);
+
+			if($price_array !== false) {
+				product_price_summary_helper($price_array, $currency_details, 'field_option', $option_id, $summary, $total_setup, $total_recurring);
+			}
+		}
+	}
+
+	return array('summary' => $summary, 'total_setup' => $total_setup, 'total_recurring' => $total_recurring, 'total_setup_nice' => currency_format($total_setup, $currency_details['prefix'], $currency_details['suffix']), 'total_recurring_nice' => currency_format($total_recurring, $currency_details['prefix'], $currency_details['suffix']));
 }
 
 function product_group_get_details($group_id) {

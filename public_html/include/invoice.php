@@ -88,7 +88,8 @@ function invoice_lines($invoice_id) {
 	return $array;
 }
 
-function invoice_create($user_id, $due_date, $items, $currency_id) {
+//try_combine indicates whether or not we should try to combine the new invoice with an existing one
+function invoice_create($user_id, $due_date, $items, $currency_id, $try_combine = false) {
 	//validate user id
 	require_once(includePath() . 'user.php');
 	if(user_get_details($user_id) === false) {
@@ -107,15 +108,30 @@ function invoice_create($user_id, $due_date, $items, $currency_id) {
 		$total += $item['amount'];
 	}
 
-	if($due_date !== false) {
-		database_query("INSERT INTO pbobp_invoices (user_id, due_date, status, paid, amount, currency_id) VALUES (?, ?, ?, ?, ?, ?)", array($user_id, $due_date, 0, 0, $total, $currency_id));
-	} else {
+	if($due_date === false) {
 		//this indicates ASAP payment (useful for initial invoices)
 		//by default we give user one day to pay the invoice
-		database_query("INSERT INTO pbobp_invoices (user_id, due_date, status, paid, amount, currency_id) VALUES (?, DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY), ?, ?, ?, ?)", array($user_id, 0, 0, $total, $currency_id));
+		$result = database_query("SELECT DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)");
+		$row = $result->fetch();
+		$due_date = $row[0];
 	}
 
-	$invoice_id = database_insert_id();
+	$invoice_id = false;
+	if($try_combine) {
+		//try to find an unpaid invoice due on same date with same currency
+		$result = database_query("SELECT id FROM pbobp_invoices WHERE user_id = ? AND due_date = ? AND currency_id = ? AND status = 0", array($user_id, $due_date, $currency_id));
+
+		if($row = $result->fetch()) {
+			$invoice_id = $row[0];
+		}
+	}
+
+	if($invoice_id === false) {
+		database_query("INSERT INTO pbobp_invoices (user_id, due_date, status, paid, amount, currency_id) VALUES (?, ?, ?, ?, ?, ?)", array($user_id, $due_date, 0, 0, $total, $currency_id));
+		$invoice_id = database_insert_id();
+	} else {
+		database_query("UPDATE pbobp_invoices SET total = total + ? WHERE id = ?", array($total, $invoice_id));
+	}
 
 	foreach($items as $item) {
 		database_query("INSERT INTO pbobp_invoices_lines (invoice_id, amount, service_id, description) VALUES (?, ?, ?, ?)", array($invoice_id, $item['amount'], $item['service_id'], $item['description']));

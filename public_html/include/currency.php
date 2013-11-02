@@ -25,8 +25,19 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	die('Access denied.');
 }
 
-function currency_get_details($currency_id) {
-	$result = database_query("SELECT iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies WHERE id = ?", array($currency_id), true);
+function currency_get_details($currency_id = false) {
+	$query = "SELECT iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies WHERE ";
+	$vars = array();
+
+	if($currency_id === false) {
+		//select primary currency
+		$query .= "`primary` = 1";
+	} else {
+		$query .= "id = ?";
+		$vars[] = $currency_id;
+	}
+
+	$result = database_query($query, $vars, true);
 
 	if($row = $result->fetch()) {
 		return $row;

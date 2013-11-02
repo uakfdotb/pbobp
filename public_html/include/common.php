@@ -84,8 +84,8 @@ function webPath() {
 
 //creates a link or form target based on current URL
 //strips certain GET variables that are specified
-//returns array(link_string, input for form string)
-// both return values are sanitized
+//returns array(link_string, input for form string, unsanitized_link_string)
+// the first two return values are sanitized
 function pbobp_create_form_target($ignore_get = array()) {
 	$form_string = "";
 	$link_string = "?";
@@ -96,8 +96,8 @@ function pbobp_create_form_target($ignore_get = array()) {
 		}
 	}
 
-	$link_string = htmlspecialchars(pbobp_page_requested() . $link_string);
-	return array('link_string' => $link_string, 'form_string' => $form_string);
+	$link_string = pbobp_page_requested() . $link_string;
+	return array('link_string' => htmlspecialchars($link_string), 'form_string' => $form_string, 'unsanitized_link_string' => $link_string);
 }
 
 function uid($length) {

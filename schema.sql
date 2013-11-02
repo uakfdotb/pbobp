@@ -45,7 +45,7 @@ CREATE TABLE pbobp_products_groups_members (id INT NOT NULL PRIMARY KEY AUTO_INC
 -- parent_type is 0=product, 1=product group
 CREATE TABLE pbobp_products_addons (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, parent_id INT NOT NULL, child_id INT NOT NULL, parent_type INT NOT NULL DEFAULT 0);
 
--- status is 0=not yet active, 1=active, -1=suspended, -2=inactivated
+-- status is 0=not yet active, 1=active, -1=suspended, -2=inactivated, -3=awaiting activation
 CREATE TABLE pbobp_services (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, product_id INT NOT NULL, name VARCHAR(64) NOT NULL, creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, recurring_date TIMESTAMP NOT NULL, recurring_duration INT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, status INT NOT NULL DEFAULT 0, parent_service INT, currency_id INT);
 CREATE TABLE pbobp_services_settings (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, service_id INT NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
 
@@ -58,7 +58,7 @@ CREATE TABLE pbobp_tickets_departments (id INT NOT NULL PRIMARY KEY AUTO_INCREME
 CREATE TABLE pbobp_invoices (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, due_date TIMESTAMP NOT NULL, status INT NOT NULL DEFAULT 0, amount FLOAT NOT NULL DEFAULT 0, paid FLOAT NOT NULL DEFAULT 0, currency_id INT NOT NULL);
 CREATE TABLE pbobp_invoices_lines (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, invoice_id INT NOT NULL, amount FLOAT NOT NULL DEFAULT 0, service_id INT NOT NULL, description VARCHAR(128) NOT NULL DEFAULT '');
 
-CREATE TABLE pbobp_transactions (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, invoice_id INT NOT NULL, user_id INT NOT NULL, gateway_id INT NOT NULL, notes VARCHAR(128) NOT NULL DEFAULT '');
+CREATE TABLE pbobp_transactions (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, invoice_id INT NOT NULL, user_id INT NOT NULL, gateway VARCHAR(64) NOT NULL, notes VARCHAR(256) NOT NULL DEFAULT '', amount FLOAT NOT NULL, currency_id INT NOT NULL, time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 
 CREATE TABLE pbobp_plugins (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL);
 

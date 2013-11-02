@@ -53,7 +53,13 @@ if(isset($_SESSION['user_id'])) {
 	}
 
 	$fields = field_list_object('user', $_SESSION['user_id']);
-	$user = user_get_details($_SESSION['user_id']);
+	$users = user_list(array('user_id' => $_SESSION['user_id']));
+
+	if(empty($users)) {
+		die('Invalid user.');
+	}
+
+	$user = $users[0];
 	get_page("account", "panel", array('fields' => $fields, 'user' => $user, 'message' => $message));
 } else {
 	pbobp_redirect("../");

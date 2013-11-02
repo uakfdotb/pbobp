@@ -21,23 +21,21 @@
 
 */
 
-if(!isset($GLOBALS['IN_PBOBP'])) {
-	die('Access denied.');
+include("../include/include.php");
+
+require_once("../include/transaction.php");
+
+if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
+	$message = "";
+
+	if(isset($_REQUEST['message'])) {
+		$message = $_REQUEST['message'];
+	}
+
+	$transactions = transaction_list();
+	get_page("transactions", "admin", array('transactions' => $transactions));
+} else {
+	pbobp_redirect("../");
 }
+
 ?>
-
-<h1><?= $lang_plugin['pay'] ?></h1>
-
-<? if(isset($message)) { ?>
-<p><b><i><?= $message ?></i></b></p>
-<? } ?>
-
-<form method="post">
-<?= lang('amount') ?> <input type="text" name="amount" /><br />
-<?= lang('currency') ?> <select name="currency_id">
-	<? foreach($currencies as $currency) { ?>
-	<option value="<?= $currency['id'] ?>" <?= ($currency_selected == $currency['id']) ? "selected" : "" ?>><?= $currency['iso_code'] ?></option>
-	<? } ?>
-	</select><br />
-<input type="submit" value="<?= lang('payment_make') ?>" />
-</form>

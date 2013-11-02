@@ -26,38 +26,28 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= lang('account') ?></h1>
-
-<? if(isset($message)) { ?>
-<p><b><i><?= $message ?></i></b></p>
-<? } ?>
-
-<h3><?= lang('user_details') ?></h3>
+<h1><?= lang('transactions') ?></h1>
 
 <table>
 <tr>
+	<th><?= lang('x_id', array('x' => lang('transaction'))) ?></th>
+	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
 	<th><?= lang('email_address') ?></th>
-	<td><?= $user['email'] ?></td>
-</tr>
-<tr>
-	<th><?= lang('credit') ?></th>
-	<td><?= $user['credit_nice'] ?></td>
+	<th><?= lang('gateway') ?></th>
+	<th><?= lang('amount') ?></th>
+	<th><?= lang('iso_code') ?></th>
+	<th><?= lang('time') ?></th>
 </tr>
 
-<? foreach($fields as $field) { ?>
+<? foreach($transactions as $transaction) { ?>
 <tr>
-	<th><?= $field['name'] ?></th>
-	<td><?= $field['value'] ?></td>
+	<td><a href="transaction.php?transaction_id=<?= $transaction['transaction_id'] ?>"><?= $transaction['transaction_id'] ?></a></td>
+	<td><a href="invoice.php?invoice_id=<?= $transaction['invoice_id'] ?>"><?= $transaction['invoice_id'] ?></a></td>
+	<td><a href="user.php?user_id=<?= $transaction['user_id'] ?>"><?= $transaction['email'] ?></a></td>
+	<td><?= $transaction['gateway'] ?></td>
+	<td><?= $transaction['amount_nice'] ?></td>
+	<td><?= $transaction['iso_code'] ?></td>
+	<td><?= $transaction['time'] ?></td>
 </tr>
 <? } ?>
 </table>
-
-<h3><?= lang('change_password') ?></h3>
-
-<form method="POST">
-<input type="hidden" name="action" value="change_password" />
-<?= lang('old_password') ?> <input type="password" name="old_password" />
-<br /><?= lang('new_password') ?> <input type="password" name="new_password" />
-<br /><?= lang('confirm_password') ?> <input type="password" name="new_password_confirm" />
-<br /><input type="submit" value="<?= lang('change_password') ?>" />
-</form>

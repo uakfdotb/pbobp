@@ -26,10 +26,11 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 
 function service_get_details($service_id) {
-	$result = database_query("SELECT user_id, product_id, creation_date, recurring_date, recurring_duration, recurring_amount, status FROM pbobp_services WHERE id = ?", array($service_id));
+	$result = database_query("SELECT user_id, product_id, creation_date, recurring_date, recurring_duration, recurring_amount, status FROM pbobp_services WHERE id = ?", array($service_id), true);
 
 	if($row = $result->fetch()) {
-		return array('user_id' => $row[0], 'product_id' => $row[1], 'creation_date' => $row[2], 'recurring_date' => $row[3], 'recurring_duration' => $row[4], 'recurring_amount' => $row[5], 'status' => $row[6]);
+		$row['status_nice'] = service_status_nice($row['status']);
+		return $row;
 	} else {
 		return false;
 	}
@@ -71,14 +72,35 @@ function service_duration_map() {
 
 function service_status_nice($status) {
 	if($status == 0) {
-		return "Pending";
+		return "pending";
 	} else if($status == 1) {
-		return "Active";
+		return "active";
 	} else if($status == -1) {
-		return "Suspended";
+		return "suspended";
+	} else if($status == -3) {
+		return "activating";
 	} else {
-		return "Inactive";
+		return "inactive";
 	}
+}
+
+function service_module_event($service_id, $event) {
+	$services = service_list(array('service_id' => $service_id));
+
+	if(!empty($services)) {
+		$service = $services[0];
+
+		if(!empty($service['plugin_name'])) {
+			$interface = plugin_interface_get('service', $service['plugin_name']); //returns false on failure
+			$method = 'event_' . $event;
+
+			if($interface !== false && method_exists($interface, $method)) {
+				return $interface->$method($service);
+			}
+		}
+	}
+
+	return true;
 }
 
 function service_paid($service_id) {
@@ -90,12 +112,32 @@ function service_paid($service_id) {
 		return;
 	}
 
-	if($service_details['status'] == 0) {
+	if($service_details['status_nice'] == 'pending') {
 		//set next due date to one duration from now
 		//don't use recurring_date since it may be in the future or the past
-		database_query("UPDATE pbobp_services SET recurring_date = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL recurring_duration MONTH), status = 1 WHERE id = ?", array($service_id));
-	} else if($service_details['status'] == 1 || $service_details['status'] == -1) {
+		$newstatus = -3; //activating
+
+		if(config_get('service_activate_immediate', false, 'service', $service_id)) {
+			//notify service module if any
+			$result = service_module_event($service_id, 'activate');
+
+			if($result === true) {
+				$newstatus = 1; //activated
+			} //todo: handle failed activation
+		}
+
+		database_query("UPDATE pbobp_services SET recurring_date = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL recurring_duration MONTH), status = ? WHERE id = ?", array($newstatus, $service_id));
+	} else if($service_details['status_nice'] == 'active' || $service_details['status_nice'] == 'suspended') {
 		//increment from recurring_date, since this service already existed
+		//also unsuspend if it was suspended
+		if($service_details['status_nice'] == 'suspended') {
+			$result = service_module_event($service_id, 'unsuspend');
+
+			if($result !== true) {
+				//todo: handle failed unsuspension
+			}
+		}
+
 		database_query("UPDATE pbobp_services SET recurring_date = DATE_ADD(recurring_date, INTERVAL recurring_duration MONTH), status = 1 WHERE id = ?", array($service_id));
 	}
 }

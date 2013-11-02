@@ -71,6 +71,15 @@ function user_get_name($user_id) {
 	return user_get_details($user_id)['email'];
 }
 
+function user_list_extra(&$row) {
+	require_once(includePath() . 'currency.php');
+	if(!isset($GLOBALS['user_list_extra_currency'])) {
+		$GLOBALS['user_list_extra_currency'] = currency_get_details(); //get primary currency details
+	}
+
+	$row['credit_nice'] = currency_format($row['credit'], $GLOBALS['user_list_extra_currency']['prefix'], $GLOBALS['user_list_extra_currency']['suffix']);
+}
+
 function user_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_users.id AS user_id, pbobp_users.email, pbobp_users.credit, pbobp_users.`access`, COUNT(DISTINCT active_services.id) AS count_services_active, COUNT(DISTINCT total_services.id) AS count_services_total FROM pbobp_users LEFT JOIN pbobp_services AS active_services ON active_services.user_id = pbobp_users.id AND active_services.status = 1 LEFT JOIN pbobp_services AS total_services ON total_services.user_id = pbobp_users.id";
 	$where_vars = array('email' => 'pbobp_users.email', 'user_id' => 'pbobp_users.id', 'access' => 'pbobp_users.`access`');
@@ -78,7 +87,7 @@ function user_list($constraints = array(), $arguments = array()) {
 	$arguments['limit_type'] = 'user';
 	$arguments['table'] = 'pbobp_users';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, false, 'GROUP BY pbobp_users.id');
+	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'user_list_extra', 'GROUP BY pbobp_users.id');
 }
 
 ?>

@@ -41,7 +41,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 </tr>
 <tr>
 	<th><?= lang('credit') ?></th>
-	<td><?= $user['credit'] ?></td>
+	<td><?= $user['credit_nice'] ?></td>
 </tr>
 
 <? foreach($fields as $field) { ?>

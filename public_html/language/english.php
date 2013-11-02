@@ -59,6 +59,7 @@ $lang['balance'] = 'Total due';
 $lang['default'] = 'Default';
 $lang['options'] = 'Options';
 $lang['add'] = 'Add';
+$lang['time'] = 'Time';
 
 $lang['product'] = 'Product';
 $lang['products'] = 'Products';
@@ -140,6 +141,9 @@ $lang['ticket_opened_successfully'] = 'Ticket opened successfully.';
 $lang['ticket_closed_successfully'] = 'Ticket closed successfully.';
 $lang['error_while_opening_ticket_x'] = 'Error while opening ticket: $x$.';
 $lang['error_while_replying_ticket_x'] = 'Error while replying to ticket: $x$.';
+
+$lang['transactions'] = 'Transactions';
+$lang['transaction'] = 'Transaction';
 
 $lang['plugin'] = 'Plugin';
 $lang['plugins'] = 'Plugins';

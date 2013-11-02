@@ -45,7 +45,7 @@ class plugin_payment_debug {
 	}
 
 	function get_payment_code($invoice, $lines, $user) {
-		$url = basePath() . "/plugin.php?plugin={$this->plugin_name}&view=pay&invoice_id={$invoice['invoice_id']}";
+		$url = basePath() . "/plugin.php?plugin={$this->plugin_name}&view=pay&invoice_id={$invoice['invoice_id']}&invoice_currency_id={$invoice['currency_id']}";
 		$url = htmlspecialchars($url);
 		return "<a href=\"$url\">*Pay*</a>";
 	}
@@ -56,20 +56,37 @@ class plugin_payment_debug {
 
 	function view_pay() {
 		if(isset($_GET['invoice_id']) && isset($_SESSION['user_id'])) {
+			require_once(includePath() . 'currency.php');
 			$message = "";
 
-			if(isset($_POST['amount'])) {
+			if(isset($_REQUEST['message'])) {
+				$message = $_REQUEST['message'];
+			}
+
+			if(isset($_POST['amount']) && isset($_POST['currency_id'])) {
 				require_once(includePath() . 'invoice.php');
-				$result = invoice_payment($_GET['invoice_id'], $_POST['amount'], $_SESSION['user_id']);
+				require_once(includePath() . 'transaction.php');
+				transaction_add($_GET['invoice_id'], $_SESSION['user_id'], $this->friendly_name(), 'IP=' . $_SERVER['REMOTE_ADDR'], $_POST['amount'], $_POST['currency_id']);
+				$result = invoice_payment($_GET['invoice_id'], $_POST['amount'], $_POST['currency_id'], $_SESSION['user_id']);
 
 				if($result !== true) {
 					$message = lang($result);
 				} else {
 					$message = $this->language['payment_success_message'];
 				}
+
+				$form_target = pbobp_create_form_target(array('message'));
+				pbobp_redirect($form_target['unsanitized_link_string'] . "message=" . urlencode($message));
 			}
 
-			get_page("pay", "main", array('message' => $message, 'invoice_id' => $_GET['invoice_id'], 'lang_plugin' => $this->language), "/plugins/{$this->plugin_name}");
+			$currencies = currency_list();
+			$currency_selected = -1;
+
+			if(isset($_REQUEST['invoice_currency_id'])) {
+				$currency_selected = $_REQUEST['invoice_currency_id'];
+			}
+
+			get_page("pay", "main", array('message' => $message, 'invoice_id' => $_GET['invoice_id'], 'lang_plugin' => $this->language, 'currencies' => $currencies, 'currency_selected' => $currency_selected), "/plugins/{$this->plugin_name}");
 		}
 	}
 }

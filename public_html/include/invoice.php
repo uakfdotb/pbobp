@@ -58,7 +58,7 @@ function invoice_list_extra(&$row) {
 
 function invoice_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_invoices.id AS invoice_id, pbobp_invoices.user_id, pbobp_invoices.due_date, pbobp_invoices.status, pbobp_invoices.paid, pbobp_users.email, pbobp_invoices.amount, pbobp_invoices.`date`, pbobp_invoices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix FROM pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_invoices.currency_id";
-	$where_vars = array('user_id' => 'pbobp_invoices.user_id', 'status' => 'pbobp_invoices.status', 'due_date' => 'pbobp_invoices.due_date');
+	$where_vars = array('user_id' => 'pbobp_invoices.user_id', 'status' => 'pbobp_invoices.status', 'due_date' => 'pbobp_invoices.due_date', 'invoice_id' => 'pbobp_invoices.id');
 	$orderby_vars = array('invoice_id' => 'pbobp_invoices.id', 'status' => 'pbobp_invoices.status, pbobp_invoices.id');
 	$arguments['limit_type'] = 'invoice';
 	$arguments['table'] = 'pbobp_invoices';
@@ -184,7 +184,7 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 		if($user_id !== false) {
 			//use invoice's currency here since the parameter may be false and we already did currency validation above
 			require_once(includePath() . 'currency.php');
-			user_apply_credit($user_id, currency_convert($invoice_details['currency_id'], $extra));
+			user_apply_credit($user_id, currency_convert($extra, $invoice_details['currency_id']));
 		}
 	}
 

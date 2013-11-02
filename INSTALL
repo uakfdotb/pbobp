@@ -1,0 +1,18 @@
+Dependencies
+ * MySQL
+ * PHP
+ * mcrypt library for PHP
+ * OpenSSL linked with PHP recommended for random number generation
+
+Installation instructions
+ 1. Create a database
+        mysql -u root -p < "CREATE DATABASE pbobp; GRANT ALL ON pbobp.* TO 'pbobp'@'localhost' IDENTIFIED BY 'password';"
+ 2. Copy config.sample.php to config.php and configure the required settings.
+        cd /path/to/pbobp/public_html; cp config.sample.php config.php
+ 3. Copy the public_html directory to your web root directory.
+        cd /path/to/pbobp/public_html; cp -r * /var/www/pbobp/
+ 4. Create an initial user
+        Navigate to http://localhost/pbobp/register.php and create an account.
+        mysql -u pbobp -p < "UDPATE pbobp_users SET `access` = 1;";
+ 5. Enable desired plugins from admin panel.
+ 6. Set desired configuration from admin panel.

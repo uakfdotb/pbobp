@@ -100,6 +100,7 @@ function service_module_event($service_id, $event) {
 		}
 	}
 
+	//if no module set, assume success
 	return true;
 }
 

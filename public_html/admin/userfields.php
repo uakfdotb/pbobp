@@ -35,7 +35,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == "update") {
 			field_process_updates('user', 0, $_POST);
-			$message = "User fields updated successfully.";
+			$message = lang('success_user_fields_updated');
 		}
 
 		pbobp_redirect("userfields.php?product_id=$product_id&message=" . urlencode($message));

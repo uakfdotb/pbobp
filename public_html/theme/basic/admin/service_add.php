@@ -29,7 +29,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <h1><?= lang('service_add') ?></h1>
 
 <? if(!empty($message)) { ?>
-<p><b><i><?= lang($message) ?></i></b></p>
+<p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
 <form method="POST" action="service_add.php?product_id=<?= urlencode($product_id) ?>&user_id=<?= urlencode($user_id) ?>">

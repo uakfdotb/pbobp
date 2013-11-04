@@ -29,7 +29,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <h1><?= lang('pbobp') ?></h1>
 
 <? if(!empty($message)) { ?>
-<p><b><i><?= lang($message) ?></i></b></p>
+<p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
 <p><?= lang('main_welcome') ?></p>

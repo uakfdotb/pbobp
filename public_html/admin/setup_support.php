@@ -35,10 +35,10 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == 'department_add' && isset($_POST['name'])) {
 			ticket_department_add($_POST['name']);
-			$message = "Department added successfully.";
+			$message = lang('success_department_added');
 		} else if($_POST['action'] == 'department_delete' && isset($_POST['department_id'])) {
 			ticket_department_delete($_POST['department_id']);
-			$message = "Department deleted successfully.";
+			$message = lang('success_department_deleted');
 		}
 
 		pbobp_redirect("setup_support.php?message=" . urlencode($message));

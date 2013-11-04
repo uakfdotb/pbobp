@@ -32,10 +32,10 @@ if(isset($_SESSION['user_id'])) {
 	$result = auth_register($_POST['email'], $_POST['password'], field_extract());
 
 	if($result === true) {
-		$message = 'Your account has been registered successfully.';
+		$message = lang('success_registration');
 		pbobp_redirect('login.php?message=' . urlencode($message));
 	} else {
-		$message = "Error: $result.";
+		$message = lang('error_registration_x', array('x' => lang($result)));
 		pbobp_redirect("register.php?message=" . urlencode($message));
 	}
 } else {

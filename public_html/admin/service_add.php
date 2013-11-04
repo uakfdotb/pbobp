@@ -70,7 +70,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 					if(!empty($_POST['override_amount']) && !empty($_POST['override_recurring_amount']) && !empty($_POST['override_duration'])) {
 						$price_id = array('amount' => $_POST['override_amount'], 'recurring_amount' => $_POST['override_recurring_amount'], 'duration' => $_POST['override_duration'], 'currency_id' => $_POST['override_currency_id']);
 					} else {
-						$message = "invalid_price";
+						$message = lang('error_invalid_price');
 						$fail = true;
 					}
 				}
@@ -79,7 +79,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 					$result = service_create($_POST['name'], $user_id, $product_id, $price_id, field_extract());
 
 					if($result === true) {
-						$message = "Service created successfully.";
+						$message = lang('success_service_created');
 						pbobp_redirect("service.php?service_id=$service_id&message=" . urlencode($message));
 					} else {
 						$message = $result;

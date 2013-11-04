@@ -69,13 +69,13 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			field_process_updates('product', $product_id, $_POST);
 
 			if($result) {
-				$message = "Product updated successfully.";
+				$message = lang('success_product_updated');
 			} else {
-				$message = "Specified product does not exist!";
+				$message = lang('error_product_not_found');
 			}
 		} else if($_POST['action'] == 'delete' && isset($_POST['product_id'])) {
 			product_delete($_POST['product_id']);
-			$message = "Product deleted successfully.";
+			$message = lang('success_product_deleted');
 		}
 
 		pbobp_redirect("product.php?product_id=$product_id&message=" . urlencode($message));

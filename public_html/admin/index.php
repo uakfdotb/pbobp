@@ -33,7 +33,7 @@ if(isset($_SESSION['user_id']) && user_access($_SESSION['user_id']) >= 1) {
 		if(auth_check($_SESSION['user_id'], $_POST['password'])) {
 			$_SESSION['admin'] = true;
 		} else {
-			$message = "Login failed. Verify that you have entered the correct password or try again later.";
+			$message = lang('error_admin_login_failed');
 		}
 	}
 

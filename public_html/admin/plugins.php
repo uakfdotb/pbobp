@@ -35,13 +35,13 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$result = plugin_add($_POST['name']);
 
 			if($result) {
-				$message = "Plugin added successfully.";
+				$message = lang('success_plugin_added');
 			} else {
-				$message = "Could not find the plugin in plugins directory.";
+				$message = lang('error_plugin_not_found');
 			}
 		} else if($_POST['action'] == 'delete' && isset($_POST['name'])) {
 			plugin_delete($_POST['name']);
-			$message = "Plugin deleted successfully.";
+			$message = lang('success_plugin_deleted');
 		}
 
 		pbobp_redirect('plugins.php?message=' . urlencode($message));

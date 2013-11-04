@@ -25,12 +25,12 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	die('Access denied.');
 }
 
-//returns true on success, -1 on failure, or -2 if try again later
+//returns true on success, error message on failure
 function auth_login($email, $password) {
 	require_once(includePath() . 'lock.php');
 
 	if(!checkLock('login')) {
-		return -2;
+		return 'too_many_login_attempts';
 	}
 
 	//get actual password, if any
@@ -44,11 +44,11 @@ function auth_login($email, $password) {
 			return true;
 		} else {
 			lockAction('login');
-			return -1;
+			return 'invalid_email_or_password';
 		}
 	} else { //account doesn't exist
 		lockAction('login');
-		return -1;
+		return 'invalid_email_or_password';
 	}
 }
 
@@ -57,7 +57,7 @@ function auth_check($user_id, $password) {
 	require_once(includePath() . 'lock.php');
 
 	if(!checkLock('login')) {
-		return -2;
+		return false;
 	}
 
 	//get actual password, if any
@@ -84,7 +84,7 @@ function auth_register($email, $password, $fields) {
 	require_once(includePath() . 'lock.php');
 
 	if(!checkLock('register')) {
-		return "try_later";
+		return "try_again_later";
 	}
 
 	//validate email address

@@ -46,7 +46,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			}
 
 			if($result !== true) {
-				$message = "Error while replying to ticket: $message.";
+				$message = lang('error_while_replying_ticket_x', array('x' => $result));
 			} else { //change status whether or not reply was composed
 				//set the ticket status to given status
 				if(isset($_POST['status'])) {
@@ -57,10 +57,10 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			$result = ticket_open($_SESSION['user_id'], $_POST['department_id'], $_POST['service_id'], $_POST['subject'], $_POST['content']);
 
 			if(!is_numeric($result)) {
-				$message = "Error while opening new ticket: $result.";
+				$message = lang('error_while_opening_ticket_x', array('x' => lang($result)));
 			} else {
 				$ticket_id = $result;
-				$message = "ticket_opened_successfully";
+				$message = lang('success_ticket_opened');
 			}
 		}
 

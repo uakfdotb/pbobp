@@ -60,11 +60,11 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['ticket_id'])) {
 				pbobp_redirect('index.php?message=' . urlencode($message));
 			} else {
 				$ticket_id = $result;
-				$message = "ticket_opened_successfully";
+				$message = lang('success_ticket_opened');
 			}
 		} else if($_POST['action'] == 'close' && $ticket_id != 'new') {
 			ticket_change_status($ticket_id, 1);
-			$message = "ticket_closed_successfully";
+			$message = lang('success_ticket_closed');
 		}
 
 		pbobp_redirect('ticket.php?message=' . urlencode($message) . "&ticket_id=" . urlencode($ticket_id));

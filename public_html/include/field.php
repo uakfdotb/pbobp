@@ -65,7 +65,7 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 
 		if(!isset($fields[$row['id']])) {
 			if($row['required'] != 0) {
-				return "unset_field_" . $row['id'];
+				return array('unset_field', array('name' => $row['name']));
 			} else {
 				if($type == "dropdown" || $type == "radio") {
 					$new_fields[$row['id']] = $row['default'];
@@ -79,7 +79,7 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 			}
 		} else {
 			if(strlen($fields[$row['id']]) > $const['user_field_maxlen']) {
-				return "long_field_" . $row['id'];
+				return array("long_field", array('name' => $row['name']));
 			}
 
 			if($type == "checkbox") {
@@ -96,7 +96,7 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 			} else {
 				//check required
 				if($row['required'] != 0 && strlen($fields[$row['id']]) == 0) {
-					return "empty_field_" . $row['id'];
+					return array("empty_field", array('name' => $row['name']));
 				}
 
 				$new_fields[$row['id']] = $fields[$row['id']];

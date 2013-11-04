@@ -28,6 +28,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= lang('admin_area') ?></h1>
 
+<? if(!empty($message)) { ?>
+<p><b><i><?= $message ?></i></b></p>
+<? } ?>
+
 <p><?= lang('admin_area_login') ?></p>
 
 <form method="POST">

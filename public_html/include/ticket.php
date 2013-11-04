@@ -76,7 +76,7 @@ function ticket_open($user_identifier, $department_id, $service_id, $subject, $c
 	$ticket_content_maxlen = config_get('ticket_content_maxlen', 20000);
 
 	if(strlen($subject) > $const['ticket_subject_maxlen'] || ($ticket_content_maxlen > 0 && strlen($content) > $ticket_content_maxlen)) {
-		return 'too_long';
+		return 'subject_too_long';
 	}
 
 	//open a new ticket
@@ -102,7 +102,7 @@ function ticket_reply($user_id, $ticket_id, $content) {
 	$ticket_content_maxlen = config_get('ticket_content_maxlen', 20000);
 
 	if($ticket_content_maxlen > 0 && strlen($content) > $ticket_content_maxlen) {
-		return 'too_long';
+		return 'long_content';
 	}
 
 	//verify ticket exists

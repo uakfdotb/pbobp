@@ -72,6 +72,13 @@ $lang['group'] = 'Group';
 $lang['groups'] = 'Groups';
 $lang['product_manager_fields_description'] = 'For field options (applicable to drop-down and radio types only), use new line for each option.';
 $lang['product_manager_groups_description'] = 'Add and remove groups that this product is a member of below. The product will inherit configuration fields from each group.';
+$lang['success_product_updated'] = 'Product updated successfully.';
+$lang['error_product_not_found'] = 'Specified product does not exist!';
+$lang['success_product_deleted'] = 'Product deleted successfully.';
+$lang['success_product_created'] = 'Product created successfully.';
+$lang['success_product_group_created'] = 'Product group created successfully.';
+$lang['success_product_group_updated'] = 'Product group updated successfully.';
+$lang['success_product_group_deleted'] = 'Product group deleted successfully.';
 
 $lang['user'] = 'User';
 $lang['users'] = 'Users';
@@ -86,6 +93,8 @@ $lang['service_add_new'] = 'Add a new service';
 $lang['service_add'] = 'Add service';
 $lang['service_details'] = 'Service details';
 $lang['select_service_interface'] = 'Select a service interface';
+$lang['error_invalid_price'] = 'Error: invalid pricing scheme specified.';
+$lang['success_service_created'] = 'Service created successfully.';
 
 $lang['invoices'] = 'Invoices';
 $lang['invoice'] = 'Invoice';
@@ -111,6 +120,9 @@ $lang['suffix'] = 'Suffix';
 $lang['rate'] = 'Rate';
 $lang['primary'] = 'Primary';
 $lang['update'] = 'Update';
+$lang['success_currency_updated'] = 'Currency updated successfully.';
+$lang['success_currency_created'] = 'Currency created successfully.';
+$lang['success_currency_deleted'] = 'Currency deleted successfully.';
 
 $lang['account'] = 'Account';
 $lang['change_password'] = 'Change password';
@@ -137,10 +149,18 @@ $lang['ticket_status_replied'] = 'Replied';
 $lang['ticket_status_open'] = 'Open';
 $lang['ticket_status_closed'] = 'Closed';
 $lang['ticket_status_in progress'] = 'In progress';
-$lang['ticket_opened_successfully'] = 'Ticket opened successfully.';
-$lang['ticket_closed_successfully'] = 'Ticket closed successfully.';
+$lang['success_ticket_opened'] = 'Ticket opened successfully.';
+$lang['success_ticket_closed'] = 'Ticket closed successfully.';
 $lang['error_while_opening_ticket_x'] = 'Error while opening ticket: $x$.';
+$lang['invalid_user'] = 'Invalid user';
+$lang['invalid_department'] = 'Invalid department';
+$lang['invalid_service'] = 'Invalid service';
+$lang['invalid_ticket'] = 'Invalid ticket';
+$lang['long_subject'] = 'Subject is too long';
+$lang['long_content'] = 'Content is too long';
 $lang['error_while_replying_ticket_x'] = 'Error while replying to ticket: $x$.';
+$lang['success_department_added'] = 'Department added successfully.';
+$lang['success_department_deleted'] = 'Department deleted successfully.';
 
 $lang['transactions'] = 'Transactions';
 $lang['transaction'] = 'Transaction';
@@ -152,18 +172,36 @@ $lang['plugin_add'] = 'Add plugin';
 $lang['plugin_add_manual'] = 'Add plugin manually';
 $lang['plugins_manager_description'] = 'Welcome to the plugins manager. You can delete plugins, and also add plugins found from your plugins directory. If desired, you can also enter a plugin name and add the plugin manually.';
 $lang['plugins_found'] = 'Found plugins';
+$lang['success_plugin_added'] = 'Plugin added successfully.';
+$lang['error_plugin_not_found'] = 'Could not find the plugin in plugins directory.';
+$lang['success_plugin_deleted'] = 'Plugin deleted successfully.';
 
 $lang['field'] = 'Field';
 $lang['fields'] = 'Fields';
 $lang['user_fields'] = 'User fields';
 $lang['fields_update'] = 'Update fields';
+$lang['success_user_fields_updated'] = 'User fields updated successfully.';
+$lang['unset_field'] = '$name$ is required';
+$lang['empty_field'] = '$name$ is required';
+$lang['long_field'] = 'Your entry for $name$ is too long';
 
 $lang['admin_area'] = 'Admin area';
 $lang['admin_area_welcome'] = 'Welcome to the admin area.';
 $lang['admin_area_login'] = $lang['admin_area_welcome'] . ' To continue, please re-enter your password.';
+$lang['error_admin_login_failde'] = 'Login failed. Verify that you have entered the correct password or try again later.';
 
 $lang['main_welcome'] = 'Welcome to our billing panel. Use the tabs above to login or view our cart.';
 
+$lang['error_login_failed_x'] = 'Login failed: $x$.';
+$lang['error_registration_x'] = 'Registration error: $x$';
+$lang['too_many_login_attempts'] = 'Too many failed login attempts. Please wait a few seconds before trying again';
+$lang['invalid_email_or_password'] = 'Invalid email address or password';
+$lang['try_again_later'] = 'Try again later';
+$lang['invalid_email'] = 'Invalid e-mail address';
+$lang['used_email'] = 'The specified e-mail address is already in use';
+$lang['short_password'] = 'The provided password is too short';
+$lang['long_password'] = 'The provided password is too long';
+$lang['success_registration'] = 'Your account has been registered successfully.';
 $lang['panel_area'] = 'Home';
 $lang['panel_area_welcome'] = 'Hi, $name$. Welcome to the client home; this is a dashboard for your services, tickets, and invoices.';
 

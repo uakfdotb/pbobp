@@ -38,12 +38,9 @@ if(isset($_SESSION['user_id'])) {
 		} else {
 			pbobp_redirect("panel/");
 		}
-	} else if($result === -2) {
-		pbobp_redirect("login.php?message=" . urlencode("Login failed: too many failed login attempts. Please wait a few seconds before trying again."));
-	} else if($result === -1) {
-		pbobp_redirect("login.php?message=" . urlencode("Login failed: invalid email address or password."));
 	} else {
-		pbobp_redirect("login.php?message=" . urlencode("Unknown error occurred."));
+		$message = lang('error_login_failed_x', array('x' => lang($result)));
+		pbobp_redirect("login.php?message=" . urlencode($message));
 	}
 } else {
 	$message = "";

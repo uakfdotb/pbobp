@@ -40,7 +40,7 @@ if(isset($_SESSION['user_id'])) {
 				$result = auth_change_password($_SESSION['user_id'], $_POST['old_password'], $_POST['new_password']);
 
 				if($result === true) {
-					$message = lang('password_change_success');
+					$message = lang('success_password_change');
 				} else {
 					$message = $result;
 				}

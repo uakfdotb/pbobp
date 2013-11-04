@@ -129,7 +129,7 @@ $lang['change_password'] = 'Change password';
 $lang['new_password'] = 'New password';
 $lang['confirm_password'] = 'Confirm password';
 $lang['old_password'] = 'Old password';
-$lang['password_change_success'] = 'Your password was changed successfully.';
+$lang['success_password_change'] = 'Your password was changed successfully.';
 $lang['error_passwords_no_match'] = 'Error: your passwords do not match!';
 
 $lang['tickets'] = 'Tickets';

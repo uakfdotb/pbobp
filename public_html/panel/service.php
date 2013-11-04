@@ -91,9 +91,9 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 		if(method_exists($interface, 'get_view')) {
 			if(isset($_REQUEST['view'])) {
 				$view = $_REQUEST['view'];
-				$view_code = $interface->get_view($view);
+				$view_code = $interface->get_view($service, $view);
 			} else {
-				$view_code = $interface->get_view();
+				$view_code = $interface->get_view($service);
 			}
 		}
 	}

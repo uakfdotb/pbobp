@@ -90,7 +90,7 @@ class plugin_service_example {
 	}
 
 	//get the HTML code for the view
-	function get_view() {
+	function get_view($service) {
 		//in this case the view is a single button so it would be reasonable to return it directly as a string
 		//but for an example we include it in a separate view file
 		return get_page("button", "main", array('lang_plugin' => $this->language), "/plugins/{$this->plugin_name}", true, true);

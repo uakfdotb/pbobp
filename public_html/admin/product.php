@@ -91,7 +91,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 
 	$product = product_list(array('product_id' => $product_id))[0];
 	$prices = price_list('product', $product_id);
-	$fields = product_fields($product_id);
+	$fields = field_list('product', $product_id); //don't use product field list here since it includes group and such
 	$currencies = currency_list();
 	$membership = product_membership($product_id); //groups that the product is currently in
 	$groups = product_group_list();

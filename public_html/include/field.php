@@ -214,6 +214,20 @@ function field_add($context, $context_id, $name, $default, $description, $type, 
 	}
 }
 
+//returns list of field ID's deleted
+function field_context_remove($context, $context_id) {
+	//find all field ID's, then delete corresponding options, values
+	$result = database_query("SELECT * FROM pbobp_fields WHERE context = ? AND context_id = ?", array());
+	$array = array();
+
+	while($row = $result->fetch()) {
+		field_delete($row[0]);
+		$array[] = $row[0];
+	}
+
+	return $array;
+}
+
 function field_delete($field_id) {
 	database_query("DELETE FROM pbobp_fields WHERE id = ?", array($field_id));
 	database_query("DELETE FROM pbobp_fields_options WHERE field_id = ?", array($field_id));
@@ -229,10 +243,10 @@ function field_list_object($context, $object_id) {
 		$options = array();
 
 		if($type == "dropdown" || $type == "radio") {
-			$options_result = database_query("SELECT val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']));
+			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']), true);
 
 			while($options_row = $options_result->fetch()) {
-				$options[] = $options_row[0];
+				$options[] = $options_row;
 			}
 		}
 
@@ -240,6 +254,10 @@ function field_list_object($context, $object_id) {
 	}
 
 	return $array;
+}
+
+function field_object_remove($context, $object_id, $context_id = 0) {
+	database_query("DELETE FROM pbobp_fields_values WHERE object_id = ? AND context = ? AND context_id = ?", array($object_id, $context, $context_id));
 }
 
 function field_process_updates($context, $context_id, $reqvars) {

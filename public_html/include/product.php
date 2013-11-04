@@ -112,6 +112,25 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 
 function product_delete($product_id) {
 	database_query("DELETE FROM pbobp_products WHERE id = ?", array($product_id));
+	database_query("DELETE FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
+	require_once(includePath() . 'price.php');
+	price_set('product', $product_id);
+
+	product_field_context_remove('product', $product_id);
+}
+
+//removes fields associated with a given context
+//in addition to calling field_context_remove, removes any associated prices
+function product_field_context_remove($context, $context_id) {
+	require_once(includePath() . 'field.php');
+	$removed_fields = field_context_remove($context, $context_id);
+
+	foreach($removed_fields as $field_id) {
+		price_set('field', $field_id);
+	}
+
+	//also remove options who don't have a home
+	database_query("DELETE FROM pbobp_prices WHERE context = 'field_option' AND (SELECT COUNT(*) FROM pbobp_fields_options WHERE pbobp_fields_options.id = pbobp_prices.context_id) = 0");
 }
 
 //returns list of (context, context_id)
@@ -260,6 +279,11 @@ function product_group_create($name, $description, $hidden, $group_id = false) {
 
 function product_group_delete($group_id) {
 	database_query("DELETE FROM pbobp_products_groups WHERE id = ?", array($group_id));
+	database_query("DELETE FROM pbobp_products_groups_members WHERE group_id = ?", array($group_id));
+	require_once(includePath() . 'price.php');
+	price_set('group', $group_id);
+
+	product_field_context_remove('group', $group_id);
 }
 
 function product_group_list($constraints = array(), $arguments = array()) {

@@ -144,6 +144,7 @@ $lang['error_while_replying_ticket_x'] = 'Error while replying to ticket: $x$.';
 
 $lang['transactions'] = 'Transactions';
 $lang['transaction'] = 'Transaction';
+$lang['notes'] = 'Notes';
 
 $lang['plugin'] = 'Plugin';
 $lang['plugins'] = 'Plugins';

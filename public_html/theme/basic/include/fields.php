@@ -57,8 +57,8 @@ foreach($include_fields as $field) {
 		<? } ?>
 	<? } else if($field['type_nice'] == 'dropdown') { ?>
 		<?= $field['name'] ?> <select name="field_<?= $field['field_id'] ?>">
-		<? foreach($field['options'] as $option_id => $option_val) { ?>
-			<option value="<?= $option_id ?>" <?= $include_selections[$field['field_id']] == $option_val ? 'selected' : '' ?>/><?= $option_val ?></option>
+		<? foreach($field['options'] as $option_array) { ?>
+			<option value="<?= $option_array['val'] ?>" <?= ($include_selections[$field['field_id']] == $option_array['val']) ? 'selected' : '' ?>><?= $option_array['val'] ?></option>
 		<? } ?>
 		</select> <?= $field['description'] ?>
 	<? } ?>

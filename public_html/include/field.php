@@ -176,10 +176,10 @@ function field_list($context, $context_id = 0) {
 		$options = array();
 
 		if($type == "dropdown" || $type == "radio") {
-			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']));
+			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']), true);
 
 			while($options_row = $options_result->fetch()) {
-				$options[] = $options_row[0];
+				$options[] = $options_row;
 			}
 		}
 

@@ -33,10 +33,6 @@ class plugin_settings_check {
 		$this->plugin_name = 'settings_check';
 		plugin_register_view($this->plugin_name, 'config_check', 'view_config_check', $this);
 
-		$language_name = language_name();
-		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
-		$this->language = $lang;
-
 		$this->security_check();
 	}
 

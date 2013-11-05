@@ -235,4 +235,11 @@ $lang['success_registration'] = 'Your account has been registered successfully.'
 $lang['panel_area'] = 'Home';
 $lang['panel_area_welcome'] = 'Hi, $name$. Welcome to the client home; this is a dashboard for your services, tickets, and invoices.';
 
+$lang['email_service_activation_failed_subject'] = 'Service activation failure (#$service_id$)';
+$lang['email_service_activation_failed_body'] = 'Service activation of Service #$service_id$ failed: $message$';
+$lang['email_service_inactivation_failed_subject'] = 'Service inactivation failure (#$service_id$)';
+$lang['email_service_inactivation_failed_body'] = 'Service inactivation of Service #$service_id$ failed: $message$';
+$lang['email_service_unsuspension_failed_subject'] = 'Service unsuspension failure (#$service_id$)';
+$lang['email_service_unsuspension_failed_body'] = 'Service unsuspension of Service #$service_id$ failed: $message$';
+
 ?>

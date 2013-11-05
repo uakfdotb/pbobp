@@ -90,4 +90,13 @@ function user_list($constraints = array(), $arguments = array()) {
 	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'user_list_extra', 'GROUP BY pbobp_users.id');
 }
 
+//emails everyone with access > 0
+function user_email_admins($subject, $body) {
+	$list = user_list(array('access' => array('>', 0)));
+
+	foreach($list as $user) {
+		pbobp_mail($subject, $body, $user['email']);
+	}
+}
+
 ?>

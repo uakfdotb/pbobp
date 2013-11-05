@@ -130,7 +130,12 @@ function service_paid($service_id) {
 
 			if($result === true) {
 				$newstatus = 1; //activated
-			} //todo: handle failed activation
+			} else {
+				$subject = lang('email_service_activation_failed_subject', array('serivice_id' => $service_id));
+				$body = lang('email_service_activation_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+				require_once(includePath() . 'user.php');
+				user_email_admins($subject, $body);
+			}
 		}
 
 		database_query("UPDATE pbobp_services SET recurring_date = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL recurring_duration MONTH), status = ? WHERE id = ?", array($newstatus, $service_id));
@@ -141,7 +146,10 @@ function service_paid($service_id) {
 			$result = service_module_event($service_id, 'unsuspend');
 
 			if($result !== true) {
-				//todo: handle failed unsuspension
+				$subject = lang('email_service_unsuspension_failed_subject', array('serivice_id' => $service_id));
+				$body = lang('email_service_unsuspension_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+				require_once(includePath() . 'user.php');
+				user_email_admins($subject, $body);
 			}
 		}
 
@@ -155,7 +163,7 @@ function service_inactivate($service_id) {
 	$service_details = service_get_details($service_id);
 
 	if($service_details === false) {
-		return;
+		return lang('invalid_service');
 	}
 
 	//cancel any associated invoices
@@ -169,11 +177,16 @@ function service_inactivate($service_id) {
 	$result = service_module_event($service_id, 'inactivate');
 
 	if($result !== true) {
-		//todo: handle failed termination
+		//for failed termination, we'll mark it as terminated but send an email notification to admins
+		$subject = lang('email_service_inactivation_failed_subject', array('serivice_id' => $service_id));
+		$body = lang('email_service_inactivation_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+		require_once(includePath() . 'user.php');
+		user_email_admins($subject, $body);
 	}
 
 	//update the service
 	database_query("UPDATE pbobp_services SET status = -2 WHERE id = ?", array($service_id));
+	return $result;
 }
 
 function service_list_extra(&$row) {

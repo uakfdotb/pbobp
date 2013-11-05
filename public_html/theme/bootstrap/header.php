@@ -51,12 +51,12 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $navbar_name ?> <b class="caret"></b></a>
 							<ul class="dropdown-menu">
 							<? foreach($navbar_target as $navbar_name => $navbar_target) { ?>
-								<li><a href="<?= $navbar_target ?>"><?= $navbar_name ?></a></li>
+								<li><a href="<?= $contextPath . $navbar_target ?>"><?= $navbar_name ?></a></li>
 							<? } ?>
 							</ul>
 							</li>
 						<? } else { ?>
-							<li><a href="<?= $navbar_target ?>"><?= $navbar_name ?></a></li>
+							<li><a href="<?= $contextPath . $navbar_target ?>"><?= $navbar_name ?></a></li>
 						<? } ?>
 					<? } ?>
 				</ul>

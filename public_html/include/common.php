@@ -61,6 +61,15 @@ function basePath() {
 	return $basePath;
 }
 
+//returns a relative path to the given subdirectory, with trailing slash
+function contextPath($context) {
+	if(basename(dirname($_SERVER['SCRIPT_FILENAME'])) == $context) {
+		return "";
+	} else {
+		return basePath() . '/' . $context . '/';
+	}
+}
+
 //returns a URL to the web root directory, without trailing slash
 function webPath() {
 	//duplicate code with basePath to get the number of directories we have to go up
@@ -175,6 +184,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 	extract(pbobp_html_sanitize($args));
 
 	$basePath = basePath();
+	$contextPath = contextPath($context);
 	$theme_name = config_get('theme_name', 'basic');
 	$themePath = $basePath . "/theme/$theme_name";
 

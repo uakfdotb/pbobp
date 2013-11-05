@@ -38,12 +38,12 @@ foreach($navbar as $navbar_name => $navbar_target) {
 	if(is_array($navbar_target)) {
 		foreach($navbar_target as $navbar_name => $navbar_target) {
 			?>
-			<a href="<?= $navbar_target ?>"><?= $navbar_name ?></a>
+			<a href="<?= $contextPath . $navbar_target ?>"><?= $navbar_name ?></a>
 			<?
 		}
 	} else {
 		?>
-		<a href="<?= $navbar_target ?>"><?= $navbar_name ?></a>
+		<a href="<?= $contextPath . $navbar_target ?>"><?= $navbar_name ?></a>
 		<?
 	}
 

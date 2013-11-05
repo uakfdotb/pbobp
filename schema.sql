@@ -21,7 +21,7 @@
 -- object_type is blank if this is a global configuration
 -- it is not blank for things like user-specific or product-specific settings
 -- also not blank for plugin settings
-CREATE TABLE pbobp_configuration (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, k VARCHAR(16) NOT NULL, v VARCHAR(128) NOT NULL, object_id INT NOT NULL, object_type VARCHAR(32) NOT NULL DEFAULT '');
+CREATE TABLE pbobp_configuration (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, k VARCHAR(16) NOT NULL, v VARCHAR(128) NOT NULL, object_id INT NOT NULL, object_type VARCHAR(32) NOT NULL DEFAULT '', description VARCHAR(512) NOT NULL DEFAULT '');
 
 CREATE TABLE pbobp_users (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, email VARCHAR(128) NOT NULL DEFAULT '' UNIQUE, password VARCHAR(128) NOT NULL DEFAULT '', credit FLOAT NOT NULL DEFAULT 0, `access` INT NOT NULL DEFAULT 0);
 

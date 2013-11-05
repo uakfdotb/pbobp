@@ -144,7 +144,6 @@ function pbobp_html_sanitize($x, $root = true) {
 function get_page($page, $context, $args = array(), $override_path = false, $noheader = false, $return_data = false) {
 	//let pages use some variables
 	$config = $GLOBALS['config'];
-	$lang = $GLOBALS['lang'];
 
 	//figure out what tabs to display in navbar
 	if($context == "main" || $context == "panel") {

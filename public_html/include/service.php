@@ -344,4 +344,67 @@ function service_update_fields($service_id, $fields) {
 	}
 }
 
+//mark as suspended and call suspend function
+function service_suspend($service_id) {
+	//verify that this service exists
+	$service_details = service_get_details($service_id);
+
+	if($service_details === false) {
+		return;
+	}
+
+	//notify service module if any
+	$result = service_module_event($service_id, 'suspend');
+
+	if($result !== true) {
+		return $result;
+	}
+
+	//update the service
+	database_query("UPDATE pbobp_services SET status = -1 WHERE id = ?", array($service_id));
+	return true;
+}
+
+//mark as active and call unsuspend function
+function service_unsuspend($service_id) {
+	//verify that this service exists
+	$service_details = service_get_details($service_id);
+
+	if($service_details === false) {
+		return;
+	}
+
+	//notify service module if any
+	$result = service_module_event($service_id, 'unsuspend');
+
+	if($result !== true) {
+		return $result;
+	}
+
+	//update the service
+	database_query("UPDATE pbobp_services SET status = 1 WHERE id = ?", array($service_id));
+	return true;
+}
+
+//mark as active and call activate function
+function service_activate($service_id) {
+	//verify that this service exists
+	$service_details = service_get_details($service_id);
+
+	if($service_details === false) {
+		return;
+	}
+
+	//notify service module if any
+	$result = service_module_event($service_id, 'activate');
+
+	if($result !== true) {
+		return $result;
+	}
+
+	//update the service
+	database_query("UPDATE pbobp_services SET status = 1 WHERE id = ?", array($service_id));
+	return true;
+}
+
 ?>

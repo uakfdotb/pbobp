@@ -91,4 +91,17 @@ function config_set($key, $val, $object_type = '', $object_id = 0) {
 	}
 }
 
+//lists configuration keys, values, description
+//this only includes settings stored in the database!
+function config_list($object_type, $object_id) {
+	$result = database_query("SELECT id, k, v, description FROM pbobp_configuration WHERE object_type = ? AND object_id = ?", array($object_type, $object_id));
+	$array = array();
+
+	while($row = $result->fetch()) {
+		$array[] = $row;
+	}
+
+	return $array;
+}
+
 ?>

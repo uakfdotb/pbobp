@@ -35,7 +35,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <form method="POST">
 <input type="hidden" name="action" value="update" />
 
-<h3><?= $lang['service_details'] ?></h3>
+<h3><?= lang('service_details') ?></h3>
 
 Service name: <input type="text" name="name" value="<?= $service['name'] ?>" /><br />
 Status: <select name="status">
@@ -45,7 +45,17 @@ Status: <select name="status">
 	</select><br />
 <? $include_fields = $fields; include("$themePath/include/fields.php"); ?>
 
-<h3><?= $lang['pricing'] ?></h3>
+<h3><?= lang('actions') ?></h3>
+
+<button type="submit" name="event" value="activate"><?= lang('activate') ?></button><br />
+<button type="submit" name="event" value="inactivate"><?= lang('inactivate') ?></button><br />
+<button type="submit" name="event" value="suspend"><?= lang('suspend') ?></button><br />
+<button type="submit" name="event" value="unsuspend"><?= lang('unsuspend') ?></button><br />
+<? foreach($module_actions as $action_id => $action_array) { ?>
+<button type="submit" name="action_interface" value="<?= $action_id ?>"><?= $action_array['name'] ?></button>
+<? } ?>
+
+<h3><?= lang('pricing') ?></h3>
 
 Recurring price: <input type="text" name="price_recurring" value="<?= $service['recurring_amount'] ?>" /><br />
 Recurring duration: <? $select_duration_name = "price_duration"; $select_duration_current = $service['recurring_duration']; include("$themePath/include/select_duration.php"); ?><br />

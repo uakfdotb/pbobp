@@ -26,6 +26,6 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= $lang['admin_area'] ?></h1>
+<h1><?= lang('admin_area') ?></h1>
 
-<p><?= $lang['admin_area_welcome'] ?></p>
+<p><?= lang('admin_area_welcome') ?></p>

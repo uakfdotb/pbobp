@@ -42,7 +42,41 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	//execute requested actions
 	//service module related actions are actually processed later, after we grab the interface object
 	if(isset($_POST['action'])) {
-		if($_POST['action'] == 'update') {
+		if(isset($_POST['event'])) {
+			if($_POST['event'] == 'suspend') {
+				$result = service_suspend($service_id);
+
+				if($result === true) {
+					$message = lang('success_service_suspend');
+				} else {
+					$message = lang('error_x', array('x' => $result));
+				}
+			} else if($_POST['event'] == 'unsuspend') {
+				$result = service_unsuspend($service_id);
+
+				if($result === true) {
+					$message = lang('success_service_unsuspend');
+				} else {
+					$message = lang('error_x', array('x' => $result));
+				}
+			} else if($_POST['event'] == 'activate') {
+				$result = service_activate($service_id);
+
+				if($result === true) {
+					$message = lang('success_service_activate');
+				} else {
+					$message = lang('error_x', array('x' => $result));
+				}
+			} else if($_POST['event'] == 'inactivate') {
+				$result = service_inactivate($service_id);
+
+				if($result === true) {
+					$message = lang('success_service_inactivate');
+				} else {
+					$message = lang('error_x', array('x' => $result));
+				}
+			}
+		} else if($_POST['action'] == 'update' && !isset($_POST['action_interface'])) {
 			//update various possible things we might want to update
 			service_update_fields($service_id, field_extract()); //note that fields must be set or all checkboxes will be unchecked
 
@@ -95,7 +129,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 						if($result === true) {
 							$message = lang('success_action_performed', array('name' => $action_function_string));
 						} else {
-							$message = $result;
+							$message = lang('error_x', array('x' => $result));
 						}
 					}
 

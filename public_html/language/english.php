@@ -60,6 +60,7 @@ $lang['default'] = 'Default';
 $lang['options'] = 'Options';
 $lang['add'] = 'Add';
 $lang['time'] = 'Time';
+$lang['error_x'] = 'Error: $x$.';
 
 $lang['one-time'] = 'One-time';
 $lang['monthly'] = 'Monthly';
@@ -114,6 +115,15 @@ $lang['select_service_interface'] = 'Select a service interface';
 $lang['error_invalid_price'] = 'Error: invalid pricing scheme specified.';
 $lang['success_service_created'] = 'Service created successfully.';
 $lang['success_service_updated'] = 'Service updated successfully.';
+$lang['actions'] = 'Actions';
+$lang['activate'] = 'Activate';
+$lang['inactivate'] = 'Inactivate';
+$lang['suspend'] = 'Suspend';
+$lang['unsuspend'] = 'Unsuspend';
+$lang['success_service_activate'] = 'Service activated successfully.';
+$lang['success_service_suspend'] = 'Service suspended successfully.';
+$lang['success_service_unsuspend'] = 'Service unsuspended successfully.';
+$lang['success_service_inactivate'] = 'Service inactivated successfully.';
 
 $lang['invoices'] = 'Invoices';
 $lang['invoice'] = 'Invoice';

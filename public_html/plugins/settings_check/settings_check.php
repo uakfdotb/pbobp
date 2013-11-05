@@ -48,7 +48,33 @@ class plugin_settings_check {
 
 	function view_config_check() {
 		if(isset($_SESSION['admin'])) {
-			die('Error: unimplemented.');
+			$array = array();
+
+			if(!extension_loaded('mcrypt')) {
+				$array[] = array('PHP mcrypt extension', 'PHP mcrypt extension is not loaded, user registration may not work', -1);
+			} else {
+				$array[] = array('PHP mcrypt extension', 'PHP mcrypt extension is loaded', 1);
+			}
+
+			if(!in_array('sha512', hash_algos())) {
+				$array[] = array('Hash algorithm', 'The default hash algorithm, sha512, does not exist!', -1);
+			} else {
+				$array[] = array('Hash algorithm', 'The default hash algorithm, sha512, exists', 1);
+			}
+
+			if(!function_exists('openssl_random_pseudo_bytes')) {
+				$array[] = array('Secure random source', 'Preferred source, openssl_random_pseudo_bytes, does not exist', -1);
+			} else {
+				$array[] = array('Secure random source', 'Preferred source, openssl_random_pseudo_bytes, exists', 1);
+			}
+
+			if((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) {
+				$array[] = array('Encryption', 'HTTPS is enabled', 1);
+			} else {
+				$array[] = array('Encryption', 'HTTPS is disabled; passwords will be sent in plaintext', -1);
+			}
+
+			get_page("config_check", "admin", array('array' => $array), "/plugins/{$this->plugin_name}");
 		}
 	}
 }

@@ -73,7 +73,7 @@ function ticket_open($user_identifier, $department_id, $service_id, $subject, $c
 	}
 
 	//verify subject/content constraints
-	$ticket_content_maxlen = config_get('ticket_content_maxlen', 20000);
+	$ticket_content_maxlen = config_get('ticket_content_maxlen');
 
 	if(strlen($subject) > $const['ticket_subject_maxlen'] || ($ticket_content_maxlen > 0 && strlen($content) > $ticket_content_maxlen)) {
 		return 'subject_too_long';
@@ -99,7 +99,7 @@ function ticket_check_access($user_id, $ticket_id) {
 
 function ticket_reply($user_id, $ticket_id, $content) {
 	//verify content constraints
-	$ticket_content_maxlen = config_get('ticket_content_maxlen', 20000);
+	$ticket_content_maxlen = config_get('ticket_content_maxlen');
 
 	if($ticket_content_maxlen > 0 && strlen($content) > $ticket_content_maxlen) {
 		return 'long_content';

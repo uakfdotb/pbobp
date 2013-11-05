@@ -32,7 +32,7 @@ if(isset($_SESSION['user_id'])) {
 	$result = auth_login($_POST['email'], $_POST['password']);
 
 	if($result === true) {
-		if(user_access($_SESSION['user_id']) >= 1 && config_get('login_auto_admin', true)) {
+		if(user_access($_SESSION['user_id']) >= 1 && config_get('login_auto_admin')) {
 			$_SESSION['admin'] = true;
 			pbobp_redirect("admin/");
 		} else {

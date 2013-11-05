@@ -147,7 +147,7 @@ function database_create_where($key_map, $constraints, &$vars) {
 //returns a limit clause
 //also sets second parameter to the actual limit
 function database_create_limit($context, &$limit_max, $limit_page = 0) {
-	$conf_limit_max = intval(config_get($context . '_display_max', 50));
+	$conf_limit_max = intval(config_get_default($context . '_display_max', 50));
 
 	if($limit_max == -1) {
 		$limit_max = $conf_limit_max;

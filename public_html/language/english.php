@@ -97,6 +97,7 @@ $lang['success_product_group_updated'] = 'Product group updated successfully.';
 $lang['success_product_group_deleted'] = 'Product group deleted successfully.';
 
 $lang['configuration'] = 'Configuration';
+$lang['update_configuration'] = 'Update configuration';
 $lang['success_configuration_updated'] = 'Configuration has been updated successfully.';
 
 $lang['user'] = 'User';

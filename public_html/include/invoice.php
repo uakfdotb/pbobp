@@ -220,7 +220,7 @@ function invoice_autocreate() {
 	//note that for services due on the same day with the same user/currency, we combine them into one invoice
 
 	//list relevant services
-	$invoice_pre_days = config_get('invoice_pre_days', 7);
+	$invoice_pre_days = config_get('invoice_pre_days');
 	$result = database_query("SELECT id, user_id, name, recurring_date, recurring_duration, DATE_ADD(recurring_date, INTERVAL recurring_duration MONTH), recurring_amount, currency_id FROM pbobp_services WHERE recurring_date < DATE_ADD(NOW(), INTERVAL ? DAY) AND (SELECT COUNT(*) FROM pbobp_invoices, pbobp_invoices_lines WHERE pbobp_invoices_lines.service_id = pbobp_services.id AND pbobp_invoices.id = pbobp_invoices_lines.invoice_id AND pbobp_invoices.status = 0) = 0 AND recurring_duration > 0", array($invoice_pre_days));
 	$array = array(); //from userid|duedate|currencyid to list of services due
 

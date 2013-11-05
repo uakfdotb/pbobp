@@ -102,9 +102,9 @@ function auth_register($email, $password, $fields) {
 
 	//validate password
 	// we have a maximum length to prevent hashing long data
-	if(strlen($password) < config_get("auth_password_minlen", 6)) {
+	if(strlen($password) < config_get("auth_password_minlen")) {
 		return "short_password";
-	} else if(strlen($password) > config_get("auth_password_maxlen", 512)) {
+	} else if(strlen($password) > config_get("auth_password_maxlen")) {
 		return "long_password";
 	}
 
@@ -138,9 +138,9 @@ function auth_register($email, $password, $fields) {
 function auth_change_password($user_id, $old_password, $new_password) {
 	//validate password
 	// we have a maximum length to prevent hashing long data
-	if(strlen($new_password) < config_get("auth_password_minlen", 6)) {
+	if(strlen($new_password) < config_get("auth_password_minlen")) {
 		return "short_password";
-	} else if(strlen($new_password) > config_get("auth_password_maxlen", 512)) {
+	} else if(strlen($new_password) > config_get("auth_password_maxlen")) {
 		return "long_password";
 	}
 

@@ -42,7 +42,7 @@ class plugin_notifications {
 	}
 
 	function notify($subject, $body, $to) {
-		$body .= "\n\n" . config_get('mail_footer', "Thanks,\npbobp", 'plugin', $this->id, false);
+		$body .= "\n\n" . config_get('mail_footer', 'plugin', $this->id, false);
 		pbobp_mail($subject, $body, $to);
 	}
 

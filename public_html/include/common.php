@@ -63,6 +63,16 @@ function basePath() {
 
 //returns a relative path to the given subdirectory, with trailing slash
 function contextPath($context) {
+	if($context == "main") {
+		$basePath = basePath();
+
+		if($basePath == '.') {
+			return '';
+		} else {
+			return '/';
+		}
+	}
+
 	if(basename(dirname($_SERVER['SCRIPT_FILENAME'])) == $context) {
 		return "";
 	} else {
@@ -185,7 +195,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 
 	$basePath = basePath();
 	$contextPath = contextPath($context);
-	$theme_name = config_get('theme_name', 'basic');
+	$theme_name = config_get('theme_name');
 	$themePath = $basePath . "/theme/$theme_name";
 
 	if($override_path !== false) {
@@ -305,20 +315,20 @@ function pbobp_get_backtrace() {
 //returns true on success or false on failure
 function pbobp_mail($subject, $body, $to) {
 	$config = $GLOBALS['config'];
-	$from = filter_var(config_get('mail_from', 'noreply@example.com'), FILTER_SANITIZE_EMAIL);
+	$from = filter_var(config_get('mail_from'), FILTER_SANITIZE_EMAIL);
 	$to = filter_var($to, FILTER_SANITIZE_EMAIL);
 
 	if($to === false || $from === false) {
 		return false;
 	}
 
-	if(config_get('mail_smtp', false)) {
+	if(config_get('mail_smtp')) {
 		require_once "Mail.php";
 
-		$host = config_get('mail_smtp_host', 'localhost');
-		$port = config_get('mail_smtp_port', 25);
-		$username = config_get('mail_smtp_username', '');
-		$password = config_get('mail_smtp_password', '');
+		$host = config_get('mail_smtp_host');
+		$port = config_get('mail_smtp_port');
+		$username = config_get('mail_smtp_username');
+		$password = config_get('mail_smtp_password');
 		$headers = array ('From' => $from,
 						  'To' => $to,
 						  'Subject' => $subject,

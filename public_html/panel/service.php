@@ -64,11 +64,11 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 
 	if($interface !== false) {
 		//apply any desired actions
-		if(isset($_REQUEST['action']) && method_exists($interface, 'get_actions')) {
+		if(isset($_POST['action']) && method_exists($interface, 'get_actions')) {
 			$actions = $interface->get_actions();
 
-			if(is_array($actions) && isset($actions[$_REQUEST['action']])) {
-				$action_function_string = $actions[$_REQUEST['action']];
+			if(is_array($actions) && isset($actions[$_POST['action']])) {
+				$action_function_string = $actions[$_POST['action']];
 
 				if(method_exists($interface, $action_function_string)) {
 					$result = $interface->$action_function_string($service);

@@ -176,7 +176,8 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 	extract(pbobp_html_sanitize($args));
 
 	$basePath = basePath();
-	$themePath = $basePath . "/theme/basic";
+	$theme_name = config_get('theme_name', 'basic');
+	$themePath = $basePath . "/theme/$theme_name";
 
 	if($override_path !== false) {
 		$themePageInclude = basePath() . "$override_path/$page.php";

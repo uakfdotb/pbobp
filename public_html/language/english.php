@@ -61,6 +61,21 @@ $lang['options'] = 'Options';
 $lang['add'] = 'Add';
 $lang['time'] = 'Time';
 
+$lang['one-time'] = 'One-time';
+$lang['monthly'] = 'Monthly';
+$lang['bimonthly'] = 'Bimonthly';
+$lang['quarterly'] = 'Quarterly';
+$lang['semi-annually'] = 'Semi-annually';
+$lang['annually'] = 'Annually';
+$lang['biannually'] = 'Biannually';
+$lang['triannually'] = 'Triannually';
+
+$lang['activating'] = 'Activating';
+$lang['inactive'] = 'Inactive';
+$lang['suspended'] = 'Suspended';
+$lang['pending'] = 'Pending';
+$lang['active'] = 'Active';
+
 $lang['product'] = 'Product';
 $lang['products'] = 'Products';
 $lang['product_details'] = 'Product details';
@@ -80,6 +95,9 @@ $lang['success_product_group_created'] = 'Product group created successfully.';
 $lang['success_product_group_updated'] = 'Product group updated successfully.';
 $lang['success_product_group_deleted'] = 'Product group deleted successfully.';
 
+$lang['configuration'] = 'Configuration';
+$lang['success_configuration_updated'] = 'Configuration has been updated successfully.';
+
 $lang['user'] = 'User';
 $lang['users'] = 'Users';
 
@@ -95,6 +113,7 @@ $lang['service_details'] = 'Service details';
 $lang['select_service_interface'] = 'Select a service interface';
 $lang['error_invalid_price'] = 'Error: invalid pricing scheme specified.';
 $lang['success_service_created'] = 'Service created successfully.';
+$lang['success_service_updated'] = 'Service updated successfully.';
 
 $lang['invoices'] = 'Invoices';
 $lang['invoice'] = 'Invoice';
@@ -188,7 +207,8 @@ $lang['long_field'] = 'Your entry for $name$ is too long';
 $lang['admin_area'] = 'Admin area';
 $lang['admin_area_welcome'] = 'Welcome to the admin area.';
 $lang['admin_area_login'] = $lang['admin_area_welcome'] . ' To continue, please re-enter your password.';
-$lang['error_admin_login_failde'] = 'Login failed. Verify that you have entered the correct password or try again later.';
+$lang['error_admin_login_failed'] = 'Login failed. Verify that you have entered the correct password or try again later.';
+$lang['success_action_performed'] = 'Action [$name] performed successfully.';
 
 $lang['main_welcome'] = 'Welcome to our billing panel. Use the tabs above to login or view our cart.';
 

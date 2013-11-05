@@ -32,7 +32,7 @@ CREATE TABLE pbobp_fields (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, context V
 CREATE TABLE pbobp_fields_options (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL);
 -- context may be "user", "service"
 -- meaning of object_id depends on the context (user id or service id)
-CREATE TABLE pbobp_fields_values (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, object_id INT NOT NULL, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
+CREATE TABLE pbobp_fields_values (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, object_id INT NOT NULL, context VARCHAR(32) NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
 
 CREATE TABLE pbobp_currencies (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, iso_code VARCHAR(3) NOT NULL, prefix VARCHAR(32) NOT NULL, suffix VARCHAR(32) NOT NULL, `primary` INT NOT NULL DEFAULT 0, rate FLOAT NOT NULL DEFAULT 1);
 -- duration is 1=monthly, 3=quarterly, 6=semi-annually, 12=yearly, 0=one-time

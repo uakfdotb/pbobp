@@ -37,7 +37,11 @@ if(!isset($include_selections)) {
 
 foreach($include_fields as $field) {
 	if(!isset($include_selections[$field['field_id']])) {
-		$include_selections[$field['field_id']] = $field['default'];
+		if(isset($field['value'])) {
+			$include_selections[$field['field_id']] = $field['value'];
+		} else {
+			$include_selections[$field['field_id']] = $field['default'];
+		}
 	}
 }
 
@@ -49,17 +53,17 @@ foreach($include_fields as $field) {
 	<? } else if($field['type_nice'] == 'textarea') { ?>
 		<?= $field['name'] ?>:<br /><textarea name="field_<?= $field['field_id'] ?>"><?= $include_selections[$field['field_id']] ?></textarea> <?= $field['description'] ?><br />
 	<? } else if($field['type_nice'] == 'checkbox') { ?>
-		<input type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?>/> <?= $field['name'] ?> (<?= $field['description'] ?>)<br />
+		<?= $field['name'] ?>: <input type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?>/> <?= $field['description'] ?><br />
 	<? } else if($field['type_nice'] == 'radio') { ?>
-		<?= $field['name'] ?> (<?= $field['description'] ?>)<br />
+		<?= $field['name'] ?>: (<?= $field['description'] ?>)<br />
 		<? foreach($field['options'] as $option_id => $option_val) { ?>
 			<input type="radio" name="field_<?= $field['field_id'] ?>" value="<?= $option_id ?>" <?= $include_selections[$field['field_id']] == $option_val ? 'checked' : '' ?>/> <?= $option_val ?> <br />
 		<? } ?>
 	<? } else if($field['type_nice'] == 'dropdown') { ?>
-		<?= $field['name'] ?> <select name="field_<?= $field['field_id'] ?>">
+		<?= $field['name'] ?>: <select name="field_<?= $field['field_id'] ?>">
 		<? foreach($field['options'] as $option_array) { ?>
 			<option value="<?= $option_array['val'] ?>" <?= ($include_selections[$field['field_id']] == $option_array['val']) ? 'selected' : '' ?>><?= $option_array['val'] ?></option>
 		<? } ?>
-		</select> <?= $field['description'] ?>
+		</select> <?= $field['description'] ?><br />
 	<? } ?>
 <? } ?>

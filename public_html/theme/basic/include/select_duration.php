@@ -33,7 +33,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <select name="<?= $select_duration_name ?>">
 	<? foreach($service_duration_map as $service_duration_i_duration => $service_duration_i_duration_nice) { ?>
-	<option value="<?= $service_duration_i_duration ?>" <?= (isset($select_duration_current) && $service_duration_i_duration == $select_duration_current) ? "selected" : "" ?>><?= $service_duration_i_duration_nice ?></option>
+	<option value="<?= $service_duration_i_duration ?>" <?= (isset($select_duration_current) && $service_duration_i_duration == $select_duration_current) ? "selected" : "" ?>><?= lang($service_duration_i_duration_nice) ?></option>
 	<? } ?>
 </select>
 

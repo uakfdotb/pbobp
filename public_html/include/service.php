@@ -71,17 +71,23 @@ function service_duration_map() {
 }
 
 function service_status_nice($status) {
-	if($status == 0) {
-		return "pending";
-	} else if($status == 1) {
-		return "active";
-	} else if($status == -1) {
-		return "suspended";
-	} else if($status == -3) {
-		return "activating";
+	$service_status_map = service_status_map();
+
+	if(isset($service_status_map[$status])) {
+		return $service_status_map[$status];
 	} else {
-		return "inactive";
+		return "unknown";
 	}
+}
+
+function service_status_map() {
+	return array(
+		-3 => 'activating',
+		-2 => 'inactive',
+		-1 => 'suspended',
+		0 => 'pending',
+		1 => 'active'
+		);
 }
 
 function service_module_event($service_id, $event) {
@@ -157,6 +163,13 @@ function service_inactivate($service_id) {
 
 	while($row = $result->fetch()) {
 		invoice_line_remove($row[0]);
+	}
+
+	//notify service module if any
+	$result = service_module_event($service_id, 'inactivate');
+
+	if($result !== true) {
+		//todo: handle failed termination
 	}
 
 	//update the service
@@ -284,6 +297,51 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	invoice_create($user_id, false, array($item), $price_array['currency_id'], true); //false indicates due asap
 
 	return true;
+}
+
+//we have multiple update functions for services since some such as name are accessible to client while others are not
+
+//changes the service name of a given service
+function service_rename($service_id, $name) {
+	database_query("UPDATE pbobp_services SET name = ? WHERE id = ?", array($name, $service_id));
+}
+
+function service_update_status($service_id, $status) {
+	database_query("UPDATE pbobp_services SET status = ? WHERE id = ?", array($status, $service_id));
+}
+
+//updates pricing for a given service
+//price_array is an array of (duration, recurring_amount)
+function service_update_price($service_id, $price_array) {
+	database_query("UPDATE pbobp_services SET recurring_duration = ?, recurring_amount = ? WHERE id = ?", array($price_array['duration'], $price_array['recurring_amount'], $service_id));
+}
+
+function service_update_due_date($service_id, $due_date) {
+	database_query("UPDATE pbobp_services SET recurring_date = ? WHERE id = ?", array($due_date, $service_id));
+}
+
+//updates fields for a given service
+//fields is an array of id => new value of raw fields
+function service_update_fields($service_id, $fields) {
+	$service_details = service_get_details($service_id);
+
+	if($service_details !== false) {
+		require_once(includePath() . 'field.php');
+		require_once(includePath() . 'product.php');
+
+		//sanitize the fields
+		$new_fields = array();
+		foreach(product_field_contexts($service_details['product_id']) as $context_array) {
+			$tmp_fields = array();
+			$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
+			$new_fields += $tmp_fields;
+		}
+
+		//update each field in the service field object
+		foreach($new_fields as $field_id => $val) {
+			field_set_by_field_id('service', $service_id, $field_id, $val);
+		}
+	}
 }
 
 ?>

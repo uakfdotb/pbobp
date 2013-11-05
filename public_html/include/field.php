@@ -55,10 +55,10 @@ function field_extract() {
 
 //validates an input and stores sanitized data in new_fields
 //returns true on success or string error on failure
-function field_parse($fields, $context, &$new_fields, $context_id = 0) {
+function field_parse($fields, $field_context, &$new_fields, $field_context_id = 0) {
 	global $const;
 
-	$result = database_query("SELECT id, name, type, required, adminonly, `default` FROM pbobp_fields WHERE context = ? AND context_id = ?", array($context, $context_id), true);
+	$result = database_query("SELECT id, name, type, required, adminonly, `default` FROM pbobp_fields WHERE context = ? AND context_id = ?", array($field_context, $field_context_id), true);
 
 	while($row = $result->fetch()) {
 		$type = field_type_nice($row['type']);
@@ -108,9 +108,9 @@ function field_parse($fields, $context, &$new_fields, $context_id = 0) {
 }
 
 //stores sanitized data into database
-function field_store($new_fields, $object_id, $context, $context_id = 0) {
+function field_store($new_fields, $object_id, $object_context) {
 	foreach($new_fields as $field_id => $val) {
-		database_query("INSERT INTO pbobp_fields_values (object_id, context, context_id, field_id, val) VALUES (?, ?, ?, ?, ?)", array($object_id, $context, $context_id, $field_id, $val));
+		database_query("INSERT INTO pbobp_fields_values (object_id, context, context_id, field_id, val) VALUES (?, ?, ?, ?, ?)", array($object_id, $object_context, $field_id, $val));
 	}
 }
 
@@ -135,12 +135,11 @@ function field_type_map() {
 }
 
 //returns field value on success or false on failure
-//note that context and context ID are contexts of the field VALUE, while field_context and field_context_id are of the field itself
-function field_get($context, $object_id, $key, $context_id = 0, $field_context = false, $field_context_id = false) {
-	//unlike other field functions, here the default behaviour is to _ignore_ the field context and search by the value key/context only
+function field_get($object_context, $object_id, $key, $field_context = false, $field_context_id = false) {
+	//unlike other field functions, here the default behaviour is to _ignore_ the field context and search by the object key/context only
 	//context ID searching functionality is provided in case a single object has multiple context ID's that conflict
-	$query = "SELECT pbobp_fields_values.val FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields_values.context_id = ?";
-	$vars = array($key, $context, $object_id, $context_id);
+	$query = "SELECT pbobp_fields_values.val FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ?";
+	$vars = array($key, $object_context, $object_id);
 
 	if($field_context !== false) {
 		$query .= " AND pbobp_fields.context = ?";
@@ -162,13 +161,45 @@ function field_get($context, $object_id, $key, $context_id = 0, $field_context =
 
 //sets a field value
 //the field value entry should exist already; this will only update it
-function field_set($context, $object_id, $key, $val) {
-	database_query("UPDATE pbobp_fields_values, pbobp_fields SET pbobp_fields_values.val = ? WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ?", array($val, $key, $context, $object_id));
+//this now goes through field_set_by_field_id
+function field_set($object_context, $object_id, $key, $val) {
+	$result = database_query("SELECT pbobp_fields_values.field_id FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ?", array($key, $object_context, $object_id));
+
+	if($row = $result->fetch()) {
+		field_set_by_field_id($context, $object_id, $row[0], $val);
+	}
+}
+
+//sets a field value by the field ID (and object context/id)
+//the field value entry should exist already; this will only update it
+//the value will be validated
+function field_set_by_field_id($object_context, $object_id, $field_id, $val) {
+	$result = database_query("SELECT type, `default` FROM pbobp_fields WHERE id = ?", array($field_id), true);
+
+	if($row = $result->fetch()) {
+		if($row['type'] == 'checkbox') {
+			if($val) {
+				$val = true;
+			} else {
+				$val = false;
+			}
+		} else if($row['type'] == 'dropdown' || $row['type'] == 'radio') {
+			//return if it doesn't match any option
+			$options_result = database_query("SELECT COUNT(*) FROM pbobp_fields_options WHERE field_id = ? AND val = ?", array($field_id, $val));
+			$options_row = $options_result->fetch();
+
+			if($options_row == 0) {
+				return;
+			}
+		}
+	}
+
+	database_query("UPDATE pbobp_fields_values SET pbobp_fields_values.val = ? WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields_values.field_id = ?", array($val, $object_context, $object_id, $field_id));
 }
 
 //returns list of fields for given context
-function field_list($context, $context_id = 0) {
-	$result = database_query("SELECT id, name, `default`, description, type, required, adminonly FROM pbobp_fields WHERE context = ? AND context_id = ?", array($context, $context_id), true);
+function field_list($field_context, $field_context_id = 0) {
+	$result = database_query("SELECT id, name, `default`, description, type, required, adminonly FROM pbobp_fields WHERE context = ? AND context_id = ?", array($field_context, $field_context_id), true);
 	$array = array();
 
 	while($row = $result->fetch()) {
@@ -190,9 +221,9 @@ function field_list($context, $context_id = 0) {
 }
 
 //add a field (or update existing field)
-function field_add($context, $context_id, $name, $default, $description, $type, $required, $adminonly, $options = array(), $field_id = false) {
+function field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options = array(), $field_id = false) {
 	if($field_id === false) {
-		database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($context, $context_id, $name, $default, $description, $type, $required, $adminonly));
+		database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly));
 		$field_id = database_insert_id();
 	} else {
 		//make sure field exists
@@ -215,9 +246,9 @@ function field_add($context, $context_id, $name, $default, $description, $type, 
 }
 
 //returns list of field ID's deleted
-function field_context_remove($context, $context_id) {
+function field_context_remove($field_context, $field_context_id) {
 	//find all field ID's, then delete corresponding options, values
-	$result = database_query("SELECT * FROM pbobp_fields WHERE context = ? AND context_id = ?", array());
+	$result = database_query("SELECT * FROM pbobp_fields WHERE context = ? AND context_id = ?", array($field_context, $field_context_id));
 	$array = array();
 
 	while($row = $result->fetch()) {
@@ -234,8 +265,8 @@ function field_delete($field_id) {
 	database_query("DELETE FROM pbobp_fields_values WHERE field_id = ?", array($field_id));
 }
 
-function field_list_object($context, $object_id) {
-	$result = database_query("SELECT pbobp_fields.id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields_values.val FROM pbobp_fields, pbobp_fields_values WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields.id = pbobp_fields_values.field_id", array($context, $object_id), true);
+function field_list_object($object_context, $object_id) {
+	$result = database_query("SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields_values.val FROM pbobp_fields, pbobp_fields_values WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields.id = pbobp_fields_values.field_id", array($object_context, $object_id), true);
 	$array = array();
 
 	while($row = $result->fetch()) {
@@ -243,24 +274,27 @@ function field_list_object($context, $object_id) {
 		$options = array();
 
 		if($type == "dropdown" || $type == "radio") {
-			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']), true);
+			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['field_id']), true);
 
 			while($options_row = $options_result->fetch()) {
 				$options[] = $options_row;
 			}
 		}
 
-		$array[] = array('field_id' => $row['id'], 'name' => $row['name'], 'default' => $row['default'], 'type' => $row['type'], 'required' => $row['required'], 'adminonly' => $row['adminonly'], 'options' => $options, 'value' => $row['val']);
+		$row['type_nice'] = field_type_nice($row['type']);
+		$row['options'] = $options;
+		$row['value'] = $row['val'];
+		$array[] = $row;
 	}
 
 	return $array;
 }
 
-function field_object_remove($context, $object_id, $context_id = 0) {
-	database_query("DELETE FROM pbobp_fields_values WHERE object_id = ? AND context = ? AND context_id = ?", array($object_id, $context, $context_id));
+function field_object_remove($object_context, $object_id) {
+	database_query("DELETE FROM pbobp_fields_values WHERE object_id = ? AND context = ?", array($object_id, $object_context));
 }
 
-function field_process_updates($context, $context_id, $reqvars) {
+function field_process_updates($field_context, $field_context_id, $reqvars) {
 	//do edits/addition
 	//to do this, we first find possible field ID's by traversing post data
 	//then we check each field ID and see if needed post variables are set (with an unset delete flag)
@@ -294,7 +328,7 @@ function field_process_updates($context, $context_id, $reqvars) {
 				}
 			}
 
-			field_add($context, $context_id, $reqvars["field_{$field_id}_name"], $reqvars["field_{$field_id}_default"], $reqvars["field_{$field_id}_description"], $reqvars["field_{$field_id}_type"], isset($reqvars["field_{$field_id}_required"]), isset($reqvars["field_{$field_id}_adminonly"]), $field_options, $field_id_actual);
+			field_add($field_context, $field_context_id, $reqvars["field_{$field_id}_name"], $reqvars["field_{$field_id}_default"], $reqvars["field_{$field_id}_description"], $reqvars["field_{$field_id}_type"], isset($reqvars["field_{$field_id}_required"]), isset($reqvars["field_{$field_id}_adminonly"]), $field_options, $field_id_actual);
 		}
 	}
 

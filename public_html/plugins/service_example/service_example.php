@@ -79,7 +79,7 @@ class plugin_service_example {
 
 	function do_check_win($service) {
 		require_once(includePath() . 'field.php');
-		$number = field_get('service', $service['service_id'], 'Your number', 0, 'plugin', $this->id);
+		$number = field_get('service', $service['service_id'], 'Your number', 'plugin', $this->id);
 		$winning_number = $this->get_winner();
 
 		if($winning_number == $number) {

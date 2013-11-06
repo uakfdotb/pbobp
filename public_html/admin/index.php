@@ -39,7 +39,7 @@ if(isset($_SESSION['user_id']) && user_access($_SESSION['user_id']) >= 1) {
 
 	if(isset($_SESSION['admin'])) {
 		if(isset($_REQUEST['action']) && $_REQUEST['action'] == "logout") {
-			session_unset();
+			pbobp_session_clear();
 			pbobp_redirect("../");
 		} else {
 			get_page("index", "admin", array());

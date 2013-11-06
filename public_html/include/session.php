@@ -31,6 +31,23 @@ if (!isset($_SESSION['initiated']) || !isset($_SESSION['active']) || time() - $_
 	session_unset();
 	session_regenerate_id();
 	$_SESSION['initiated'] = true;
+
+	//attempt to autologin user if authentication token is set
+	if(isset($_COOKIE['pbobp_auth_token_user_id']) && isset($_COOKIE['pbobp_auth_token_token'])) {
+		require_once(includePath() . 'auth.php');
+		$result = auth_validate_token($_COOKIE['pbobp_auth_token_user_id'], $_COOKIE['pbobp_auth_token_token']);
+
+		if($result === false) {
+			//clear the cookies
+			setcookie('pbobp_auth_token_user_id', '', time() - 3600);
+			setcookie('pbobp_auth_token_token', '', time() - 3600);
+		} else {
+			$_SESSION['user_id'] = $result;
+
+			//refresh the cookies
+			auth_set_token();
+		}
+	}
 }
 
 //validate user agent

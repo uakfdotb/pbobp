@@ -30,7 +30,7 @@ require_once("../include/user.php");
 
 if(isset($_SESSION['user_id'])) {
 	if(isset($_REQUEST['action']) && $_REQUEST['action'] == "logout") {
-		session_unset();
+		pbobp_session_clear();
 		pbobp_redirect("../");
 	} else {
 		$message = "";

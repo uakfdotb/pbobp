@@ -161,4 +161,33 @@ function auth_change_password($user_id, $old_password, $new_password) {
 	return true;
 }
 
+//sets a cookie token for the current user
+function auth_set_token() {
+	if(isset($_SESSION['user_id'])) {
+		$token = uid(128);
+
+		//housekeeping: delete old tokens, and also previous token belonging to this user
+		database_query("DELETE FROM pbobp_auth_tokens WHERE time < DATE_SUB(NOW(), INTERVAL 12 HOUR) OR user_id = ?", array($_SESSION['user_id']));
+
+		//insert new token
+		database_query("INSERT INTO pbobp_auth_tokens (token, user_id) VALUES (?, ?)", array($token, $_SESSION['user_id']));
+
+		//set token cookie
+		setcookie('pbobp_auth_token_user_id', $_SESSION['user_id']);
+		setcookie('pbobp_auth_token_token', $token);
+	}
+}
+
+//validates an auth token
+//returns user id on success or false on failure
+function auth_validate_token($user_id, $token) {
+	$result = database_query("SELECT user_id FROM pbobp_auth_tokens WHERE user_id = ? AND token = ?", array($user_id, $token));
+
+	if($row = $result->fetch()) {
+		return $row[0];
+	} else {
+		return false;
+	}
+}
+
 ?>

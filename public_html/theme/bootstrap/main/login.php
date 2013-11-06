@@ -67,5 +67,6 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<? } ?>
 	<input type="text" name="email" class="input-block-level" placeholder="<?= lang('email_address') ?>">
 	<input type="password" name="password" class="input-block-level" placeholder="<?= lang('password') ?>">
+	<label class="checkbox"><input type="checkbox" name="rememberme" /> Remember me</label>
 	<button class="btn btn-large btn-primary" type="submit"><?= lang('login') ?></button>
 </form>

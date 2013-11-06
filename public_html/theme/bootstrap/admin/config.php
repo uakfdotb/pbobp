@@ -34,6 +34,14 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <form method="POST">
 <input type="hidden" name="action" value="update" />
+
+<table class="table">
+<tr>
+	<th><?= lang('field') ?></th>
+	<th><?= lang('value') ?></th>
+</tr>
 <? $include_fields = $config; include($themePath . '/include/fields.php'); ?>
-<input type="submit" value="<?= lang('update_configuration') ?>" />
+</table>
+
+<button type="submit" class="btn btn-primary"><?= lang('update_configuration') ?></button>
 </form>

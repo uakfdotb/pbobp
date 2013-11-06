@@ -28,7 +28,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= lang('invoices') ?></h1>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
 	<th><?= lang('status') ?></th>

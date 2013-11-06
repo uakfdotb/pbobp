@@ -36,20 +36,34 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('product_details') ?></h3>
 
-<p><input type="hidden" name="action" value="edit" />
-<?= lang('product_name') ?>: <input type="text" name="name" value="<?= $product['name'] ?>" />
-<br /><?= lang('uniqueid') ?>: <input type="text" name="uniqueid" value="<?= $product['uniqueid'] ?>" />
-<br /><?= lang('interface') ?>: <select name="interface">
-	<option value=""><?= lang('select_service_interface') ?></option>
-	<? foreach($interfaces as $interface_name => $interface_friendly) { ?>
-	<option value="<?= $interface_name ?>" <?= ($interface_name == $product['plugin_name']) ? "selected" : "" ?>><?= $interface_friendly ?></option>
-	<? } ?>
-	</select>
-<br /><?= lang('description') ?>: <textarea name="description"><?= $product['description'] ?></textarea></p>
+<input type="hidden" name="action" value="edit" />
+
+<table class="table">
+<tr>
+	<td><?= lang('product_name') ?></td>
+	<td><input class="input-block-level" type="text" name="name" value="<?= $product['name'] ?>" /></td>
+</tr><tr>
+	<td><?= lang('uniqueid') ?></td>
+	<td><input class="input-block-level" type="text" name="uniqueid" value="<?= $product['uniqueid'] ?>" /></td>
+</tr><tr>
+	<td><?= lang('interface') ?></td>
+	<td>
+		<select class="input-block-level" name="interface">
+		<option value=""><?= lang('select_service_interface') ?></option>
+		<? foreach($interfaces as $interface_name => $interface_friendly) { ?>
+			<option value="<?= $interface_name ?>" <?= ($interface_name == $product['plugin_name']) ? "selected" : "" ?>><?= $interface_friendly ?></option>
+		<? } ?>
+		</select>
+	</td>
+</tr><tr>
+	<td><?= lang('description') ?></td>
+	<td><textarea class="input-block-level" name="description"><?= $product['description'] ?></textarea></td>
+</tr>
+</table>
 
 <h3><?= lang('pricing') ?></h3>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('duration') ?></th>
 	<th><?= lang('amount') ?></th>
@@ -70,16 +84,16 @@ foreach($prices as $price) {
 			include(dirname(__FILE__) . "/../include/select_duration.php");
 			?>
 		</td>
-		<td><input type="text" name="price_<?= $price_counter ?>_amount" value="<?= pbobp_currency_round($price['amount']) ?>" /></td>
-		<td><input type="text" name="price_<?= $price_counter ?>_recurring" value="<?= pbobp_currency_round($price['recurring_amount']) ?>" /></td>
+		<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_amount" value="<?= pbobp_currency_round($price['amount']) ?>" /></td>
+		<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_recurring" value="<?= pbobp_currency_round($price['recurring_amount']) ?>" /></td>
 		<td>
-			<select name="price_<?= $price_counter ?>_currency_id">
+			<select class="input-block-level" name="price_<?= $price_counter ?>_currency_id">
 			<? foreach($currencies as $currency) { ?>
 				<option value="<?= $currency['id'] ?>" <?= ($currency['id'] == $price['currency_id']) ? "selected" : "" ?>><?= $currency['iso_code'] ?></option>
 			<? } ?>
 			</select>
 		</td>
-		<td><input type="checkbox" name="price_<?= $price_counter ?>_delete" /></td>
+		<td><input class="input-block-level" type="checkbox" name="price_<?= $price_counter ?>_delete" /></td>
 	</tr>
 	<?
 	$price_counter++;
@@ -93,10 +107,10 @@ foreach($prices as $price) {
 		include(dirname(__FILE__) . "/../include/select_duration.php");
 		?>
 	</td>
-	<td><input type="text" name="price_<?= $price_counter ?>_amount" /></td>
-	<td><input type="text" name="price_<?= $price_counter ?>_recurring" /></td>
+	<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_amount" /></td>
+	<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_recurring" /></td>
 	<td>
-		<select name="price_<?= $price_counter ?>_currency_id">
+		<select class="input-block-level" name="price_<?= $price_counter ?>_currency_id">
 		<? foreach($currencies as $currency) { ?>
 			<option value="<?= $currency['id'] ?>"><?= $currency['iso_code'] ?></option>
 		<? } ?>
@@ -110,7 +124,7 @@ foreach($prices as $price) {
 
 <p><?= lang('product_manager_fields_description') ?></p>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('default') ?></th>
@@ -124,44 +138,44 @@ foreach($prices as $price) {
 
 <? foreach($fields as $field) { ?>
 <tr>
-	<td><input type="text" name="field_<?= $field['field_id'] ?>_name" value="<?= $field['name'] ?>" /></td>
-	<td><input type="text" name="field_<?= $field['field_id'] ?>_default" value="<?= $field['default'] ?>" /></td>
-	<td><textarea name="field_<?= $field['field_id'] ?>_description"><?= $field['description'] ?></textarea></td>
+	<td><input class="input-block-level" class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_name" value="<?= $field['name'] ?>" /></td>
+	<td><input class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_default" value="<?= $field['default'] ?>" /></td>
+	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_description"><?= $field['description'] ?></textarea></td>
 	<td>
-		<select name="field_<?= $field['field_id'] ?>_type" />
+		<select class="input-block-level" name="field_<?= $field['field_id'] ?>_type" />
 		<? foreach($field_type_map as $type => $type_nice) { ?>
 			<option value="<?= $type ?>" <?= ($field['type'] == $type) ? "selected" : "" ?>><?= $type_nice ?></option>
 		<? } ?>
 		</select>
 	</td>
-	<td><input type="checkbox" name="field_<?= $field['field_id'] ?>_required" <?= $field['required'] ? "checked" : "" ?> /></td>
-	<td><input type="checkbox" name="field_<?= $field['field_id'] ?>_adminonly" <?= $field['adminonly'] ? "checked" : "" ?> /></td>
-	<td><textarea name="field_<?= $field['field_id'] ?>_options"><?= implode("\n", $field['options']) ?></textarea></td>
-	<td><input type="checkbox" name="delete_field_<?= $field['field_id'] ?>" value="true" /></td>
+	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_required" <?= $field['required'] ? "checked" : "" ?> /></td>
+	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_adminonly" <?= $field['adminonly'] ? "checked" : "" ?> /></td>
+	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_options"><?= implode("\n", $field['options']) ?></textarea></td>
+	<td><input class="input-block-level" type="checkbox" name="delete_field_<?= $field['field_id'] ?>" value="true" /></td>
 </tr>
 <? } ?>
 
 <tr>
-	<td><input type="text" name="field_new_name" /></td>
-	<td><input type="text" name="field_new_default" /></td>
-	<td><textarea name="field_new_description"></textarea></td>
+	<td><input class="input-block-level" type="text" name="field_new_name" /></td>
+	<td><input class="input-block-level" type="text" name="field_new_default" /></td>
+	<td><textarea class="input-block-level" name="field_new_description"></textarea></td>
 	<td>
-		<select name="field_new_type" />
+		<select class="input-block-level" name="field_new_type" />
 		<? foreach($field_type_map as $type => $type_nice) { ?>
 			<option value="<?= $type ?>"><?= $type_nice ?></option>
 		<? } ?>
 		</select>
 	</td>
-	<td><input type="checkbox" name="field_new_required" /></td>
-	<td><input type="checkbox" name="field_new_adminonly" /></td>
-	<td><textarea name="field_new_options"></textarea></td>
+	<td><input class="input-block-level" type="checkbox" name="field_new_required" /></td>
+	<td><input class="input-block-level" type="checkbox" name="field_new_adminonly" /></td>
+	<td><textarea class="input-block-level" name="field_new_options"></textarea></td>
 	<td></td>
 </tr>
 </table>
 
 <h3><?= lang('groups') ?></h3>
 
-<table>
+<table class="table-condensed">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('delete') ?></th>
@@ -185,5 +199,5 @@ foreach($prices as $price) {
 </tr>
 </table>
 
-<p><input type="submit" value="<?= lang('product_update') ?>" /></p>
+<p><button type="submit" class="btn"><?= lang('product_update') ?></button></p>
 </form>

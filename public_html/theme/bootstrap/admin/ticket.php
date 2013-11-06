@@ -32,7 +32,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
-<table>
+<table class="table-condensed">
 <tr>
 	<th><?= lang('department') ?></th>
 	<td><?= $ticket['department_name'] ?></td>
@@ -61,7 +61,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<option value="0"><?= lang('ticket_status_' . ticket_status_nice(0)) ?></option>
 	<option value="1"><?= lang('ticket_status_' . ticket_status_nice(1)) ?></option>
 	</select>
-<br /><button type="submit" name="action" value="reply"><?= lang('ticket_reply_or_change_status') ?></button>
+<br /><button type="submit" class="btn" name="action" value="reply"><?= lang('ticket_reply_or_change_status') ?></button>
 </form>
 
 <? foreach($thread as $message) { ?>

@@ -39,7 +39,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? if(empty($services)) { ?>
 <p><?= lang('services_none') ?></p>
 <? } else { ?>
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('product') ?></th>
@@ -62,7 +62,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? if(empty($invoices)) { ?>
 <p><?= lang('invoices_unpaid_none') ?></p>
 <? } else { ?>
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
 	<th><?= lang('date_created') ?></th>
@@ -89,7 +89,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? if(empty($tickets)) { ?>
 <p><?= lang('tickets_open_none') ?></p>
 <? } else { ?>
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('subject') ?></th>
 	<th><?= lang('department') ?></th>

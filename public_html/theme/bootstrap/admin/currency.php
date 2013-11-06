@@ -32,7 +32,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('iso_code') ?></th>
 	<th><?= lang('prefix') ?></th>
@@ -47,25 +47,25 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <tr>
 <form method="POST">
 <input type="hidden" name="currency_id" value="<?= $currency['id'] ?>" />
-	<td><input type="text" name="iso_code" value="<?= $currency['iso_code'] ?>" /></td>
-	<td><input type="text" name="prefix" value="<?= $currency['prefix'] ?>" /></td>
-	<td><input type="text" name="suffix" value="<?= $currency['suffix'] ?>" /></td>
-	<td><input type="text" name="rate" value="<?= round($currency['rate'], 5) ?>" /></td>
-	<td><input type="checkbox" name="primary" <?= $currency['primary'] ? "checked" : "" ?> /></td>
-	<td><button type="submit" name="action" value="update">Update</button></td>
-	<td><button type="submit" name="action" value="delete">Delete</button></td>
+	<td><input class="input-block-level" type="text" name="iso_code" value="<?= $currency['iso_code'] ?>" /></td>
+	<td><input class="input-block-level" type="text" name="prefix" value="<?= $currency['prefix'] ?>" /></td>
+	<td><input class="input-block-level" type="text" name="suffix" value="<?= $currency['suffix'] ?>" /></td>
+	<td><input class="input-block-level" type="text" name="rate" value="<?= round($currency['rate'], 5) ?>" /></td>
+	<td><input class="input-block-level" type="checkbox" name="primary" <?= $currency['primary'] ? "checked" : "" ?> /></td>
+	<td><button type="submit" class="btn btn-success" name="action" value="update">Update</button></td>
+	<td><button type="submit" class="btn btn-danger" name="action" value="delete">Delete</button></td>
 </form>
 </tr>
 <? } ?>
 
 <tr>
 <form method="POST">
-	<td><input type="text" name="iso_code" /></td>
-	<td><input type="text" name="prefix" /></td>
-	<td><input type="text" name="suffix" /></td>
-	<td><input type="text" name="rate" /></td>
-	<td><input type="checkbox" name="primary" /></td>
-	<td><button type="submit" name="action" value="create"><?= lang('add') ?></button></td>
+	<td><input class="input-block-level" type="text" name="iso_code" /></td>
+	<td><input class="input-block-level" type="text" name="prefix" /></td>
+	<td><input class="input-block-level" type="text" name="suffix" /></td>
+	<td><input class="input-block-level" type="text" name="rate" /></td>
+	<td><input class="input-block-level" type="checkbox" name="primary" /></td>
+	<td><button type="submit" class="btn btn-primary" name="action" value="create"><?= lang('add') ?></button></td>
 	<td></td>
 </form>
 </tr>

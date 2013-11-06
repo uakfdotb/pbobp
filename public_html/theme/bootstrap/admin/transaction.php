@@ -28,7 +28,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= $transaction['transaction_id'] ?></h1>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
 	<td><a href="invoice.php?invoice_id=<?= $transaction['invoice_id'] ?>"><?= $transaction['invoice_id'] ?></a></td>

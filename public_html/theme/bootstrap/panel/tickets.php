@@ -30,7 +30,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <p><a href="ticket_open.php"><?= lang('ticket_open') ?>.</a></p>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('subject') ?></th>
 	<th><?= lang('department') ?></th>

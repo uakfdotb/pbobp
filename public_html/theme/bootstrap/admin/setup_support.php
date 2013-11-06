@@ -32,7 +32,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
-<table>
+<table class="table-condensed">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('delete') ?></th>
@@ -46,7 +46,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		<form method="POST">
 		<input type="hidden" name="action" value="department_delete" />
 		<input type="hidden" name="department_id" value="<?= $department['id'] ?>" />
-		<input type="submit" value="Delete" />
+		<button type="submit" class="btn btn-danger">Delete</input>
 		</form>
 	</td>
 </tr>
@@ -54,8 +54,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <tr>
 <form method="POST">
-	<td><input type="text" name="name" /></td>
-	<td><button type="submit" name="action" value="department_add"><?= lang('add') ?></button></td>
+	<td><input class="input-block-level" type="text" name="name" /></td>
+	<td><button type="submit" class="btn btn-primary" name="action" value="department_add"><?= lang('add') ?></button></td>
 </form>
 </tr>
 </table>

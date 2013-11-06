@@ -35,10 +35,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <form method="post">
 <input type="hidden" name="action" value="create" />
 <?= lang('product_name') ?>: <input type="text" name="name" />
-<input type="submit" value="<?= lang('product_create') ?>" />
+<input type="submit" class="btn" value="<?= lang('product_create') ?>" />
 </form>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('product_name') ?></th>
 	<th><?= lang('uniqueid') ?></th>
@@ -54,14 +54,14 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><form method="POST">
 		<input type="hidden" name="product_id" value="<?= $product['product_id'] ?>" />
 		<input type="hidden" name="action" value="delete" />
-		<input type="submit" value="<?= lang('delete') ?>" />
+		<input type="submit" class="btn btn-danger" value="<?= lang('delete') ?>" />
 		</form>
 		</td>
 </tr>
 <? } ?>
 </table>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('description') ?></th>
@@ -77,8 +77,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><input type="text" name="name" value="<?= $group['name'] ?>" /></td>
 	<td><input type="text" name="description" value="<?= $group['description'] ?>" /></td>
 	<td><input type="checkbox" name="hidden" value="true" <?= $group['hidden'] ? "checked" : "" ?> /></td>
-	<td><button type="submit" name="action" value="update_group">Update</button></td>
-	<td><button type="submit" name="action" value="delete_group">Delete</button></td>
+	<td><button type="submit" class="btn btn-primary" name="action" value="update_group">Update</button></td>
+	<td><button type="submit" class="btn btn-danger" name="action" value="delete_group">Delete</button></td>
 </form>
 </tr>
 <? } ?>
@@ -88,7 +88,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><input type="text" name="name" /></td>
 	<td><input type="text" name="description" /></td>
 	<td><input type="checkbox" name="hidden" value="true" /></td>
-	<td><button type="submit" name="action" value="create_group"><?= lang('add') ?></button></td>
+	<td><button type="submit" class="btn" name="action" value="create_group"><?= lang('add') ?></button></td>
 	<td></td>
 </form>
 </tr>

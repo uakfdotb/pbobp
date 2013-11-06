@@ -28,7 +28,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= lang('services') ?></h1>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('service') ?></th>
 	<th><?= lang('product') ?></th>

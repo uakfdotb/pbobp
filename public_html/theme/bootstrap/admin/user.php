@@ -30,7 +30,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('user_details') ?></h3>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('email_address') ?></th>
 	<td><?= $user['email'] ?></td>
@@ -56,7 +56,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <p><a href="service_add.php?user_id=<?= $user['user_id'] ?>"><?= lang('service_add_new') ?></a></p>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('name') ?></th>
 	<th><?= lang('product') ?></th>

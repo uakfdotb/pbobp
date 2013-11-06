@@ -48,22 +48,45 @@ foreach($include_fields as $field) {
 ?>
 
 <? foreach($include_fields as $field) { ?>
+	<tr>
 	<? if($field['type_nice'] == 'textbox') { ?>
-		<?= $field['name'] ?>: <input type="text" name="field_<?= $field['field_id'] ?>" value="<?= $include_selections[$field['field_id']] ?>" /> <?= $field['description'] ?><br />
+		<td><?= $field['name'] ?></td>
+		<td>
+			<input class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>" value="<?= $include_selections[$field['field_id']] ?>" />
+			<span class="help-block"><?= $field['description'] ?></span>
+		</td>
 	<? } else if($field['type_nice'] == 'textarea') { ?>
-		<?= $field['name'] ?>:<br /><textarea name="field_<?= $field['field_id'] ?>"><?= $include_selections[$field['field_id']] ?></textarea> <?= $field['description'] ?><br />
+		<td><?= $field['name'] ?></td>
+		<td>
+			<textarea class="input-block-level" name="field_<?= $field['field_id'] ?>"><?= $include_selections[$field['field_id']] ?></textarea>
+			<span class="help-block"><?= $field['description'] ?></span>
+		</td>
 	<? } else if($field['type_nice'] == 'checkbox') { ?>
-		<?= $field['name'] ?>: <input type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?> value="1" /> <?= $field['description'] ?><br />
+		<td><?= $field['name'] ?></td>
+		<td>
+			<label class="checkbox">
+			<input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?> value="1" />
+			<?= $field['description'] ?>
+			</label>
+		</td>
 	<? } else if($field['type_nice'] == 'radio') { ?>
-		<?= $field['name'] ?>: (<?= $field['description'] ?>)<br />
-		<? foreach($field['options'] as $option_id => $option_val) { ?>
-			<input type="radio" name="field_<?= $field['field_id'] ?>" value="<?= $option_id ?>" <?= $include_selections[$field['field_id']] == $option_val ? 'checked' : '' ?>/> <?= $option_val ?> <br />
-		<? } ?>
+		<td><?= $field['name'] ?><br />
+			<i><?= $field['description'] ?>)</i></td>
+		<td>
+			<? foreach($field['options'] as $option_id => $option_val) { ?>
+				<input class="input-block-level" type="radio" name="field_<?= $field['field_id'] ?>" value="<?= $option_id ?>" <?= $include_selections[$field['field_id']] == $option_val ? 'checked' : '' ?>/> <?= $option_val ?> <br />
+			<? } ?>
+		</td>
 	<? } else if($field['type_nice'] == 'dropdown') { ?>
-		<?= $field['name'] ?>: <select name="field_<?= $field['field_id'] ?>">
-		<? foreach($field['options'] as $option_array) { ?>
-			<option value="<?= $option_array['val'] ?>" <?= ($include_selections[$field['field_id']] == $option_array['val']) ? 'selected' : '' ?>><?= $option_array['val'] ?></option>
-		<? } ?>
-		</select> <?= $field['description'] ?><br />
+		<td><?= $field['name'] ?></td>
+		<td>
+			<select class="input-block-level" name="field_<?= $field['field_id'] ?>">
+				<? foreach($field['options'] as $option_array) { ?>
+					<option value="<?= $option_array['val'] ?>" <?= ($include_selections[$field['field_id']] == $option_array['val']) ? 'selected' : '' ?>><?= $option_array['val'] ?></option>
+				<? } ?>
+			</select>
+			<span class="help-block"><?= $field['description'] ?></span>
+		</td>
 	<? } ?>
+	</tr>
 <? } ?>

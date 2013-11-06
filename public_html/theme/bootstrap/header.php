@@ -25,7 +25,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	die('Access denied.');
 }
 ?>
-
+<!DOCTYPE HTML>
 <html>
 <head>
 	<title><?= lang('pbobp') ?><? if(isset($title)) { ?> -- <?= $title ?><? } ?></title>

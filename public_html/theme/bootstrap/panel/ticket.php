@@ -28,8 +28,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= $ticket['subject'] ?></h1>
 
-<? if(isset($message)) { ?>
-<p><b><i><?= lang($message) ?></i></b></p>
+<? if(!empty($message)) { ?>
+<p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
 <table>
@@ -57,7 +57,14 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? } ?>
 
 <form method="POST">
-<textarea name="content"></textarea>
-<br /><button type="submit" name="action" value="reply"><?= lang('ticket_reply') ?></button>
-<button type="submit" name="action" value="close"><?= lang('ticket_close') ?></button>
+<table style="width:100%;">
+<tr>
+	<td><textarea class="input-block-level" name="content" rows="8"></textarea></td>
+</tr><tr>
+	<td>
+		<button type="submit" class="btn btn-success" name="action" value="reply"><?= lang('ticket_reply') ?></button>
+		<button type="submit" class="btn btn-primary" name="action" value="close"><?= lang('ticket_close') ?></button>
+	</td>
+</tr>
+</table>
 </form>

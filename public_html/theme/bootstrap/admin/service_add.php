@@ -41,8 +41,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <h3><?= lang('pricing') ?></h3>
 
 <? foreach($prices as $price) { ?>
-<input type="radio" name="price_id" value="<?= $price['price_id'] ?>" />
-	<?
+<label class="radio">
+  <input type="radio" name="price_id" id="optionsRadios1" value="<?= $price['price_id'] ?>">
+  <?
 	$price_setup_lang = lang('setup_fee_amount', array('amount' => $price['amount_nice']));
 	$price_recurring_lang = lang('recurring_fee_amount', array('amount' => $price['recurring_amount_nice']));
 	?>
@@ -52,10 +53,12 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<? } else if($price['recurring_amount'] > 0) { ?><?= $price_setup_lang ?>
 	<? } else { ?>Free
 	<? } ?>
-	<br />
 <? } ?>
-
-<input type="radio" name="price_id" value="override" /> <?= lang('pricing_override_custom') ?>
+</label>
+<label class="radio">
+	<input type="radio" name="price_id" value="override" />
+	<?= lang('pricing_override_custom') ?>
+</label>
 
 <h3><?= lang('pricing_custom') ?></h3>
 
@@ -67,8 +70,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('currency') ?></th>
 </tr>
 <tr>
-	<td><input type="text" name="override_amount" /></td>
-	<td><input type="text" name="override_recurring_amount" /></td>
+	<td><input class="input-block-level" type="text" name="override_amount" /></td>
+	<td><input class="input-block-level" type="text" name="override_recurring_amount" /></td>
 	<td>
 		<?
 		$select_duration_name = "override_duration";
@@ -76,7 +79,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		?>
 	</td>
 	<td>
-		<select name="price_<?= $price_counter ?>_currency_id">
+		<select class="input-block-level" name="price_<?= $price_counter ?>_currency_id">
 		<? foreach($currencies as $currency) { ?>
 			<option value="<?= $currency['id'] ?>"><?= $currency['iso_code'] ?></option>
 		<? } ?>
@@ -87,8 +90,13 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('service_details') ?></h3>
 
-<p>Service name: <input type="text" name="name" /><br />
-<? $include_fields = $fields; include(dirname(__FILE__) . "/../include/fields.php"); ?></p>
+<table class="table-condensed">
+<tr>
+	<td>Service name</td>
+	<td><input class="input-block-level" type="text" name="name" /></td>
+</tr>
+<? $include_fields = $fields; include(dirname(__FILE__) . "/../include/fields.php"); ?>
+</table>
 
-<input type="submit" value="<?= lang('service_add') ?>" />
+<button type="submit" class="btn btn-primary"><?= lang('service_add') ?></button>
 </form>

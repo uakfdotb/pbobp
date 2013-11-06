@@ -34,7 +34,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('user_details') ?></h3>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('email_address') ?></th>
 	<td><?= $user['email'] ?></td>
@@ -56,8 +56,19 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <form method="POST">
 <input type="hidden" name="action" value="change_password" />
-<?= lang('old_password') ?> <input type="password" name="old_password" />
-<br /><?= lang('new_password') ?> <input type="password" name="new_password" />
-<br /><?= lang('confirm_password') ?> <input type="password" name="new_password_confirm" />
-<br /><input type="submit" value="<?= lang('change_password') ?>" />
+
+<table>
+<tr>
+	<td><?= lang('old_password') ?></td>
+	<td><input type="password" name="old_password" /></td>
+</tr><tr>
+	<td><?= lang('new_password') ?></td>
+	<td><input type="password" name="new_password" /></td>
+</tr><tr>
+	<td><?= lang('confirm_password') ?></td>
+	<td><input type="password" name="new_password_confirm" /></td>
+</tr>
+</table>
+
+<button type="submit" class="btn btn-primary"><?= lang('change_password') ?></button>
 </form>

@@ -37,5 +37,5 @@ Product: <select name="product_id">
 		<? } ?>
 	<? } ?>
 	</select>
-<input type="submit" value="<?= $lang['product_select'] ?>" />
+<button type="submit" class="btn btn-primary"><?= lang('product_select') ?></button>
 </form>

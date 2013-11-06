@@ -33,8 +33,17 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? } ?>
 
 <form method="POST" action="register.php">
-<?= lang('email_address') ?>: <input type="text" name="email" /><br />
-<?= lang('password') ?>: <input type="password" name="password" /><br />
+
+<table class="table">
+
+<tr>
+	<td><?= lang('email_address') ?></td>
+	<td><input type="text" name="email" /></td>
+</tr><tr>
+	<td><?= lang('password') ?></td>
+	<td><input type="password" name="password" /></td>
+</tr>
 <? $include_fields = $fields; include(dirname(__FILE__) . "/../include/fields.php"); ?>
+</table>
 <input type="submit" value="<?= lang('register') ?>" />
 </form>

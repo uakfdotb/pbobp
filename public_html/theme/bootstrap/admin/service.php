@@ -37,30 +37,52 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('service_details') ?></h3>
 
-Service name: <input type="text" name="name" value="<?= $service['name'] ?>" /><br />
-Status: <select name="status">
-	<? foreach($service_status_map as $status => $status_nice) { ?>
-		<option value="<?= $status ?>" <?= ($status == $service['status']) ? "selected" : "" ?>><?= lang($status_nice) ?></option>
-	<? } ?>
-	</select><br />
+<table class="table">
+<tr>
+	<td>Service name</td>
+	<td><input type="text" name="name" value="<?= $service['name'] ?>" /></td>
+</tr><tr>
+	<td>Status</td>
+	<td>
+		<select name="status">
+		<? foreach($service_status_map as $status => $status_nice) { ?>
+			<option value="<?= $status ?>" <?= ($status == $service['status']) ? "selected" : "" ?>><?= lang($status_nice) ?></option>
+		<? } ?>
+		</select>
+	</td>
+</tr>
 <? $include_fields = $fields; include("$themePath/include/fields.php"); ?>
+</table>
 
 <h3><?= lang('actions') ?></h3>
 
-<button type="submit" name="event" value="activate"><?= lang('activate') ?></button><br />
-<button type="submit" name="event" value="inactivate"><?= lang('inactivate') ?></button><br />
-<button type="submit" name="event" value="suspend"><?= lang('suspend') ?></button><br />
-<button type="submit" name="event" value="unsuspend"><?= lang('unsuspend') ?></button><br />
+<table>
+<tr>
+<td><button type="submit" class="btn btn-success" name="event" value="activate"><?= lang('activate') ?></button></td>
+<td><button type="submit" class="btn btn-danger" name="event" value="inactivate"><?= lang('inactivate') ?></button></td>
+<td><button type="submit" class="btn btn-warning" name="event" value="suspend"><?= lang('suspend') ?></button></td>
+<td><button type="submit" class="btn" name="event" value="unsuspend"><?= lang('unsuspend') ?></button></td>
 <? foreach($module_actions as $action_id => $action_array) { ?>
-<button type="submit" name="action_interface" value="<?= $action_id ?>"><?= $action_array['name'] ?></button>
+<td><button type="submit" class="btn" name="action_interface" value="<?= $action_id ?>"><?= $action_array['name'] ?></button></td>
 <? } ?>
+</tr>
+</table>
 
 <h3><?= lang('pricing') ?></h3>
 
-Recurring price: <input type="text" name="price_recurring" value="<?= $service['recurring_amount'] ?>" /><br />
-Recurring duration: <? $select_duration_name = "price_duration"; $select_duration_current = $service['recurring_duration']; include("$themePath/include/select_duration.php"); ?><br />
-Recurring date: <input type="text" name="due_date" value="<?= $service['recurring_date'] ?>" /><br />
+<table class="table-condensed">
+<tr>
+	<td>Recurring price</td>
+	<td><input type="text" name="price_recurring" value="<?= $service['recurring_amount'] ?>" /></td>
+</tr><tr>
+	<td>Recurring duration</td>
+	<td><? $select_duration_name = "price_duration"; $select_duration_current = $service['recurring_duration']; include("$themePath/include/select_duration.php"); ?></td>
+</tr><tr>
+	<td>Recurring date</td>
+	<td><input type="text" name="due_date" value="<?= $service['recurring_date'] ?>" /></td>
+</tr>
+</table>
 
-<input type="submit" value="Update service" />
+<button type="submit" class="btn btn-primary">Update service</button>
 
 </form>

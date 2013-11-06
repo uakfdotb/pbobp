@@ -51,11 +51,11 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <? foreach($fields as $field) { ?>
 <tr>
-	<td><input type="text" name="field_<?= $field['field_id'] ?>_name" value="<?= $field['name'] ?>" /></td>
-	<td><input type="text" name="field_<?= $field['field_id'] ?>_default" value="<?= $field['default'] ?>" /></td>
-	<td><textarea name="field_<?= $field['field_id'] ?>_description"><?= $field['description'] ?></textarea></td>
+	<td><input class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_name" value="<?= $field['name'] ?>" /></td>
+	<td><input class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_default" value="<?= $field['default'] ?>" /></td>
+	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_description"><?= $field['description'] ?></textarea></td>
 	<td>
-		<select name="field_<?= $field['field_id'] ?>_type" />
+		<select class="input-block-level" name="field_<?= $field['field_id'] ?>_type" />
 		<? foreach($field_type_map as $type => $type_nice) { ?>
 			<option value="<?= $type ?>" <?= ($field['type'] == $type) ? "selected" : "" ?>><?= $type_nice ?></option>
 		<? } ?>
@@ -63,17 +63,17 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	</td>
 	<td><input type="checkbox" name="field_<?= $field['field_id'] ?>_required" <?= $field['required'] ? "checked" : "" ?> /></td>
 	<td><input type="checkbox" name="field_<?= $field['field_id'] ?>_adminonly" <?= $field['adminonly'] ? "checked" : "" ?> /></td>
-	<td><textarea name="field_<?= $field['field_id'] ?>_options"><?= implode("\n", $field['options']) ?></textarea></td>
+	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_options"><?= implode("\n", $field['options']) ?></textarea></td>
 	<td><input type="checkbox" name="delete_field_<?= $field['field_id'] ?>" value="true" /></td>
 </tr>
 <? } ?>
 
 <tr>
-	<td><input type="text" name="field_new_name" /></td>
-	<td><input type="text" name="field_new_default" /></td>
-	<td><textarea name="field_new_description"></textarea></td>
+	<td><input class="input-block-level" type="text" name="field_new_name" /></td>
+	<td><input class="input-block-level" type="text" name="field_new_default" /></td>
+	<td><textarea class="input-block-level" name="field_new_description"></textarea></td>
 	<td>
-		<select name="field_new_type" />
+		<select class="input-block-level" name="field_new_type" />
 		<? foreach($field_type_map as $type => $type_nice) { ?>
 			<option value="<?= $type ?>"><?= $type_nice ?></option>
 		<? } ?>
@@ -81,10 +81,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	</td>
 	<td><input type="checkbox" name="field_new_required" /></td>
 	<td><input type="checkbox" name="field_new_adminonly" /></td>
-	<td><textarea name="field_new_options"></textarea></td>
+	<td><textarea class="input-block-level" name="field_new_options"></textarea></td>
 	<td></td>
 </tr>
 </table>
 
-<p><input type="submit" value="<?= lang('fields_update') ?>" /></p>
+<p><button type="submit" class="btn btn-primary"><?= lang('fields_update') ?></button></p>
 </form>

@@ -32,7 +32,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
-<table>
+<table class="table">
 <tr>
 	<th><?= lang('email_address') ?></th>
 	<th><?= lang('service') ?></th>

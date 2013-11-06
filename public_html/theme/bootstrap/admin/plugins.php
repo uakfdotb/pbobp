@@ -40,7 +40,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <input type="submit" value="<?= lang('plugin_add_manual') ?>" />
 </form>
 
-<table>
+<table class="table-condensed">
 <tr>
 	<th><?= lang('plugin') ?></th>
 	<th><?= lang('delete') ?></th>
@@ -61,7 +61,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('plugins_found') ?></h3>
 
-<table>
+<table class="table-condensed">
 <tr>
 	<th><?= lang('plugin') ?></th>
 	<th><?= lang('plugin_add') ?></th>

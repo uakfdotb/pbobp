@@ -27,15 +27,17 @@ require_once("../include/ticket.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$message = "";
-	$arguments = array('limit_page' => 0, 'order_by' => 'status');
+	$limit_page = 0;
 	$constraints = array();
+	$arguments = array('order_by' => 'status', 'extended' => true);
 
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
 	}
 
 	if(isset($_REQUEST['limit_page'])) {
-		$arguments['limit_page'] = $_REQUEST['limit_page'];
+		$limit_page = $_REQUEST['limit_page'];
+		$arguments['limit_page'] = $limit_page;
 	}
 
 	if(isset($_REQUEST['user_id'])) {
@@ -54,8 +56,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 
 	}
 
-	$tickets = ticket_list($constraints, $arguments);
-	get_page("tickets", "admin", array('tickets' => $tickets, 'message' => $message));
+	$tickets_ext = ticket_list($constraints, $arguments);
+	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count']));
 } else {
 	pbobp_redirect("../");
 }

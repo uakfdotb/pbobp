@@ -26,14 +26,23 @@ include("../include/include.php");
 require_once("../include/user.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
-	$message = "";
+	$filter_email = '';
+	$limit_page = 0;
+	$constraints = array();
+	$arguments = array('extended' => true);
 
-	if(isset($_REQUEST['message'])) {
-		$message = $_REQUEST['message'];
+	if(isset($_REQUEST['email'])) {
+		$filter_email = $_REQUEST['email'];
+		$constraints['email'] = array('~', '%' . $_REQUEST['email'] . '%');
 	}
 
-	$users = user_list();
-	get_page("users", "admin", array('users' => $users));
+	if(isset($_REQUEST['limit_page'])) {
+		$limit_page = $_REQUEST['limit_page'];
+		$arguments['limit_page'] = $limit_page;
+	}
+
+	$users_ext = user_list($constraints, $arguments);
+	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count']));
 } else {
 	pbobp_redirect("../");
 }

@@ -28,6 +28,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= lang('services') ?></h1>
 
+<? include($themePath . '/include/pagination.php'); ?>
+
 <table class="table">
 <tr>
 	<th><?= lang('service') ?></th>

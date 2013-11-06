@@ -25,15 +25,18 @@ include("../include/include.php");
 
 require_once("../include/transaction.php");
 
-if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
-	$message = "";
+if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '';
+	$limit_page = 0;
+	$constraints = array();
+	$arguments = array('extended' => true);
 
-	if(isset($_REQUEST['message'])) {
-		$message = $_REQUEST['message'];
+	if(isset($_REQUEST['limit_page'])) {
+		$limit_page = $_REQUEST['limit_page'];
+		$arguments['limit_page'] = $limit_page;
 	}
 
-	$transactions = transaction_list();
-	get_page("transactions", "admin", array('transactions' => $transactions));
+	$transactions_ext = transaction_list($constraints, $arguments);
+	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page));
 } else {
 	pbobp_redirect("../");
 }

@@ -26,14 +26,17 @@ include("../include/include.php");
 require_once("../include/service.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
-	$message = "";
+	$limit_page = 0;
+	$constraints = array();
+	$arguments = array('extended' => true, 'order_by' => 'status');
 
-	if(isset($_REQUEST['message'])) {
-		$message = $_REQUEST['message'];
+	if(isset($_REQUEST['limit_page'])) {
+		$limit_page = $_REQUEST['limit_page'];
+		$arguments['limit_page'] = $limit_page;
 	}
 
-	$services = service_list(array(), array('order_by' => 'status'));
-	get_page("services", "admin", array('services' => $services));
+	$services_ext = service_list($constraints, $arguments);
+	get_page("services", "admin", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count']));
 } else {
 	pbobp_redirect("../");
 }

@@ -155,6 +155,10 @@ function database_create_limit($context, &$limit_max, $limit_page = 0) {
 		$limit_max = min(intval($limit_max), $conf_limit_max);
 	}
 
+	if($limit_page < 0) {
+		$limit_page = 0;
+	}
+
 	$limit_start = intval($limit_page) * $limit_max;
 	$limit = "LIMIT $limit_start, $limit_max";
 	return $limit;
@@ -222,7 +226,7 @@ function database_object_list($select, $where_vars, $orderby_vars, $constraints,
 		//get number of pages
 		$result = database_query("SELECT COUNT(*) FROM " . $arguments['table'] . " " . $where, $vars);
 		$row = $result->fetch();
-		$extended_array['count'] = $row[0] / $limit_max;
+		$extended_array['count'] = ceil($row[0] / $limit_max);
 
 		return $extended_array;
 	} else {

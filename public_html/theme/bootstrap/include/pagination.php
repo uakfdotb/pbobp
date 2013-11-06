@@ -32,28 +32,15 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 $form_target = pbobp_create_form_target(array('limit_page'));
 ?>
 
-<table>
-<tr>
-	<td>
-		<? if($pagination_current > 0) { ?>
-		<a href="<?= $form_target['link_string'] ?>limit_page=<?= $pagination_current - 1 ?>">&lt;</a>
-		<? } ?>
-	</td>
-	<td>
-		<form method="GET">
-			<?= $form_target['form_string'] ?>
-			<select name="limit_page">
-				<? for($i = 0; $i < $pagination_total; $i++) { ?>
-				<option value="<?= $i ?>" <?= ($pagination_current == $i) ? "selected" : "" ?>><?= $i + 1 ?></option>
-				<? } ?>
-			</select>
-			<input type="submit" value="Jump" />
-		</form>
-	</td>
-	<td>
-		<? if($pagination_current < $pagination_total - 1) { ?>
-		<a href="<?= $form_target['link_string'] ?>limit_page=<?= $pagination_current + 1 ?>">&gt;</a>
-		<? } ?>
-	</td>
-</tr>
-</table>
+<form method="GET" class="form-inline">
+<?= $form_target['form_string'] ?>
+Page:
+<a href="<?= $form_target['link_string'] ?>limit_page=<?= max($pagination_current - 1, 0) ?>"><button class="btn btn-primary" type="button">Previous</button></a>
+<select class="input-small" name="limit_page">
+	<? for($i = 0; $i < $pagination_total; $i++) { ?>
+	<option value="<?= $i ?>" <?= ($pagination_current == $i) ? "selected" : "" ?>><?= $i + 1 ?></option>
+	<? } ?>
+	</select>
+	<button type="submit" class="btn btn-success">Jump</button>
+<a href="<?= $form_target['link_string'] ?>limit_page=<?= min($pagination_current + 1, $pagination_total - 1) ?>"><button class="btn btn-primary" type="button">Next</button></a>
+</form>

@@ -32,8 +32,8 @@ if(isset($_SESSION['user_id'])) {
 		$limit_page = $_GET['limit_page'];
 	}
 
-	$services = service_list(array('user_id' => $_SESSION['user_id']), array('order_by' => 'status', 'limit_page' => $limit_page));
-	get_page("services", "panel", array('services' => $services, 'limit_page' => $limit_page));
+	$services_ext = service_list(array('user_id' => $_SESSION['user_id']), array('order_by' => 'status', 'limit_page' => $limit_page, 'extended' => true));
+	get_page("services", "panel", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count']));
 } else {
 	pbobp_redirect("../");
 }

@@ -32,8 +32,8 @@ if(isset($_SESSION['user_id'])) {
 		$limit_page = $_GET['limit_page'];
 	}
 
-	$tickets = ticket_list(array('user_id' => $_SESSION['user_id']), array('order_by' => 'status', 'limit_page' => $limit_page, 'extended' => true));
-	get_page("tickets", "panel", array('tickets' => $tickets, 'limit_page' => $limit_page));
+	$tickets_ext = ticket_list(array('user_id' => $_SESSION['user_id']), array('order_by' => 'status', 'limit_page' => $limit_page, 'extended' => true));
+	get_page("tickets", "panel", array('tickets' => $tickets_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count']));
 } else {
 	pbobp_redirect("../");
 }

@@ -28,6 +28,13 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= lang('users') ?></h1>
 
+<form method="GET">
+E-mail address: <input type="text" name="email" value="<?= $filter_email ?>" />
+<button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<? include($themePath . '/include/pagination.php'); ?>
+
 <table class="table">
 <tr>
 	<th><?= lang('x_id', array('x' => lang('user'))) ?></th>

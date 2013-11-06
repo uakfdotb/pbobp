@@ -30,6 +30,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <p><a href="ticket_open.php"><?= lang('ticket_open') ?>.</a></p>
 
+<? include($themePath . '/include/pagination.php'); ?>
+
 <table class="table">
 <tr>
 	<th><?= lang('subject') ?></th>
@@ -38,7 +40,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('reply_last') ?></th>
 </tr>
 
-<? foreach($tickets['list'] as $ticket) { ?>
+<? foreach($tickets as $ticket) { ?>
 <tr>
 	<td><a href="ticket.php?ticket_id=<?= $ticket['ticket_id'] ?>"><?= $ticket['subject'] ?></a></td>
 	<td><?= $ticket['department_name'] ?></td>

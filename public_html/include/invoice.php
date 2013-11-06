@@ -215,37 +215,6 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 	return true;
 }
 
-function invoice_autocreate() {
-	//automatically create invoices for all services that are due soon but haven't gotten invoices made yet
-	//note that for services due on the same day with the same user/currency, we combine them into one invoice
-
-	//list relevant services
-	$invoice_pre_days = config_get('invoice_pre_days');
-	$result = database_query("SELECT id, user_id, name, recurring_date, recurring_duration, DATE_ADD(recurring_date, INTERVAL recurring_duration MONTH), recurring_amount, currency_id FROM pbobp_services WHERE recurring_date < DATE_ADD(NOW(), INTERVAL ? DAY) AND (SELECT COUNT(*) FROM pbobp_invoices, pbobp_invoices_lines WHERE pbobp_invoices_lines.service_id = pbobp_services.id AND pbobp_invoices.id = pbobp_invoices_lines.invoice_id AND pbobp_invoices.status = 0) = 0 AND recurring_duration > 0", array($invoice_pre_days));
-	$array = array(); //from userid|duedate|currencyid to list of services due
-
-	while($row = $result->fetch()) {
-		$user_id = $row[1];
-		$key = $user_id . "|" . $row[3] . "|" . $row[7];
-
-		if(!isset($array[$key])) {
-			$array[$key] = array();
-		}
-
-		$array[$key][] = array('id' => $row[0], 'user_id' => $user_id, 'name' => $row[2], 'due_date' => $row[3], 'next_due_date' => $row[4], 'duration' => service_duration_nice($row[5]), 'amount' => $row[6], 'currency_id' => $row[7]);
-	}
-
-	foreach($array as $key => $lines) {
-		$items = array();
-
-		foreach($lines as $line) {
-			$items[] = array('amount' => $line['amount'], 'service_id' => $line['id'], 'description' => "Payment for {$line['name']} ({$line['duration']}) for service until {$line['next_due']}.");
-		}
-
-		invoice_create($lines[0]['user_id'], $lines[0]['due_date'], $items, $lines[0]['currency_id']);
-	}
-}
-
 //removes a given line item and updates/cancels the invoice
 function invoice_line_remove($line_id) {
 	$result = database_query("SELECT invoice_id, amount FROM pbobp_invoice_lines WHERE id = ?", array($line_id));

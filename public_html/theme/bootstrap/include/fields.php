@@ -53,7 +53,7 @@ foreach($include_fields as $field) {
 	<? } else if($field['type_nice'] == 'textarea') { ?>
 		<?= $field['name'] ?>:<br /><textarea name="field_<?= $field['field_id'] ?>"><?= $include_selections[$field['field_id']] ?></textarea> <?= $field['description'] ?><br />
 	<? } else if($field['type_nice'] == 'checkbox') { ?>
-		<?= $field['name'] ?>: <input type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?>/> <?= $field['description'] ?><br />
+		<?= $field['name'] ?>: <input type="checkbox" name="field_<?= $field['field_id'] ?>" <?= $include_selections[$field['field_id']] == 1 ? 'checked' : '' ?> value="1" /> <?= $field['description'] ?><br />
 	<? } else if($field['type_nice'] == 'radio') { ?>
 		<?= $field['name'] ?>: (<?= $field['description'] ?>)<br />
 		<? foreach($field['options'] as $option_id => $option_val) { ?>

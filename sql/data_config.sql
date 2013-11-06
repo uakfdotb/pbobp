@@ -29,7 +29,7 @@ INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('service_displ
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('user_display_max', '50', 'Maximum number of users to display in a table', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('invoice_display_max', '50', 'Maximum number of invoices to display in a table', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('ticket_display_max', '50', 'Maximum number of tickets to display in a table', 0);
-INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('theme_name', 'basic', 'pbobp theme to display with', 0);
+INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('theme_name', 'bootstrap', 'pbobp theme to display with', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_from', 'noreply@example.com', 'E-mail address to send emails from', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp', '0', 'Set to use SMTP to send emails (instead of PHP mail function)', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp_host', 'localhost', 'SMTP hostname (prefix with ssl:// or tls:// to use SSL or TLS)', 0);

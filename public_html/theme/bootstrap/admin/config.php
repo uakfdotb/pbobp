@@ -26,6 +26,14 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= lang('admin_area') ?></h1>
+<h1><?= lang('configuration') ?></h1>
 
-<p><?= lang('admin_area_welcome') ?></p>
+<? if(!empty($message)) { ?>
+<p><b><i><?= $message ?></i></b></p>
+<? } ?>
+
+<form method="POST">
+<input type="hidden" name="action" value="update" />
+<? $include_fields = $config; include($themePath . '/include/fields.php'); ?>
+<input type="submit" value="<?= lang('update_configuration') ?>" />
+</form>

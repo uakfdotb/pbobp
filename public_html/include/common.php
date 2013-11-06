@@ -178,7 +178,7 @@ function get_page($page, $context, $args = array(), $override_path = false, $noh
 			$navbar = array("Home" => "{$url_pre}index.php", "Account" => "{$url_pre}account.php", "Services" => "{$url_pre}services.php", "Billing" => array("Invoices" => "{$url_pre}invoices.php"), "Support" => array("Tickets" => "{$url_pre}tickets.php"), "Logout" => "{$url_pre}index.php?action=logout");
 		}
 	} else if($context == "admin") {
-		$navbar = array("Home" => "index.php", "Users" => "users.php", "Billing" => array("Invoices" => "invoices.php", "Transactions" => "transactions.php"), "Services" => "services.php", "Support" => array("Tickets" => "tickets.php"), "Setup" => array("Plugins" => "plugins.php", "Products" => "products.php", "User fields" => "userfields.php", "Currencies" => "currency.php", "Support" => "setup_support.php"), "Configuration" => "config.php", "Logout" => "index.php?action=logout", "Extra" => array());
+		$navbar = array("Home" => "index.php", "Users" => "users.php", "Billing" => array("Invoices" => "invoices.php", "Transactions" => "transactions.php"), "Services" => "services.php", "Support" => array("Tickets" => "tickets.php"), "Setup" => array("Plugins" => "plugins.php", "Products" => "products.php", "User fields" => "userfields.php", "Currencies" => "currency.php", "Support" => "setup_support.php"), "Configuration" => "config.php", "Extra" => array(), "Logout" => "index.php?action=logout");
 	} else if($context == "none") {
 		//this is a special context denoting a non-page-type page
 	} else {

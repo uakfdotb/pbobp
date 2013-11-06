@@ -42,10 +42,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <tr>
 	<td><a href="service.php?service_id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
 	<td><?= $service['recurring_amount_nice'] ?></td>
-	<td><?= $service['duration_nice'] ?></td>
+	<td><?= lang($service['duration_nice']) ?></td>
 	<td><?= $service['creation_date'] ?></td>
 	<td><?= $service['recurring_date'] ?></td>
-	<td><?= $service['status_nice'] ?></td>
+	<td><?= lang($service['status_nice']) ?></td>
 </tr>
 <? } ?>
 

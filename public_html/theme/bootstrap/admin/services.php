@@ -45,11 +45,11 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><a href="service.php?service_id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
 	<td><a href="product.php?product_id=<?= $service['product_id'] ?>"><?= $service['product_name'] ?></a></td>
 	<td><a href="user.php?user_id=<?= $service['user_id'] ?>"><?= $service['email'] ?></a></td>
-	<td><?= $service['status_nice'] ?></td>
+	<td><?= lang($service['status_nice']) ?></td>
 	<td><?= $service['creation_date'] ?></td>
 	<td><?= $service['recurring_date'] ?></td>
 	<td><?= $service['recurring_amount_nice'] ?></td>
-	<td><?= $service['duration_nice'] ?></td>
+	<td><?= lang($service['duration_nice']) ?></td>
 </tr>
 <? } ?>
 </table>

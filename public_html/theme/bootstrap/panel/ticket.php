@@ -26,7 +26,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= $ticket['subject'] ?></h1>
+<h1>#<?= $ticket['ticket_id'] ?> -- <?= $ticket['subject'] ?></h1>
 
 <? if(!empty($message)) { ?>
 <p><b><i><?= $message ?></i></b></p>
@@ -53,7 +53,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <? foreach($thread as $message) { ?>
 <h3><?= $message['name'] ?>, on <?= $message['time'] ?></h3>
-<pre><?= $message['content'] ?></pre>
+<pre class="wordwrap"><?= $message['content'] ?></pre>
 <? } ?>
 
 <form method="POST">

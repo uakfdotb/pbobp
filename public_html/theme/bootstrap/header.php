@@ -30,6 +30,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <head>
 	<title><?= lang('pbobp') ?><? if(isset($title)) { ?> -- <?= $title ?><? } ?></title>
 	<link href="<?= $themePath ?>/assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?= $themePath ?>/assets/css/pbobp.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;

@@ -41,9 +41,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? foreach($invoices as $invoice) { ?>
 <tr>
 	<td><a href="invoice.php?invoice_id=<?= $invoice['invoice_id'] ?>"><?= $invoice['invoice_id'] ?></a></td>
-	<td><?= $invoice['status_nice'] ?></td>
-	<td><?= round($invoice['amount'], 2) ?></td>
-	<td><?= round($invoice['paid'], 2) ?></td>
+	<td><?= lang($invoice['status_nice']) ?></td>
+	<td><?= $invoice['amount_nice'] ?></td>
+	<td><?= $invoice['paid_nice'] ?></td>
 	<td><?= $invoice['date'] ?></td>
 	<td><?= $invoice['due_date'] ?></td>
 </tr>

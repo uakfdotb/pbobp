@@ -62,6 +62,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('product') ?></th>
 	<th><?= lang('date_due') ?></th>
 	<th><?= lang('amount_recurring') ?></th>
+	<th><?= lang('duration') ?></th>
 	<th><?= lang('status') ?></th>
 	<th><?= lang('date_created') ?></th>
 </tr>
@@ -71,8 +72,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><a href="service.php?service_id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
 	<td><a href="product.php?product_id=<?= $service['product_id'] ?>"><?= $service['product_name'] ?></a></td>
 	<td><?= $service['recurring_date'] ?></td>
-	<td><?= $service['recurring_amount'] ?> <?= $service['duration_nice'] ?></td>
-	<td><?= $service['status_nice'] ?></td>
+	<td><?= $service['recurring_amount_nice'] ?></td>
+	<td><?= lang($service['duration_nice']) ?></td>
+	<td><?= lang($service['status_nice']) ?></td>
 	<td><?= $service['creation_date'] ?></td>
 </tr>
 <? } ?>

@@ -26,7 +26,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= lang('invoice') ?> <?= $invoice['invoice_id'] ?></h1>
+<h1><?= lang('invoice') ?> #<?= $invoice['invoice_id'] ?></h1>
 
 <table>
 <tr>

@@ -54,12 +54,12 @@ $lang['x_id'] = '$x$ ID';
 $lang['register'] = 'Register';
 $lang['price'] = 'Price';
 $lang['pricing'] = 'Pricing';
-$lang['paid'] = 'Paid';
 $lang['balance'] = 'Total due';
 $lang['default'] = 'Default';
 $lang['options'] = 'Options';
 $lang['add'] = 'Add';
 $lang['time'] = 'Time';
+$lang['unknown'] = 'Unknown';
 $lang['error_x'] = 'Error: $x$.';
 
 $lang['one-time'] = 'One-time';
@@ -76,6 +76,10 @@ $lang['inactive'] = 'Inactive';
 $lang['suspended'] = 'Suspended';
 $lang['pending'] = 'Pending';
 $lang['active'] = 'Active';
+
+$lang['paid'] = 'Paid';
+$lang['unpaid'] = 'Unpaid';
+$lang['cancelled'] = 'Cancelled';
 
 $lang['product'] = 'Product';
 $lang['products'] = 'Products';

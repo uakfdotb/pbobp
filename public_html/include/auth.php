@@ -33,6 +33,11 @@ function auth_login($email, $password) {
 		return 'too_many_login_attempts';
 	}
 
+	//verify password not too long (to prevent denial of service?)
+	if(strlen($password) > config_get("auth_password_maxlen")) {
+		return 'invalid_email_or_password';
+	}
+
 	//get actual password, if any
 	$result = database_query("SELECT id, password FROM pbobp_users WHERE email = ?", array($email));
 
@@ -57,6 +62,11 @@ function auth_check($user_id, $password) {
 	require_once(includePath() . 'lock.php');
 
 	if(!checkLock('login')) {
+		return false;
+	}
+
+	//verify password not too long (to prevent denial of service?)
+	if(strlen($password) > config_get("auth_password_maxlen")) {
 		return false;
 	}
 

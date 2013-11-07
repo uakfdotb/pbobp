@@ -41,10 +41,10 @@ if(isset($_SESSION['user_id'])) {
 
 	if($result === true) {
 		$message = lang('success_registration');
-		pbobp_redirect('login.php?message=' . urlencode($message));
+		pbobp_redirect('login.php', array('message' => $message));
 	} else {
 		$message = lang('error_registration_x', array('x' => lang($result)));
-		pbobp_redirect("register.php?message=" . urlencode($message));
+		pbobp_redirect('register.php', array('message' => $message));
 	}
 } else {
 	$message = "";

@@ -49,7 +49,7 @@ if(isset($_SESSION['user_id'])) {
 			}
 		}
 
-		pbobp_redirect('account.php?message=' . urlencode($message));
+		pbobp_redirect('account.php', array('message' => $message));
 	}
 
 	$fields = field_list_object('user', $_SESSION['user_id']);

@@ -52,7 +52,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_configuration_updated');
 		}
 
-		pbobp_redirect("config.php?message=" . urlencode($message));
+		pbobp_redirect('config.php', array('message' => $message));
 	}
 
 	$config = config_list_as_field($object_type, $object_id);

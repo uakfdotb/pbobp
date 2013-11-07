@@ -285,8 +285,22 @@ function pbobp_session_clear() {
 	}
 }
 
-function pbobp_redirect($url, $statusCode = 303) {
-	header('Location: ' . $url, true, $statusCode);
+function pbobp_redirect($url, $get = array(), $statusCode = 303) {
+	$get_string = '';
+
+	foreach($get as $k => $v) {
+		if(!empty($get_string)) {
+			$get_string .= '&';
+		} else {
+			$get_string .= '?';
+		}
+
+		$get_string .= urlencode($k);
+		$get_string .= '=';
+		$get_string .= urlencode($v);
+	}
+
+	header('Location: ' . $url . $get_string, true, $statusCode);
 	exit;
 }
 

@@ -41,7 +41,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_department_deleted');
 		}
 
-		pbobp_redirect("setup_support.php?message=" . urlencode($message));
+		pbobp_redirect('setup_support.php', array('message' => $message));
 	}
 
 	$departments = ticket_departments();

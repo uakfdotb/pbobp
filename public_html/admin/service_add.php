@@ -80,14 +80,14 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 
 					if($result === true) {
 						$message = lang('success_service_created');
-						pbobp_redirect("service.php?service_id=$service_id&message=" . urlencode($message));
+						pbobp_redirect('service.php', array('service_id' => $service_id, 'message' => $message));
 					} else {
 						$message = $result;
 					}
 				}
 			}
 
-			pbobp_redirect("service_add.php?user_id=$user_id&product_id=$product_id&message=" . urlencode($message));
+			pbobp_redirect('service_add.php', array('user_id' => $user_id, 'product_id' => $product_id, 'message' => $message));
 		}
 
 		$product = product_get_details($product_id);

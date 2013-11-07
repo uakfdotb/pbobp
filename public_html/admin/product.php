@@ -78,7 +78,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			$message = lang('success_product_deleted');
 		}
 
-		pbobp_redirect("product.php?product_id=$product_id&message=" . urlencode($message));
+		pbobp_redirect('product.php', array('product_id' => $product_id, 'message' => $message));
 	}
 
 	//get list of service interfaces that we can use

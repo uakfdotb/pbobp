@@ -46,13 +46,13 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			$result = ticket_open($user_id, $_POST['department_id'], 0, $_POST['subject']);
 
 			if(is_numeric($result)) {
-				pbobp_redirect('ticket.php?ticket_id=' . urlencode($result));
+				pbobp_redirect('ticket.php', array('ticket_id' => $result));
 			} else {
 				$message = lang($result);
 			}
 		}
 
-		pbobp_redirect('ticket_open.php?user_id=' . urlencode($user_id) . '&message=' . urlencode($message));
+		pbobp_redirect('ticket_open.php', array('user_id' => $user_id, 'message' => $message));
 	}
 
 	//template

@@ -44,7 +44,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_plugin_deleted');
 		}
 
-		pbobp_redirect('plugins.php?message=' . urlencode($message));
+		pbobp_redirect('plugins.php', array('message' => $message));
 	}
 
 	$plugins = plugin_list();

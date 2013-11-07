@@ -84,7 +84,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 				}
 			}
 
-			pbobp_redirect("service.php?service_id=" . urlencode($service_id) . "&message_content=" . urlencode($message_content) . "&message_type=" . urlencode($message_type));
+			pbobp_redirect('service.php', array('service_id' => $service_id, 'message_content' => $message_content, 'message_type' => $message_type));
 		}
 
 		//get the HTML code to display

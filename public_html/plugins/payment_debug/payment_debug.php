@@ -76,7 +76,7 @@ class plugin_payment_debug {
 				}
 
 				$form_target = pbobp_create_form_target(array('message'));
-				pbobp_redirect($form_target['unsanitized_link_string'] . "message=" . urlencode($message));
+				pbobp_redirect($form_target['unsanitized_link_string'], array('message' => $message));
 			}
 
 			$currencies = currency_list();

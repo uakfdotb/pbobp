@@ -79,7 +79,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			$message = lang('success_invoice_updated');
 		}
 
-		pbobp_redirect("invoice.php?invoice_id=" . urlencode($invoice_id) . "&message=" . urlencode($message));
+		pbobp_redirect('invoice.php', array('invoice_id' => $invoice_id, 'message' => $message));
 	}
 
 	//try to find service

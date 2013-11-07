@@ -64,7 +64,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			}
 		}
 
-		pbobp_redirect('ticket.php?message=' . urlencode($message) . "&ticket_id=" . urlencode($ticket_id));
+		pbobp_redirect('ticket.php', array('message' => $message, 'ticket_id' => $ticket_id));
 	}
 
 	$tickets = ticket_list(array('ticket_id' => $ticket_id));

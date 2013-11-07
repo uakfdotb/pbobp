@@ -99,7 +99,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			$message = lang('success_service_updated');
 		}
 
-		pbobp_redirect("service.php?service_id=" . urlencode($service_id) . "&message=" . urlencode($message));
+		pbobp_redirect('service.php', array('service_id' => $service_id, 'message' => $message));
 	}
 
 	//try to find service
@@ -133,7 +133,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 						}
 					}
 
-					pbobp_redirect("service.php?service_id=" . urlencode($service_id) . "&message=" . urlencode($message));
+					pbobp_redirect('service.php', array('service_id' => $service_id, 'message' => $message));
 				}
 			}
 		}

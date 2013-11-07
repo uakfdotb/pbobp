@@ -45,7 +45,7 @@ if(isset($_SESSION['user_id'])) {
 		}
 	} else {
 		$message = lang('error_login_failed_x', array('x' => lang($result)));
-		pbobp_redirect("login.php?message=" . urlencode($message));
+		pbobp_redirect('login.php', array('message' => $message));
 	}
 } else {
 	$message = "";

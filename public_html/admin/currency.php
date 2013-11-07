@@ -44,7 +44,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_currency_deleted');
 		}
 
-		pbobp_redirect("currency.php?message=" . urlencode($message));
+		pbobp_redirect('currency.php', array('message' => $message));
 	}
 
 	$currencies = currency_list();

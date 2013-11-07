@@ -57,7 +57,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['ticket_id'])) {
 
 			if(!is_numeric($result)) {
 				$message = array('error_while_opening_ticket_x', array('x' => lang($result)));
-				pbobp_redirect('index.php?message=' . urlencode($message));
+				pbobp_redirect('index.php', array('message' => $message));
 			} else {
 				$ticket_id = $result;
 				$message = lang('success_ticket_opened');
@@ -67,7 +67,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['ticket_id'])) {
 			$message = lang('success_ticket_closed');
 		}
 
-		pbobp_redirect('ticket.php?message=' . urlencode($message) . "&ticket_id=" . urlencode($ticket_id));
+		pbobp_redirect('ticket.php', array('message' => $message, 'ticket_id' => $ticket_id));
 	}
 
 	$tickets = ticket_list(array('ticket_id' => $ticket_id));

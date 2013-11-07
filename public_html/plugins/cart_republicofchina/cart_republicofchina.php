@@ -142,7 +142,7 @@ class plugin_cart_republicofchina {
 									$_SESSION['plugin_cart_republicofchina'][] = $service;
 								}
 
-								pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=cart");
+								pbobp_redirect('plugin.php', array('plugin' => $this->plugin_name, 'view' => 'cart'));
 							}
 						}
 					} //else continue displaying
@@ -163,7 +163,7 @@ class plugin_cart_republicofchina {
 
 		//retrieve the services from session
 		if(empty($_SESSION['plugin_cart_republicofchina'])) {
-			pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=list");
+			pbobp_redirect('plugin.php', array('plugin' => $this->plugin_name, 'view' => 'list'));
 		} else {
 			$message = "";
 
@@ -215,7 +215,7 @@ class plugin_cart_republicofchina {
 					}
 				}
 
-				pbobp_redirect("plugin.php?plugin={$this->plugin_name}&view=cart&message=" . urlencode($message));
+				pbobp_redirect('plugin.php', array('plugin' => $this->plugin_name, 'view' => 'cart', 'message' => $message));
 			}
 
 			$services = $_SESSION['plugin_cart_republicofchina'];

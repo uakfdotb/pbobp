@@ -36,7 +36,9 @@ function ticket_get_details($ticket_id) {
 }
 
 //string error on failure or ticket id on success
-function ticket_open($user_identifier, $department_id, $service_id, $subject, $content) {
+//content is not set when an admin opens a ticket
+// (it should generally be set when user opens ticket)
+function ticket_open($user_identifier, $department_id, $service_id, $subject, $content = false) {
 	global $const;
 
 	//verify that either user exists or this is a valid email address
@@ -68,8 +70,12 @@ function ticket_open($user_identifier, $department_id, $service_id, $subject, $c
 
 	require_once(includePath() . 'service.php');
 	$service_id = intval($service_id);
-	if($service_id != 0 && service_get_details($service_id) === false) { //0 indicates ticket isn't related to specific service
-		return 'invalid_service';
+	if($service_id != 0) { //0 indicates ticket isn't related to specific service
+		if(service_get_details($service_id) === false) {
+			return 'invalid_service';
+		}
+	} else {
+		$service_id = 0;
 	}
 
 	//verify subject/content constraints
@@ -82,7 +88,11 @@ function ticket_open($user_identifier, $department_id, $service_id, $subject, $c
 	//open a new ticket
 	database_query("INSERT INTO pbobp_tickets (user_id, department_id, service_id, subject, email, modify_time) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)", array($user_id, $department_id, $service_id, $subject, $user_email));
 	$ticket_id = database_insert_id();
-	database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content) VALUES (?, ?, ?)", array($user_id, $ticket_id, $content));
+
+	if($content !== false) {
+		database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content) VALUES (?, ?, ?)", array($user_id, $ticket_id, $content));
+	}
+
 	return $ticket_id;
 }
 

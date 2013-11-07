@@ -26,25 +26,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= lang('register') ?></h1>
-
-<? if(!empty($message)) { ?>
-<p><b><i><?= $message ?></i></b></p>
-<? } ?>
-
-<form method="POST" action="register.php">
-<table class="table">
-
-<tr>
-	<td><?= lang('email_address') ?></td>
-	<td><input type="text" name="email" /></td>
-</tr><tr>
-	<td><?= lang('password') ?></td>
-	<td><input type="password" name="password" /></td>
-</tr>
-<? $include_fields = $fields; include(dirname(__FILE__) . "/../include/fields.php"); ?>
-</table>
-
-<?= $unsanitized_data['captcha_code'] ?>
-<p><button type="submit" class="btn btn-primary"><?= lang('register') ?></button></p>
-</form>
+<img id="captcha" src="<?= $basePath ?>/securimage/securimage_show.php" alt="CAPTCHA Image" /><br />
+<?= $lang_plugin['enter_captcha'] ?>
+<input type="text" name="captcha_code" size="10" maxlength="6" />
+<a href="#" onclick="document.getElementById('captcha').src = '<?= $basePath ?>/securimage/securimage_show.php?' + Math.random(); return false">[ Different Image ]</a>

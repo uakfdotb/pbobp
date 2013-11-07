@@ -234,6 +234,7 @@ $lang['too_many_login_attempts'] = 'Too many failed login attempts. Please wait 
 $lang['invalid_email_or_password'] = 'Invalid email address or password';
 $lang['try_again_later'] = 'Try again later';
 $lang['invalid_email'] = 'Invalid e-mail address';
+$lang['invalid_captcha'] = 'The captcha code you intered was not correct.';
 $lang['used_email'] = 'The specified e-mail address is already in use';
 $lang['short_password'] = 'The provided password is too short';
 $lang['long_password'] = 'The provided password is too long';

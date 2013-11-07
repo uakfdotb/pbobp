@@ -29,7 +29,15 @@ require_once("include/auth.php");
 if(isset($_SESSION['user_id'])) {
 	pbobp_redirect("panel/");
 } else if(isset($_POST['email']) && isset($_POST['password'])) {
-	$result = auth_register($_POST['email'], $_POST['password'], field_extract());
+	//attempt to get captcha code, if it is set
+	$captcha = '';
+
+	if(isset($_POST['captcha_code'])) {
+		$captcha = $_POST['captcha_code'];
+	}
+
+	//complete registration
+	$result = auth_register($_POST['email'], $_POST['password'], field_extract(), $captcha);
 
 	if($result === true) {
 		$message = lang('success_registration');
@@ -46,7 +54,7 @@ if(isset($_SESSION['user_id'])) {
 	}
 
 	$fields = field_list('user');
-	get_page("register", "main", array('message' => $message, 'fields' => $fields));
+	get_page("register", "main", array('message' => $message, 'fields' => $fields, 'unsanitized_data' => array('captcha_code' => auth_create_captcha())));
 }
 
 ?>

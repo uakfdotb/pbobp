@@ -36,3 +36,4 @@ INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp_hos
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp_port', '25', 'SMTP port', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp_username', '', 'SMTP username', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_smtp_password', '', 'SMTP password', 0);
+INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('captcha_interface', 'default', 'Captcha interface to use (default for none)', 0);

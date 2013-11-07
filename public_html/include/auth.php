@@ -78,8 +78,38 @@ function auth_check($user_id, $password) {
 	}
 }
 
+function auth_create_captcha() {
+	$interface = config_get('captcha_interface');
+
+	if($interface != 'default') { //the default is to not have any captcha interface
+		$obj = plugin_interface_get('captcha', $interface);
+
+		if($obj !== false) {
+			return $obj->create_captcha();
+		}
+	}
+
+	return ''; //no captcha
+}
+
+function auth_verify_captcha($code) {
+	$interface = config_get('captcha_interface');
+
+	if($interface != 'default') {
+		$obj = plugin_interface_get('captcha', $interface);
+
+		if($obj !== false) {
+			return $obj->verify_captcha($code);
+		} else {
+			return false; //captcha failure
+		}
+	} else {
+		return true; //no captcha, success
+	}
+}
+
 //true: success; string: error message
-function auth_register($email, $password, $fields) {
+function auth_register($email, $password, $fields, $captcha = false) {
 	global $const;
 	require_once(includePath() . 'lock.php');
 
@@ -116,6 +146,11 @@ function auth_register($email, $password, $fields) {
 
 	if($result !== true) {
 		return $result;
+	}
+
+	//validate captcha
+	if(!auth_verify_captcha($captcha)) {
+		return "invalid_captcha";
 	}
 
 	//hash password

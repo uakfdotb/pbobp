@@ -145,6 +145,7 @@ $lang['recurring_fee_amount'] = 'Recurring fee: $amount$';
 $lang['pricing_override_custom'] = 'Override with custom pricing';
 $lang['pricing_custom'] = 'Custom pricing';
 $lang['invalid_invoice'] = 'Invalid invoice supplied.';
+$lang['success_invoice_updated'] = 'Invoice updated successfully.';
 
 $lang['currencies'] = 'Currencies';
 $lang['currency'] = 'Currency';

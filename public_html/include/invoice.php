@@ -57,7 +57,7 @@ function invoice_list_extra(&$row) {
 }
 
 function invoice_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_invoices.id AS invoice_id, pbobp_invoices.user_id, pbobp_invoices.due_date, pbobp_invoices.status, pbobp_invoices.paid, pbobp_users.email, pbobp_invoices.amount, pbobp_invoices.`date`, pbobp_invoices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix FROM pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_invoices.currency_id";
+	$select = "SELECT pbobp_invoices.id AS invoice_id, pbobp_invoices.user_id, pbobp_invoices.due_date, pbobp_invoices.status, pbobp_invoices.paid, pbobp_users.email, pbobp_invoices.amount, pbobp_invoices.`date`, pbobp_invoices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.iso_code AS currency_code FROM pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_invoices.currency_id";
 	$where_vars = array('user_id' => 'pbobp_invoices.user_id', 'status' => 'pbobp_invoices.status', 'due_date' => 'pbobp_invoices.due_date', 'invoice_id' => 'pbobp_invoices.id');
 	$orderby_vars = array('invoice_id' => 'pbobp_invoices.id', 'status' => 'pbobp_invoices.status, pbobp_invoices.id');
 	$arguments['limit_type'] = 'invoice';
@@ -145,10 +145,21 @@ function invoice_create($user_id, $due_date, $items, $currency_id, $try_combine 
 }
 
 function invoice_status_nice($status) {
-	if($status == 0) return "unpaid";
-	else if($status == 1) return "paid";
-	else if($status == 2) return "cancelled";
-	else return "unknown";
+	$invoice_status_map = invoice_status_map();
+
+	if(isset($invoice_status_map[$status])) {
+		return $invoice_status_map[$status];
+	} else {
+		return 'unknown';
+	}
+}
+
+function invoice_status_map() {
+	return array(
+		0 => 'unpaid',
+		1 => 'paid',
+		2 => 'cancelled'
+		);
 }
 
 //makes a payment for an invoice
@@ -244,6 +255,35 @@ function invoice_line_remove($line_id) {
 			return;
 		}
 	}
+}
+
+//change the status of an invoice directly
+function invoice_update_status($invoice_id, $status) {
+	database_query("UPDATE pbobp_invoices SET status = ? WHERE id = ?", array($status, $invoice_id));
+}
+
+//lines and new_lines should be an array of line id => (amount, description)
+function invoice_update_lines($invoice_id, $lines, $new_lines) {
+	$old_lines = invoice_lines($invoice_id);
+
+	//delete old lines
+	foreach($old_lines as $line) {
+		if(!isset($lines[$line['id']])) {
+			database_query("DELETE FROM pbobp_invoices_lines WHERE id = ?", array($line['id']));
+		}
+	}
+
+	//update and insert
+	foreach($lines as $line_id => $line) {
+		database_query("UPDATE pbobp_invoices_lines SET amount = ?, description = ? WHERE id = ? AND invoice_id = ?", array($line['amount'], $line['description'], $line_id, $invoice_id));
+	}
+
+	foreach($new_lines as $line) {
+		database_query("INSERT INTO pbobp_invoices_lines (invoice_id, amount, description) VALUES (?, ?, ?)", array($invoice_id, $line['amount'], $line['description']));
+	}
+
+	//recalculate total
+	database_query("UPDATE pbobp_invoices SET amount = (SELECT SUM(amount) FROM pbobp_invoices_lines WHERE invoice_id = pbobp_invoices.id) WHERE id = ?", array($invoice_id));
 }
 
 ?>

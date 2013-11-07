@@ -26,8 +26,15 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
+	<?
+	/*
+		Before modifying or deleting the pbobp footer, please
+		consider donating at https://pbobp.lunanode.com/donate.php
+		or purchasing our support plan. Thanks!
+	*/
+	?>
 	<footer>
-	<p>Powered by <a href="https://pbobp.lunanode.com/">pbbop</a>.</p>
+	<p>Powered by <a href="https://pbobp.lunanode.com/">pbobp</a>.</p>
 	</footer>
 </div>
 

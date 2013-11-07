@@ -206,6 +206,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 		return false;
 	}
 
+	//initialize values we want to find
 	$summary = array();
 	$total_setup = 0.0;
 	$total_recurring = 0.0;
@@ -216,6 +217,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 		return false;
 	}
 
+	//find the corresponding price for the product
 	$price_array = price_match('product', $product_id, $duration, $currency_id);
 
 	if($price_array === false) {
@@ -224,6 +226,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 		product_price_summary_helper($price_array, $currency_details, 'product', $product_id, $summary, $total_setup, $total_recurring);
 	}
 
+	//grab prices for product fields and field options, by matching with the currency and recurring duration
 	$fields = product_fields($product_id);
 
 	foreach($fields as $field) {

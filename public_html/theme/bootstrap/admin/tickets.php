@@ -36,9 +36,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table class="table">
 <tr>
+	<th><?= lang('subject') ?></th>
 	<th><?= lang('email_address') ?></th>
 	<th><?= lang('service') ?></th>
-	<th><?= lang('subject') ?></th>
 	<th><?= lang('department') ?></th>
 	<th><?= lang('status') ?></th>
 	<th><?= lang('reply_last') ?></th>
@@ -46,9 +46,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <? foreach($tickets as $ticket) { ?>
 <tr>
+	<td><a href="ticket.php?ticket_id=<?= $ticket['ticket_id'] ?>"><?= $ticket['subject'] ?></a></td>
 	<td><a href="user.php?user_id=<?= $ticket['user_id'] ?>"><?= $ticket['email'] ?></a></td>
 	<td><a href="service.php?service_id=<?= $ticket['service_id'] ?>"><?= $ticket['service_name'] ?></a></td>
-	<td><a href="ticket.php?ticket_id=<?= $ticket['ticket_id'] ?>"><?= $ticket['subject'] ?></a></td>
 	<td><?= $ticket['department_name'] ?></td>
 	<td><?= lang('ticket_status_' . $ticket['status_nice']) ?></td>
 	<td><?= $ticket['modify_time'] ?></td>

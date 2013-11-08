@@ -124,7 +124,7 @@ function csrfguard_inject_helper()
 }
 function csrfguard_start()
 {
-	if (count($_POST))
+	if (count($_POST) && !isset($GLOBALS['CSRFGUARD_DISABLE']))
 	{
 		if (!isset($_POST['CSRFName']) || !isset($_POST['CSRFToken']))
 		{

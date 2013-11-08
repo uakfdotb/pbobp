@@ -66,7 +66,7 @@ class plugin_payment_debug {
 			if(isset($_POST['amount']) && isset($_POST['currency_id'])) {
 				require_once(includePath() . 'invoice.php');
 				require_once(includePath() . 'transaction.php');
-				transaction_add($_GET['invoice_id'], $_SESSION['user_id'], $this->friendly_name(), 'IP=' . $_SERVER['REMOTE_ADDR'], $_POST['amount'], $_POST['currency_id']);
+				transaction_add($_GET['invoice_id'], $_SESSION['user_id'], $this->friendly_name(), 0, 'IP=' . $_SERVER['REMOTE_ADDR'], $_POST['amount'], 0, $_POST['currency_id']);
 				$result = invoice_payment($_GET['invoice_id'], $_POST['amount'], $_POST['currency_id'], $_SESSION['user_id']);
 
 				if($result !== true) {

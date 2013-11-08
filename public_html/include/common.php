@@ -290,7 +290,7 @@ function pbobp_redirect($url, $get = array(), $statusCode = 303) {
 		$get_string .= urlencode($v);
 	}
 
-	header('Location: ' . $url . $get_string, true, $statusCode);
+	//header('Location: ' . $url . $get_string, true, $statusCode);
 	exit;
 }
 

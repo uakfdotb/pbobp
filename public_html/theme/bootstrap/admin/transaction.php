@@ -46,6 +46,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><?= $transaction['amount_nice'] ?></td>
 </tr>
 <tr>
+	<th><?= lang('amount_out') ?></th>
+	<td><?= $transaction['amount_out_nice'] ?></td>
+</tr>
+<tr>
 	<th><?= lang('iso_code') ?></th>
 	<td><?= $transaction['iso_code'] ?></td>
 </tr>

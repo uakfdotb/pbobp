@@ -188,15 +188,13 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 	if($new_paid > $invoice_details['amount']) {
 		//register extra as credit
 		//we'll have to convert the currency though
-		require_once(includePath() . 'user.php');
 		$extra = $new_paid - $invoice_details['amount'];
 		$new_paid = $invoice_details['amount'];
 
-		if($user_id !== false) {
-			//use invoice's currency here since the parameter may be false and we already did currency validation above
-			require_once(includePath() . 'currency.php');
-			user_apply_credit($user_id, currency_convert($extra, $invoice_details['currency_id']));
-		}
+		//use invoice's currency here since the parameter may be false and we already did currency validation above
+		require_once(includePath() . 'user.php');
+		require_once(includePath() . 'currency.php');
+		user_apply_credit($invoice_details['user_id'], currency_convert($extra, $invoice_details['currency_id']));
 	}
 
 	$set = "SET paid = ?";

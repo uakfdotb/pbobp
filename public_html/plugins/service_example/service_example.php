@@ -50,13 +50,14 @@ class plugin_service_example {
 	function install() {
 		//we want to create our fields in the pbobp_fields table
 		//this way, any products created with our service module will have our fields included
-		//since install may be called multiple times, delete all our tables first
+		require_once(includePath() . 'field.php');
+		field_add('plugin', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
+	}
 
-		if(isset($this->id)) { //should always be true
-			require_once(includePath() . 'field.php');
-			database_query("DELETE FROM pbobp_fields WHERE context = 'plugin' AND context_id = ?", array($this->id));
-			field_add('plugin', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
-		}
+	function uninstall() {
+		//delete any fields that we installed
+		require_once(includePath() . 'field.php');
+		field_context_remove('plugin', $this->id);
 	}
 
 	//a friendly name to describe this service interace

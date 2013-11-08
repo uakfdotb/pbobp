@@ -46,6 +46,16 @@ function currency_get_details($currency_id = false) {
 	}
 }
 
+function currency_id_by_code($currency_code) {
+	$result = database_query("SELECT id FROM pbobp_currencies WHERE iso_code = ? LIMIT 1", array($currency_code));
+
+	if($row = $result->fetch()) {
+		return $row[0];
+	} else {
+		return false;
+	}
+}
+
 //returns a list of currencies
 function currency_list() {
 	$result = database_query("SELECT id, iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies", array(), true);

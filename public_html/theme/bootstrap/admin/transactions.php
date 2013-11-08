@@ -37,6 +37,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('email_address') ?></th>
 	<th><?= lang('gateway') ?></th>
 	<th><?= lang('amount') ?></th>
+	<th><?= lang('fees') ?></th>
 	<th><?= lang('iso_code') ?></th>
 	<th><?= lang('time') ?></th>
 </tr>
@@ -48,6 +49,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><a href="user.php?user_id=<?= $transaction['user_id'] ?>"><?= $transaction['email'] ?></a></td>
 	<td><?= $transaction['gateway'] ?></td>
 	<td><?= $transaction['amount_nice'] ?></td>
+	<td><?= $transaction['amount_out_nice'] ?></td>
 	<td><?= $transaction['iso_code'] ?></td>
 	<td><?= $transaction['time'] ?></td>
 </tr>

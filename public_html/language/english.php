@@ -61,6 +61,7 @@ $lang['add'] = 'Add';
 $lang['time'] = 'Time';
 $lang['unknown'] = 'Unknown';
 $lang['edit'] = 'Edit';
+$lang['fees'] = 'Fees';
 $lang['error_x'] = 'Error: $x$.';
 
 $lang['one-time'] = 'One-time';

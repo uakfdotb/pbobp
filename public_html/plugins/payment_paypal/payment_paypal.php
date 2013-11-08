@@ -27,12 +27,40 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 class plugin_payment_paypal {
 	function __construct() {
-		$this->plugin_name = 'payment_debug';
+		$this->plugin_name = 'payment_paypal';
 		plugin_register_interface('payment', $this->plugin_name, $this);
+	}
+
+	function set_plugin_id($id) {
+		$this->id = $id;
+	}
+
+	function install() {
+		config_set('business', 'pbobp@example.com', 'The email address associated with your PayPal account', 0, 'plugin', $this->id);
+		config_set('notify_url', 'http://example.com/pbobp/plugins/payment_paypal/notify.php', 'The URL to notify.php in payment_paypal', 0, 'plugin', $this->id);
+	}
+
+	function uninstall() {
+		config_clear_object('plugin', $this->id);
 	}
 
 	function friendly_name() {
 		return 'PayPal';
+	}
+
+	function get_payment_code($invoice, $lines, $user) {
+		$params = array();
+		$params['business'] = config_get('business', 'plugin', $this->id, false);
+		$params['notify_url'] = config_get('notify_url', 'plugin', $this->id, false);
+		$params['return'] = config_get('site_address') . '/panel';
+		$params['cancel_return'] = $params['return'];
+
+		$params['item_name'] = 'Invoice ' . $invoice['invoice_id'];
+		$params['invoice'] = $invoice['invoice_id'];
+		$params['currency_code'] = $invoice['currency_code'];
+		$params['amount'] = $invoice['amount'];
+
+		return get_page("button", "none", $params, "/plugins/{$this->plugin_name}", true, true);
 	}
 }
 

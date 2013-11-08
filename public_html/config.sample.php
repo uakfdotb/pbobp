@@ -22,13 +22,13 @@
 */
 
 //database name (MySQL only); or see include/database.php
-$config['db_name'] = 'gpgmw';
+$config['db_name'] = 'pbobp';
 
 //database host
 $config['db_host'] = 'localhost';
 
 //database username
-$config['db_username'] = 'gpgmw';
+$config['db_username'] = 'pbobp';
 
 //database password
 $config['db_password'] = '';

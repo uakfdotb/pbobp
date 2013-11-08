@@ -32,7 +32,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$message = $_REQUEST['message'];
 	}
 
-	if(isset($_REQUEST['object_type']) && isset($_REQUEST['object_id'])) {
+	if(!empty($_REQUEST['object_type']) && !empty($_REQUEST['object_id'])) {
 		$object_type = $_REQUEST['object_type'];
 		$object_id = $_REQUEST['object_id'];
 	}
@@ -52,7 +52,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_configuration_updated');
 		}
 
-		pbobp_redirect('config.php', array('message' => $message));
+		pbobp_redirect('config.php', array('message' => $message, 'object_type' => $object_type, 'object_id' => $object_id));
 	}
 
 	$config = config_list_as_field($object_type, $object_id);

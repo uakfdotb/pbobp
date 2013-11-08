@@ -38,7 +38,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 			$message = lang('success_user_fields_updated');
 		}
 
-		pbobp_redirect('userfields.php', array('product_id' => $product_id, 'message' => $message));
+		pbobp_redirect('userfields.php', array('message' => $message));
 	}
 
 	$fields = field_list(array('context' => 'user'));

@@ -22,7 +22,7 @@
 */
 ?>
 
-<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="<?= $business ?>">
 <input type="hidden" name="item_name" value="<?= $item_name ?>">
@@ -34,5 +34,5 @@
 <input type="hidden" name="notify_url" value="<?= $notify_url ?>">
 <input type="hidden" name="return" value="<?= $return ?>">
 <input type="hidden" name="cancel_return" value="<?= $cancel_return ?>">
-<input type="image" src="http://www.sandbox.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
 </form>

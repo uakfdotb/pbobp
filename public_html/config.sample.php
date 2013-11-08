@@ -42,4 +42,15 @@ $config['email_web'] = 'support@example.com';
 //whether to enable debug mode
 $config['debug'] = true;
 
+//lock settings
+//these determine settings that prevent brute force attacks by a single IP address
+// the first three options are per-action and can be customized for each action
+// if an action isn't specified, the default times are used
+// see include/lock.php
+$config['lock_time_initial'] = array();
+$config['lock_count_overload'] = array();
+$config['lock_time_overload'] = array();
+$config['lock_time_reset'] = 300;
+$config['lock_time_max'] = 3600;
+
 ?>

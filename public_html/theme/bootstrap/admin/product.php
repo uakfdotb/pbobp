@@ -67,61 +67,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('fields') ?></h3>
 
-<p><?= lang('product_manager_fields_description') ?></p>
+<p><?= lang('field_manager_description') ?></p>
 
-<table class="table">
-<tr>
-	<th><?= lang('name') ?></th>
-	<th><?= lang('default') ?></th>
-	<th><?= lang('description') ?></th>
-	<th><?= lang('type') ?></th>
-	<th><?= lang('required') ?></th>
-	<th><?= lang('admin_only') ?></th>
-	<th><?= lang('options') ?></th>
-	<th><?= lang('pricing') ?></th>
-	<th><?= lang('delete') ?></th>
-</tr>
-
-<? foreach($fields as $field) { ?>
-<tr>
-	<td><input class="input-block-level" class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_name" value="<?= $field['name'] ?>" /></td>
-	<td><input class="input-block-level" type="text" name="field_<?= $field['field_id'] ?>_default" value="<?= $field['default'] ?>" /></td>
-	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_description"><?= $field['description'] ?></textarea></td>
-	<td>
-		<select class="input-block-level" name="field_<?= $field['field_id'] ?>_type" />
-		<? foreach($field_type_map as $type => $type_nice) { ?>
-			<option value="<?= $type ?>" <?= ($field['type'] == $type) ? "selected" : "" ?>><?= $type_nice ?></option>
-		<? } ?>
-		</select>
-	</td>
-	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_required" <?= $field['required'] ? "checked" : "" ?> /></td>
-	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_adminonly" <?= $field['adminonly'] ? "checked" : "" ?> /></td>
-	<td>
-		<textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_options"><? foreach($field['options'] as $option) { echo $option['val'] . "\n"; } ?></textarea>
-	</td>
-	<td><a href="field_pricing.php?field_id=<?= $field['field_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('edit') ?></button></a></td>
-	<td><input class="input-block-level" type="checkbox" name="delete_field_<?= $field['field_id'] ?>" value="true" /></td>
-</tr>
-<? } ?>
-
-<tr>
-	<td><input class="input-block-level" type="text" name="field_new_name" /></td>
-	<td><input class="input-block-level" type="text" name="field_new_default" /></td>
-	<td><textarea class="input-block-level" name="field_new_description"></textarea></td>
-	<td>
-		<select class="input-block-level" name="field_new_type" />
-		<? foreach($field_type_map as $type => $type_nice) { ?>
-			<option value="<?= $type ?>"><?= $type_nice ?></option>
-		<? } ?>
-		</select>
-	</td>
-	<td><input class="input-block-level" type="checkbox" name="field_new_required" /></td>
-	<td><input class="input-block-level" type="checkbox" name="field_new_adminonly" /></td>
-	<td><textarea class="input-block-level" name="field_new_options"></textarea></td>
-	<td></td>
-	<td></td>
-</tr>
-</table>
+<? $include_fields = $fields; $include_display_prices = true; include($themePath . '/include/edit_fields.php'); ?>
 
 <h3><?= lang('groups') ?></h3>
 

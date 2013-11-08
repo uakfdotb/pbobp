@@ -26,7 +26,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 ?>
 
-<h1><?= lang('user_fields') ?></h1>
+<h1><?= $group['name'] ?></h1>
 
 <? if(!empty($message)) { ?>
 <p><b><i><?= $message ?></i></b></p>
@@ -37,7 +37,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <p><?= lang('field_manager_description') ?></p>
 
-<? $include_fields = $fields; include($themePath . '/include/edit_fields.php'); ?>
+<? $include_fields = $fields; $include_display_prices = true; include($themePath . '/include/edit_fields.php'); ?>
 
 <p><button type="submit" class="btn btn-primary"><?= lang('fields_update') ?></button></p>
 </form>

@@ -91,7 +91,6 @@ $lang['product_create'] = 'Create product';
 $lang['product_select'] = 'Select product';
 $lang['group'] = 'Group';
 $lang['groups'] = 'Groups';
-$lang['product_manager_fields_description'] = 'For field options (applicable to drop-down and radio types only), use new line for each option.';
 $lang['product_manager_groups_description'] = 'Add and remove groups that this product is a member of below. The product will inherit configuration fields from each group.';
 $lang['success_product_updated'] = 'Product updated successfully.';
 $lang['error_product_not_found'] = 'Specified product does not exist!';
@@ -102,6 +101,9 @@ $lang['success_product_group_updated'] = 'Product group updated successfully.';
 $lang['success_product_group_deleted'] = 'Product group deleted successfully.';
 $lang['success_prices_updated'] = 'Prices updated successfully.';
 $lang['field_pricing_description'] = 'Below, you can set prices for a given product field. The topmost table is for the field itself (applies for checkboxes, if the checkbox is checked). If you are using a dropdown or radio field, then the remaining tables are for each option (price will be applied if the option is selected). Note that you only need to define monthly pricing if you want the price to be proportional to the number of months.';
+$lang['success_product_group_fields_updated'] = 'Product group fields updated successfully.';
+$lang['field_manager_description'] = 'For field options (applicable to drop-down and radio types only), use new line for each option.';
+$lang['edit_fields'] = 'Edit fields';
 
 $lang['configuration'] = 'Configuration';
 $lang['update_configuration'] = 'Update configuration';

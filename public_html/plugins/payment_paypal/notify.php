@@ -12,10 +12,10 @@ $business = config_get('business', 'plugin', $paypal->id, false);
 // CONFIG: Enable debug mode. This means we'll log requests into 'ipn.log' in the same directory.
 // Especially useful if you encounter network errors or other intermittent problems with IPN (validation).
 // Set this to 0 once you go live or don't require logging.
-define("DEBUG", 1);
+define("DEBUG", 0);
 
 // Set to 0 once you're ready to go live
-define("USE_SANDBOX", 1);
+define("USE_SANDBOX", 0);
 
 // Log file to write to
 define("LOG_FILE", "./ipn.log");

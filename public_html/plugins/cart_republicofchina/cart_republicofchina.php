@@ -192,7 +192,12 @@ class plugin_cart_republicofchina {
 
 					if(!isset($_SESSION['user_id'])) {
 						if(!empty($_POST['register_email']) && !empty($_POST['register_password'])) {
-							$result = auth_register($_POST['register_email'], $_POST['register_password'], field_extract());
+							$captcha = '';
+							if(!empty($_POST['captcha_code'])) {
+								$captcha = $_POST['captcha_code'];
+							}
+
+							$result = auth_register($_POST['register_email'], $_POST['register_password'], field_extract(), $captcha);
 
 							if($result !== true) {
 								$message = lang($result);
@@ -222,7 +227,7 @@ class plugin_cart_republicofchina {
 			$is_loggedin = isset($_SESSION['user_id']);
 			$register_fields = field_list(array('context' => 'user'));
 
-			get_page("cart", "main", array('services' => $services, 'is_loggedin' => $is_loggedin, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'register_fields' => $register_fields, 'message' => $message), "/plugins/{$this->plugin_name}");
+			get_page("cart", "main", array('services' => $services, 'is_loggedin' => $is_loggedin, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'register_fields' => $register_fields, 'message' => $message, 'unsanitized_data' => array('captcha_code' => auth_create_captcha())), "/plugins/{$this->plugin_name}");
 		}
 	}
 }

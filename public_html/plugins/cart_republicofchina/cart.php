@@ -86,6 +86,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <?= lang('email_address') ?>: <input type="text" name="register_email" /><br />
 <?= lang('password') ?>: <input type="password" name="register_password" /><br />
 <? $include_fields = $register_fields; include($themePath . "/include/fields.php"); ?>
+<?= $unsanitized_data['captcha_code'] ?>
 
 </td>
 </tr></table>

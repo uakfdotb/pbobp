@@ -220,7 +220,7 @@ class plugin_cart_republicofchina {
 
 			$services = $_SESSION['plugin_cart_republicofchina'];
 			$is_loggedin = isset($_SESSION['user_id']);
-			$register_fields = field_list('user');
+			$register_fields = field_list(array('context' => 'user'));
 
 			get_page("cart", "main", array('services' => $services, 'is_loggedin' => $is_loggedin, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'register_fields' => $register_fields, 'message' => $message), "/plugins/{$this->plugin_name}");
 		}

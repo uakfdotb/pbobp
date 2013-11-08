@@ -63,62 +63,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('pricing') ?></h3>
 
-<table class="table">
-<tr>
-	<th><?= lang('duration') ?></th>
-	<th><?= lang('amount') ?></th>
-	<th><?= lang('amount_recurring') ?></th>
-	<th><?= lang('currency') ?></th>
-	<th><?= lang('delete') ?></th>
-</tr>
-
-<?
-$price_counter = 0;
-foreach($prices as $price) {
-	?>
-	<tr>
-		<td>
-			<?
-			$select_duration_name = "price_{$price_counter}_duration";
-			$select_duration_current = $price['duration'];
-			include(dirname(__FILE__) . "/../include/select_duration.php");
-			?>
-		</td>
-		<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_amount" value="<?= pbobp_currency_round($price['amount']) ?>" /></td>
-		<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_recurring" value="<?= pbobp_currency_round($price['recurring_amount']) ?>" /></td>
-		<td>
-			<select class="input-block-level" name="price_<?= $price_counter ?>_currency_id">
-			<? foreach($currencies as $currency) { ?>
-				<option value="<?= $currency['id'] ?>" <?= ($currency['id'] == $price['currency_id']) ? "selected" : "" ?>><?= $currency['iso_code'] ?></option>
-			<? } ?>
-			</select>
-		</td>
-		<td><input class="input-block-level" type="checkbox" name="price_<?= $price_counter ?>_delete" /></td>
-	</tr>
-	<?
-	$price_counter++;
-}
-?>
-
-<tr>
-	<td>
-		<?
-		$select_duration_name = "price_{$price_counter}_duration";
-		include(dirname(__FILE__) . "/../include/select_duration.php");
-		?>
-	</td>
-	<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_amount" /></td>
-	<td><input class="input-block-level" type="text" name="price_<?= $price_counter ?>_recurring" /></td>
-	<td>
-		<select class="input-block-level" name="price_<?= $price_counter ?>_currency_id">
-		<? foreach($currencies as $currency) { ?>
-			<option value="<?= $currency['id'] ?>"><?= $currency['iso_code'] ?></option>
-		<? } ?>
-		</select>
-	</td>
-	<td></td>
-</tr>
-</table>
+<? $include_prices = $prices; $include_price_pre = 'price_'; include($themePath . '/include/prices.php'); ?>
 
 <h3><?= lang('fields') ?></h3>
 
@@ -133,6 +78,7 @@ foreach($prices as $price) {
 	<th><?= lang('required') ?></th>
 	<th><?= lang('admin_only') ?></th>
 	<th><?= lang('options') ?></th>
+	<th><?= lang('pricing') ?></th>
 	<th><?= lang('delete') ?></th>
 </tr>
 
@@ -150,7 +96,10 @@ foreach($prices as $price) {
 	</td>
 	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_required" <?= $field['required'] ? "checked" : "" ?> /></td>
 	<td><input class="input-block-level" type="checkbox" name="field_<?= $field['field_id'] ?>_adminonly" <?= $field['adminonly'] ? "checked" : "" ?> /></td>
-	<td><textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_options"><?= implode("\n", $field['options']) ?></textarea></td>
+	<td>
+		<textarea class="input-block-level" name="field_<?= $field['field_id'] ?>_options"><? foreach($field['options'] as $option) { echo $option['val'] . "\n"; } ?></textarea>
+	</td>
+	<td><a href="field_pricing.php?field_id=<?= $field['field_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('edit') ?></button></a></td>
 	<td><input class="input-block-level" type="checkbox" name="delete_field_<?= $field['field_id'] ?>" value="true" /></td>
 </tr>
 <? } ?>
@@ -169,6 +118,7 @@ foreach($prices as $price) {
 	<td><input class="input-block-level" type="checkbox" name="field_new_required" /></td>
 	<td><input class="input-block-level" type="checkbox" name="field_new_adminonly" /></td>
 	<td><textarea class="input-block-level" name="field_new_options"></textarea></td>
+	<td></td>
 	<td></td>
 </tr>
 </table>

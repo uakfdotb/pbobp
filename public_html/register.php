@@ -53,7 +53,7 @@ if(isset($_SESSION['user_id'])) {
 		$message = $_REQUEST['message'];
 	}
 
-	$fields = field_list('user');
+	$fields = field_list(array('context' => 'user'));
 	get_page("register", "main", array('message' => $message, 'fields' => $fields, 'unsanitized_data' => array('captcha_code' => auth_create_captcha())));
 }
 

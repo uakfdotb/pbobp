@@ -41,7 +41,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		pbobp_redirect('userfields.php', array('product_id' => $product_id, 'message' => $message));
 	}
 
-	$fields = field_list('user');
+	$fields = field_list(array('context' => 'user'));
 	get_page("userfields", "admin", array('fields' => $fields, 'field_type_map' => field_type_map()));
 } else {
 	pbobp_redirect("../");

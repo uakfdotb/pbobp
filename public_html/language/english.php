@@ -60,6 +60,7 @@ $lang['options'] = 'Options';
 $lang['add'] = 'Add';
 $lang['time'] = 'Time';
 $lang['unknown'] = 'Unknown';
+$lang['edit'] = 'Edit';
 $lang['error_x'] = 'Error: $x$.';
 
 $lang['one-time'] = 'One-time';
@@ -99,6 +100,8 @@ $lang['success_product_created'] = 'Product created successfully.';
 $lang['success_product_group_created'] = 'Product group created successfully.';
 $lang['success_product_group_updated'] = 'Product group updated successfully.';
 $lang['success_product_group_deleted'] = 'Product group deleted successfully.';
+$lang['success_prices_updated'] = 'Prices updated successfully.';
+$lang['field_pricing_description'] = 'Below, you can set prices for a given product field. The topmost table is for the field itself (applies for checkboxes, if the checkbox is checked). If you are using a dropdown or radio field, then the remaining tables are for each option (price will be applied if the option is selected). Note that you only need to define monthly pricing if you want the price to be proportional to the number of months.';
 
 $lang['configuration'] = 'Configuration';
 $lang['update_configuration'] = 'Update configuration';

@@ -81,7 +81,7 @@ function price_match($context, $context_id, $duration, $currency_id) {
 	if($row = $result->fetch()) {
 		return $row;
 	} else if($duration > 1) {
-		//try monthly and multiple by duration
+		//try monthly and multiply by duration
 		$result = database_query("SELECT duration, amount, recurring_amount, currency_id FROM pbobp_prices WHERE context = ? AND context_id = ? AND duration = 1 AND currency_id = ?", array($context, $context_id, $currency_id), true);
 
 		if($row = $result->fetch()) {

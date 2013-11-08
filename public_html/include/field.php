@@ -110,7 +110,7 @@ function field_parse($fields, $field_context, &$new_fields, $field_context_id = 
 //stores sanitized data into database
 function field_store($new_fields, $object_id, $object_context) {
 	foreach($new_fields as $field_id => $val) {
-		database_query("INSERT INTO pbobp_fields_values (object_id, context, context_id, field_id, val) VALUES (?, ?, ?, ?, ?)", array($object_id, $object_context, $field_id, $val));
+		database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($object_id, $object_context, $field_id, $val));
 	}
 }
 
@@ -197,27 +197,27 @@ function field_set_by_field_id($object_context, $object_id, $field_id, $val) {
 	database_query("UPDATE pbobp_fields_values SET pbobp_fields_values.val = ? WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields_values.field_id = ?", array($val, $object_context, $object_id, $field_id));
 }
 
-//returns list of fields for given context
-function field_list($field_context, $field_context_id = 0) {
-	$result = database_query("SELECT id, name, `default`, description, type, required, adminonly FROM pbobp_fields WHERE context = ? AND context_id = ?", array($field_context, $field_context_id), true);
-	$array = array();
+function field_list_extra(&$row) {
+	$row['type_nice'] = field_type_nice($row['type']);
+	$row['options'] = array();
 
-	while($row = $result->fetch()) {
-		$type = field_type_nice($row['type']);
-		$options = array();
+	if($row['type_nice'] == "dropdown" || $row['type_nice'] == "radio") {
+		$result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['field_id']), true);
 
-		if($type == "dropdown" || $type == "radio") {
-			$options_result = database_query("SELECT id AS option_id, val FROM pbobp_fields_options WHERE field_id = ?", array($row['id']), true);
-
-			while($options_row = $options_result->fetch()) {
-				$options[] = $options_row;
-			}
+		while($option_row = $result->fetch()) {
+			$row['options'][] = $option_row;
 		}
-
-		$array[] = array('field_id' => $row['id'], 'name' => $row['name'], 'default' => $row['default'], 'type' => $row['type'], 'required' => $row['required'] != 0, 'adminonly' => $row['adminonly'] != 0, 'options' => $options, 'description' => $row['description'], 'type_nice' => field_type_nice($row['type']));
 	}
+}
 
-	return $array;
+function field_list($constraints = array(), $arguments = array()) {
+	$select = "SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields.context, pbobp_fields.context_id FROM pbobp_fields";
+	$where_vars = array('context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id', 'field_id' => 'pbobp_fields.id');
+	$orderby_vars = array('field_id' => 'pbobp_fields.id');
+	$arguments['limit_type'] = 'field';
+	$arguments['table'] = 'pbobp_fields';
+
+	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'field_list_extra');
 }
 
 //add a field (or update existing field)
@@ -236,10 +236,30 @@ function field_add($field_context, $field_context_id, $name, $default, $descript
 
 		database_query("UPDATE pbobp_fields SET name = ?, `default` = ?, description = ?, type = ?, required = ?, adminonly = ? WHERE id = ?", array($name, $default, $description, $type, $required, $adminonly, $field_id));
 
-		//clear field options because we'll re-add them
-		database_query("DELETE FROM pbobp_fields_options WHERE field_id = ?", array($field_id));
+		//get a list of existing option ID's
+		// we will attempt to replace as many as we can
+		// then we insert any remaining options from the parameter or delete any remaining existing options
+		//we do this instead of clearing existing options since prices and other objects may be set related to each option that we may not want to change if the options haven't significantly changed
+		$result = database_query("SELECT id FROM pbobp_fields_options WHERE field_id = ?", array($field_id));
+		$option_ids = array();
+
+		while($row = $result->fetch()) {
+			$option_ids[] = $row[0];
+		}
+
+		while(!empty($option_ids) && !empty($options)) {
+			$option = array_shift($options);
+			$option_id = array_shift($option_ids);
+			database_query("UPDATE pbobp_fields_options SET val = ? WHERE id = ?", array($option, $option_id));
+		}
+
+		while(!empty($option_ids)) {
+			$option_id = array_shift($option_ids);
+			database_query("DELETE FROM pbobp_fields_options WHERE id = ?", array($option_id));
+		}
 	}
 
+	//insert the options (or, remaining options)
 	foreach($options as $option) {
 		database_query("INSERT INTO pbobp_fields_options (field_id, val) VALUES (?, ?)", array($field_id, $option));
 	}

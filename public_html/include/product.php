@@ -164,7 +164,7 @@ function product_fields($product_id, $include_prices = false) {
 	$contexts = product_field_contexts($product_id);
 
 	foreach($contexts as $context_array) {
-		$fields = array_merge($fields, field_list($context_array['context'], $context_array['context_id']));
+		$fields = array_merge($fields, field_list($context_array));
 	}
 
 	if($include_prices) {
@@ -182,13 +182,12 @@ function product_fields($product_id, $include_prices = false) {
 	return $fields;
 }
 
-function product_price_summary_helper($price_array, $currency_details, $context, $context_id, &$summary, &$total_setup, &$total_recurring) {
+function product_price_summary_helper($price_array, $currency_details, $context, $context_id, $description, &$summary, &$total_setup, &$total_recurring) {
 	$amount = $price_array['amount'];
 	$recurring_amount = $price_array['recurring_amount'];
 
 	$total_setup += $amount;
 	$total_recurring += $recurring_amount;
-	$description = $product_details['name'];
 	$summary[] = array('context' => $context, 'context_id' => $context_id, 'amount' => $amount, 'recurring_amount' => $recurring_amount, 'description' => $description, 'amount_nice' => currency_format($amount, $currency_details['prefix'], $currency_details['suffix']), 'recurring_amount_nice' => currency_format($recurring_amount, $currency_details['prefix'], $currency_details['suffix']));
 }
 
@@ -223,7 +222,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 	if($price_array === false) {
 		return false;
 	} else {
-		product_price_summary_helper($price_array, $currency_details, 'product', $product_id, $summary, $total_setup, $total_recurring);
+		product_price_summary_helper($price_array, $currency_details, 'product', $product_id, $product_details['name'], $summary, $total_setup, $total_recurring);
 	}
 
 	//grab prices for product fields and field options, by matching with the currency and recurring duration
@@ -237,7 +236,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 			$price_array = price_match('field', $field_id, $duration, $currency_id);
 
 			if($price_array !== false) {
-				product_price_summary_helper($price_array, $currency_details, 'field', $field_id, $summary, $total_setup, $total_recurring);
+				product_price_summary_helper($price_array, $currency_details, 'field', $field_id, $field['name'], $summary, $total_setup, $total_recurring);
 			}
 		} else if(($field['type_nice'] == 'dropdown' || $field['type_nice'] == 'radio') && isset($field_values[$field_id])) {
 			//find the corresponding option id
@@ -254,7 +253,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 			$price_array = price_match('field_option', $option_id, $duration, $currency_id);
 
 			if($price_array !== false) {
-				product_price_summary_helper($price_array, $currency_details, 'field_option', $option_id, $summary, $total_setup, $total_recurring);
+				product_price_summary_helper($price_array, $currency_details, 'field_option', $option_id, $field['name'], $summary, $total_setup, $total_recurring);
 			}
 		}
 	}

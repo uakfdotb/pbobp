@@ -27,10 +27,11 @@ require_once("../include/invoice.php");
 require_once("../include/ticket.php");
 require_once("../include/service.php");
 require_once("../include/user.php");
+require_once("../include/auth.php");
 
 if(isset($_SESSION['user_id'])) {
 	if(isset($_REQUEST['action']) && $_REQUEST['action'] == "logout") {
-		pbobp_session_clear();
+		auth_logout();
 		pbobp_redirect("../");
 	} else {
 		$message = "";

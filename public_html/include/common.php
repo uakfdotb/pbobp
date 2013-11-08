@@ -275,16 +275,6 @@ function recursiveDelete($dirPath) {
 	rmdir($dirPath);
 }
 
-//clear both the session and any cookies
-function pbobp_session_clear() {
-	session_destroy();
-
-	foreach($_COOKIE as $key => $value) {
-        setcookie($key, '', time()-1000);
-        setcookie($key, '', time()-1000, '/');
-	}
-}
-
 function pbobp_redirect($url, $get = array(), $statusCode = 303) {
 	$get_string = '';
 

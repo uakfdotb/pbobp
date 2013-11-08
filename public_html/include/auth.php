@@ -235,4 +235,19 @@ function auth_validate_token($user_id, $token) {
 	}
 }
 
+function auth_logout() {
+	if(isset($_SESSION['user_id'])) {
+		//delete lingering auth tokens
+		database_query("DELETE FROM pbobp_auth_tokens WHERE user_id = ?", array($_SESSION['user_id']));
+	}
+
+	//clear the session and cookies
+	session_destroy();
+
+	foreach($_COOKIE as $key => $value) {
+        setcookie($key, '', time()-1000);
+        setcookie($key, '', time()-1000, '/');
+	}
+}
+
 ?>

@@ -106,7 +106,7 @@ function config_set($key, $val, $description = '', $type = 0, $object_type = '',
 		database_query("UPDATE pbobp_configuration SET v = ? WHERE id = ?", array($val, $row[0]));
 	} else {
 		//don't handle object_id specially since it's ignored parameter anyway
-		database_query("INSERT INTO pbobp_configuration (k, v, description, type, object_type, object_id) VALUES (?, ?, ?, ?)", array($key, $val, $description, $type, $object_type, $object_id));
+		database_query("INSERT INTO pbobp_configuration (k, v, description, type, object_type, object_id) VALUES (?, ?, ?, ?, ?, ?)", array($key, $val, $description, $type, $object_type, $object_id));
 	}
 }
 
@@ -134,6 +134,11 @@ function config_list_as_field($object_type, $object_id) {
 	}
 
 	return $fields;
+}
+
+//clears a given object in configuration
+function config_clear_object($object_type, $object_id) {
+	database_query("DELETE FROM pbobp_configuration WHERE object_type = ? AND object_id = ?", array($object_type, $object_id));
 }
 
 ?>

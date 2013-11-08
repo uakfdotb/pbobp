@@ -33,6 +33,12 @@ $config['db_username'] = 'pbobp';
 //database password
 $config['db_password'] = '';
 
+//language we're using
+$config['language'] = 'english';
+
+//email address for users to contact in case of error
+$config['email_web'] = 'support@example.com';
+
 //whether to enable debug mode
 $config['debug'] = true;
 

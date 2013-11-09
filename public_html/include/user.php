@@ -40,7 +40,7 @@ function user_access($user_id) {
 }
 
 function user_apply_credit($user_id, $amount) {
-	database_query("UPDATE pbobp_users SET credit = credit + ?", array($amount));
+	database_query("UPDATE pbobp_users SET credit = credit + ? WHERE id = ?", array($amount, $user_id));
 }
 
 function user_get_name($user_id) {

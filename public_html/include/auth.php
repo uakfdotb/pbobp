@@ -39,18 +39,33 @@ function auth_login($email, $password) {
 	}
 
 	//get actual password, if any
-	$result = database_query("SELECT id, password FROM pbobp_users WHERE email = ?", array($email));
+	$result = database_query("SELECT id, password, password_type FROM pbobp_users WHERE email = ?", array($email), true);
 
 	if($row = $result->fetch()) {
 		//validate password
-		require_once(includePath() . "pbkdf2.php");
-		if(pbkdf2_validate_password($password, $row[1])) {
-			$_SESSION['user_id'] = $row[0];
-			return true;
+		if($row['password_type'] == 'pbkdf2') {
+			require_once(includePath() . "pbkdf2.php");
+			if(pbkdf2_validate_password($password, $row['password'])) {
+				$_SESSION['user_id'] = $row['id'];
+				return true;
+			}
+		} else if($row['password_type'] == 'plain') {
+			//this storage mechanism is not recommended for obvious reasons
+			if($password === $row['password']) {
+				$_SESSION['user_id'] = $row['id'];
+				return true;
+			}
 		} else {
-			lockAction('login');
-			return 'invalid_email_or_password';
+			$interface = plugin_interface_get('password', $row['password_type']);
+
+			if($interface !== false && $interface->validate_password($password, $row['password'])) {
+				$_SESSION['user_id'] = $row['id'];
+				return true;
+			}
 		}
+
+		lockAction('login');
+		return 'invalid_email_or_password';
 	} else { //account doesn't exist
 		lockAction('login');
 		return 'invalid_email_or_password';

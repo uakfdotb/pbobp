@@ -23,7 +23,10 @@
 -- also not blank for plugin settings
 CREATE TABLE pbobp_configuration (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, k VARCHAR(64) NOT NULL, v VARCHAR(256) NOT NULL, object_id INT NOT NULL DEFAULT 0, object_type VARCHAR(64) NOT NULL DEFAULT '', description VARCHAR(1024) NOT NULL DEFAULT '', type INT NOT NULL DEFAULT 0);
 
-CREATE TABLE pbobp_users (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, email VARCHAR(128) NOT NULL DEFAULT '' UNIQUE, password VARCHAR(128) NOT NULL DEFAULT '', credit FLOAT NOT NULL DEFAULT 0, `access` INT NOT NULL DEFAULT 0);
+-- password_type specifies how the password is stored
+--  value may be a service interface or a built-in password storage mechanism
+--  built-in password storage: plain (plaintext), pbkdf2
+CREATE TABLE pbobp_users (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, email VARCHAR(128) NOT NULL DEFAULT '' UNIQUE, password VARCHAR(256) NOT NULL DEFAULT '', password_type VARCHAR(32) NOT NULL DEFAULT 'pbkdf2', credit FLOAT NOT NULL DEFAULT 0, `access` INT NOT NULL DEFAULT 0);
 
 -- type is 0=text box; 1=text area; 2=checkbox; 3=dropdown (needs options); 4=radiobutton (needs options)
 -- context may be "user", "product", "group", "plugin"

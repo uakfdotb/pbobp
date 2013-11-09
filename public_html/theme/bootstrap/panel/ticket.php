@@ -34,25 +34,25 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table>
 <tr>
-	<th><?= lang('department') ?></th>
+	<th align="left"><?= lang('department') ?></th>
 	<td><?= $ticket['department_name'] ?></td>
 </tr>
 <tr>
-	<th><?= lang('date_created') ?></th>
+	<th align="left"><?= lang('date_created') ?></th>
 	<td><?= $ticket['time'] ?></td>
 </tr>
 <tr>
-	<th><?= lang('reply_last') ?></th>
+	<th align="left"><?= lang('reply_last') ?></th>
 	<td><?= $ticket['modify_time'] ?></td>
 </tr>
 <tr>
-	<th><?= lang('status') ?></th>
+	<th align="left"><?= lang('status') ?></th>
 	<td><?= lang('ticket_status_' . $ticket['status_nice']) ?></td>
 </tr>
 </table>
 
 <? foreach($thread as $message) { ?>
-<h3><?= $message['name'] ?>, on <?= $message['time'] ?></h3>
+<h2><?= $message['name'] ?>, on <?= $message['time'] ?></h2>
 <pre class="wordwrap"><?= $message['content'] ?></pre>
 <? } ?>
 

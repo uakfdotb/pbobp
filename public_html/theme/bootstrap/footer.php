@@ -38,8 +38,5 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	</footer>
 </div>
 
-<script src="<?= $themePath ?>/assets/js/jquery.js"></script>
-<script src="<?= $themePath ?>/assets/js/bootstrap.min.js"></script>
-
 </body>
 </html>

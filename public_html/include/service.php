@@ -131,8 +131,8 @@ function service_paid($service_id) {
 			if($result === true) {
 				$newstatus = 1; //activated
 			} else {
-				$subject = lang('email_service_activation_failed_subject', array('serivice_id' => $service_id));
-				$body = lang('email_service_activation_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+				$subject = lang('email_service_activation_failed_subject', array('service_id' => $service_id));
+				$body = lang('email_service_activation_failed_body', array('service_id' => $service_id, 'message' => $result));
 				require_once(includePath() . 'user.php');
 				user_email_admins($subject, $body);
 			}
@@ -146,8 +146,8 @@ function service_paid($service_id) {
 			$result = service_module_event($service_id, 'unsuspend');
 
 			if($result !== true) {
-				$subject = lang('email_service_unsuspension_failed_subject', array('serivice_id' => $service_id));
-				$body = lang('email_service_unsuspension_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+				$subject = lang('email_service_unsuspension_failed_subject', array('service_id' => $service_id));
+				$body = lang('email_service_unsuspension_failed_body', array('service_id' => $service_id, 'message' => $result));
 				require_once(includePath() . 'user.php');
 				user_email_admins($subject, $body);
 			}
@@ -178,8 +178,8 @@ function service_inactivate($service_id) {
 
 	if($result !== true) {
 		//for failed termination, we'll mark it as terminated but send an email notification to admins
-		$subject = lang('email_service_inactivation_failed_subject', array('serivice_id' => $service_id));
-		$body = lang('email_service_inactivation_failed_body', array('serivice_id' => $service_id, 'message' => $result));
+		$subject = lang('email_service_inactivation_failed_subject', array('service_id' => $service_id));
+		$body = lang('email_service_inactivation_failed_body', array('service_id' => $service_id, 'message' => $result));
 		require_once(includePath() . 'user.php');
 		user_email_admins($subject, $body);
 	}

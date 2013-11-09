@@ -222,7 +222,7 @@ class plugin_service_solusvm {
 		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
 
 		if(!empty($serverid)) {
-			return delayed_return($this->solusStart($serverid));
+			return $this->delayed_return($this->solusStart($serverid));
 		} else {
 			return true;
 		}
@@ -233,7 +233,7 @@ class plugin_service_solusvm {
 		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
 
 		if(!empty($serverid)) {
-			return delayed_return($this->solusStop($serverid));
+			return $this->delayed_return($this->solusStop($serverid));
 		} else {
 			return true;
 		}

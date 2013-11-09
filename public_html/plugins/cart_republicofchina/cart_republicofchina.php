@@ -104,7 +104,7 @@ class plugin_cart_republicofchina {
 					$fields = array();
 					$fail = false;
 
-					foreach(product_field_contexts($product_id) as $context_array) {
+					foreach(product_service_field_contexts($product_id) as $context_array) {
 						$tmp_fields = array();
 						$result = field_parse($field_selections, $context_array['context'], $tmp_fields, $context_array['context_id']);
 						$fields += $tmp_fields;
@@ -149,7 +149,7 @@ class plugin_cart_republicofchina {
 				}
 
 				$prices = price_list('product', $product_id);
-				$fields = product_fields($product_id);
+				$fields = product_service_fields($product_id);
 				get_page("configure", "main", array('product' => $product, 'prices' => $prices, 'fields' => $fields, 'field_selections' => $field_selections, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'message' => $message), "/plugins/{$this->plugin_name}");
 			}
 		}

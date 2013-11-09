@@ -216,6 +216,7 @@ $lang['plugins_found'] = 'Found plugins';
 $lang['success_plugin_added'] = 'Plugin added successfully.';
 $lang['error_plugin_not_found'] = 'Could not find the plugin in plugins directory.';
 $lang['success_plugin_deleted'] = 'Plugin deleted successfully.';
+$lang['success_plugin_updated'] = 'Plugin updated successfully.';
 
 $lang['field'] = 'Field';
 $lang['fields'] = 'Fields';

@@ -259,7 +259,7 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	require_once(includePath() . 'field.php');
 	$new_fields = array();
 
-	foreach(product_field_contexts($product_id) as $context_array) {
+	foreach(product_service_field_contexts($product_id) as $context_array) {
 		$tmp_fields = array();
 		$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
 		$new_fields += $tmp_fields;
@@ -344,7 +344,7 @@ function service_update_fields($service_id, $fields) {
 
 		//sanitize the fields
 		$new_fields = array();
-		foreach(product_field_contexts($service_details['product_id']) as $context_array) {
+		foreach(product_service_field_contexts($service_details['product_id']) as $context_array) {
 			$tmp_fields = array();
 			$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
 			$new_fields += $tmp_fields;

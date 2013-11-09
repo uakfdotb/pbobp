@@ -100,12 +100,21 @@ function product_create($name, $uniqueid, $description, $interface, $prices, $gr
 		database_query("DELETE FROM pbobp_products_groups_members WHERE product_id = ?", array($product_id));
 	}
 
+	//insert the new groups that product is a part of
 	foreach($groups as $group_id) {
 		database_query("INSERT INTO pbobp_products_groups_members (group_id, product_id) VALUES (?, ?)", array($group_id, $product_id));
 	}
 
+	//update product prices
 	require_once(includePath() . 'price.php');
 	price_set('product', $product_id, $prices);
+
+	//add any configurable fields for this product to the field values table
+	$field_id_to_default = array();
+	foreach(product_fields($product_id) as $field) {
+		$field_id_to_default[$field['field_id']] = $field['default'];
+	}
+	field_store($field_id_to_default, $product_id, 'product', false);
 
 	return true;
 }
@@ -116,12 +125,12 @@ function product_delete($product_id) {
 	require_once(includePath() . 'price.php');
 	price_set('product', $product_id);
 
-	product_field_context_remove('product', $product_id);
+	product_service_field_context_remove('product', $product_id);
 }
 
 //removes fields associated with a given context
 //in addition to calling field_context_remove, removes any associated prices
-function product_field_context_remove($context, $context_id) {
+function product_service_field_context_remove($context, $context_id) {
 	require_once(includePath() . 'field.php');
 	$removed_fields = field_context_remove($context, $context_id);
 
@@ -133,9 +142,40 @@ function product_field_context_remove($context, $context_id) {
 	database_query("DELETE FROM pbobp_prices WHERE context = 'field_option' AND (SELECT COUNT(*) FROM pbobp_fields_options WHERE pbobp_fields_options.id = pbobp_prices.context_id) = 0");
 }
 
+//returns list of fields pertaining to this product
+// (this is for the configuration of the product itself, not for services of this product)
+function product_fields($product_id) {
+	$product_details = product_get_details($product_id);
+
+	if($product_details !== false) {
+		return field_list(array('context' => 'plugin_product', 'context_id' => $product_details['plugin_id']));
+	} else {
+		return array();
+	}
+}
+
+//updates field values for a given product
+//fields is an array of id => new value of raw fields
+function product_update_fields($product_id, $fields) {
+	$product_details = product_get_details($product_id);
+
+	if($product_details !== false) {
+		require_once(includePath() . 'field.php');
+
+		//sanitize the fields
+		$new_fields = array();
+		field_parse($fields, 'plugin_product', $new_fields, $product_details['plugin_id']);
+
+		//update each field in the service field object
+		foreach($new_fields as $field_id => $val) {
+			field_set_by_field_id('product', $product_id, $field_id, $val);
+		}
+	}
+}
+
 //returns list of (context, context_id)
 // finds all field contexts that a product should include
-function product_field_contexts($product_id) {
+function product_service_field_contexts($product_id) {
 	require_once(includePath() . 'field.php');
 	$array = array();
 	$array[] = array('context' => 'product', 'context_id' => $product_id);
@@ -149,19 +189,19 @@ function product_field_contexts($product_id) {
 
 	if($row = $result->fetch()) {
 		if(!is_null($row[0])) {
-			$array[] = array('context' => 'plugin', 'context_id' => $row[0]);
+			$array[] = array('context' => 'plugin_service', 'context_id' => $row[0]);
 		}
 	}
 
 	return $array;
 }
 
-function product_fields($product_id, $include_prices = false) {
+function product_service_fields($product_id, $include_prices = false) {
 	//merge fields of product with those of its groups and its service interface
 	//note that we use array_merge instead of union operator (+) since the array keys overlap
 	require_once(includePath() . 'field.php');
 	$fields = array();
-	$contexts = product_field_contexts($product_id);
+	$contexts = product_service_field_contexts($product_id);
 
 	foreach($contexts as $context_array) {
 		$fields = array_merge($fields, field_list($context_array));
@@ -226,7 +266,7 @@ function product_price_summary($product_id, $duration, $currency_id, $field_valu
 	}
 
 	//grab prices for product fields and field options, by matching with the currency and recurring duration
-	$fields = product_fields($product_id);
+	$fields = product_service_fields($product_id);
 
 	foreach($fields as $field) {
 		$field_id = $field['field_id'];
@@ -285,7 +325,7 @@ function product_group_delete($group_id) {
 	require_once(includePath() . 'price.php');
 	price_set('group', $group_id);
 
-	product_field_context_remove('group', $group_id);
+	product_service_field_context_remove('group', $group_id);
 }
 
 function product_group_list($constraints = array(), $arguments = array()) {

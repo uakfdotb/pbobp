@@ -69,7 +69,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <p><?= lang('field_manager_description') ?></p>
 
-<? $include_fields = $fields; $include_display_prices = true; include($themePath . '/include/edit_fields.php'); ?>
+<? $include_fields = $service_fields; $include_display_prices = true; include($themePath . '/include/edit_fields.php'); ?>
 
 <h3><?= lang('groups') ?></h3>
 
@@ -96,6 +96,10 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><?= lang('add') ?></td>
 </tr>
 </table>
+
+<h3><?= lang('fields') ?></h3>
+
+<? $include_fields = $product_fields; include("$themePath/include/fields.php"); ?>
 
 <p><button type="submit" class="btn"><?= lang('product_update') ?></button></p>
 </form>

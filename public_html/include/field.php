@@ -34,7 +34,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 //   - field value context in functions on storage of specific fields pertains to a setting of a field (e.g., service hostname)
 //   this distinction is important..
 // * service modules should create fields that they require on plugin installation
-//    their fields should be identified by context='plugin', context_id=the plugin's ID in pbobp_plugins
+//    their fields should be identified by context='plugin_service' or 'plugin_product', context_id=the plugin's ID in pbobp_plugins
 
 //extracts field values from GET/POST/etc.
 function field_extract() {
@@ -108,9 +108,16 @@ function field_parse($fields, $field_context, &$new_fields, $field_context_id = 
 }
 
 //stores sanitized data into database
-function field_store($new_fields, $object_id, $object_context) {
+function field_store($new_fields, $object_id, $object_context, $overwrite = true) {
 	foreach($new_fields as $field_id => $val) {
-		database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($object_id, $object_context, $field_id, $val));
+		$result = database_query("SELECT id FROM pbobp_fields_values WHERE object_id = ? AND context = ? AND field_id = ?", array($object_id, $object_context, $field_id));
+		$row = $result->fetch();
+
+		if($row[0] == 0) {
+			database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($object_id, $object_context, $field_id, $val));
+		} else if($overwrite) {
+			database_query("UPDATE pbobp_fields_values SET val = ? WHERE id = ?", array($val, $row[0]));
+		}
 	}
 }
 
@@ -212,7 +219,7 @@ function field_list_extra(&$row) {
 
 function field_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields.context, pbobp_fields.context_id FROM pbobp_fields";
-	$where_vars = array('context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id', 'field_id' => 'pbobp_fields.id');
+	$where_vars = array('context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id', 'field_id' => 'pbobp_fields.id', 'name' => 'pbobp_fields.name');
 	$orderby_vars = array('field_id' => 'pbobp_fields.id');
 	$arguments['limit_type'] = 'field';
 	$arguments['table'] = 'pbobp_fields';

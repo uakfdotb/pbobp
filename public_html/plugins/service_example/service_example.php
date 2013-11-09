@@ -51,13 +51,13 @@ class plugin_service_example {
 		//we want to create our fields in the pbobp_fields table
 		//this way, any products created with our service module will have our fields included
 		require_once(includePath() . 'field.php');
-		field_add('plugin', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
+		field_add('plugin_service', $this->id, 'Your number', '0', 'Enter an integer between 0 and 255. If you enter something else, you will never win.', 0, true, false);
 	}
 
 	function uninstall() {
 		//delete any fields that we installed
 		require_once(includePath() . 'field.php');
-		field_context_remove('plugin', $this->id);
+		field_context_remove('plugin_service', $this->id);
 	}
 
 	//a friendly name to describe this service interace
@@ -80,7 +80,7 @@ class plugin_service_example {
 
 	function do_check_win($service) {
 		require_once(includePath() . 'field.php');
-		$number = field_get('service', $service['service_id'], 'Your number', 'plugin', $this->id);
+		$number = field_get('service', $service['service_id'], 'Your number', 'plugin_service', $this->id);
 		$winning_number = $this->get_winner();
 
 		if($winning_number == $number) {

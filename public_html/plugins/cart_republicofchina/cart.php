@@ -50,8 +50,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		?>
 
 		<? if($service['summary']['total_setup'] > 0 && $service['summary']['total_recurring'] > 0) { ?><?= $price_setup_lang ?>; <?= $price_recurring_lang ?>
-		<? } else if($service['summary']['total_setup'] > 0) { ?><?= $price_recurring_lang ?>
-		<? } else if($service['summary']['total_recurring'] > 0) { ?><?= $price_setup_lang ?>
+		<? } else if($service['summary']['total_setup'] > 0) { ?><?= $price_setup_lang ?>
+		<? } else if($service['summary']['total_recurring'] > 0) { ?><?= $price_recurring_lang ?>
 		<? } else { ?>Free
 		<? } ?>
 	</td>

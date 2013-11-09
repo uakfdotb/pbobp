@@ -48,8 +48,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	?>
 
 	<? if($price['amount'] > 0 && $price['recurring_amount'] > 0) { ?><?= $price_setup_lang ?>; <?= $price_recurring_lang ?>
-	<? } else if($price['amount'] > 0) { ?><?= $price_recurring_lang ?>
-	<? } else if($price['recurring_amount'] > 0) { ?><?= $price_setup_lang ?>
+	<? } else if($price['amount'] > 0) { ?><?= $price_setup_lang ?>
+	<? } else if($price['recurring_amount'] > 0) { ?><?= $price_recurring_lang ?>
 	<? } else { ?>Free
 	<? } ?>
 	<br />

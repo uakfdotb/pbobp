@@ -65,9 +65,15 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 				$groups[] = $_POST['group_new'];
 			}
 
+			//update the product attributes
 			$result = product_create($_POST['name'], $_POST['uniqueid'], $_POST['description'], $_POST['interface'], $prices, $groups, $product_id);
+
+			//update any service fields for this product
 			field_process_updates('product', $product_id, $_POST);
 			//todo: remove the prices associated with deleted fields
+
+			//update the field values pertaining to the product itself
+			product_update_fields($product_id, field_extract());
 
 			if($result) {
 				$message = lang('success_product_updated');
@@ -92,11 +98,12 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 
 	$product = product_list(array('product_id' => $product_id))[0];
 	$prices = price_list('product', $product_id);
-	$fields = field_list(array('context' => 'product', 'context_id' => $product_id)); //don't use product field list here since it includes group and such
+	$service_fields = field_list(array('context' => 'product', 'context_id' => $product_id)); //don't use product field list here since it includes group and such
 	$currencies = currency_list();
 	$membership = product_membership($product_id); //groups that the product is currently in
 	$groups = product_group_list();
-	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'fields' => $fields, 'currencies' => $currencies, 'interfaces' => $interfaces_friendly, 'membership' => $membership, 'groups' => $groups));
+	$product_fields = field_list_object('product', $product_id);
+	get_page("product", "admin", array('product' => $product, 'prices' => $prices, 'message' => $message, 'service_duration_map' => service_duration_map(), 'field_type_map' => field_type_map(), 'service_fields' => $service_fields, 'product_fields' => $product_fields, 'currencies' => $currencies, 'interfaces' => $interfaces_friendly, 'membership' => $membership, 'groups' => $groups));
 } else {
 	pbobp_redirect("../");
 }

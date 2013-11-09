@@ -42,6 +42,9 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		} else if($_POST['action'] == 'delete' && isset($_POST['name'])) {
 			plugin_delete($_POST['name']);
 			$message = lang('success_plugin_deleted');
+		} else if($_POST['action'] == 'update' && isset($_POST['name'])) {
+			plugin_update($_POST['name']);
+			$message = lang('success_plugin_updated');
 		}
 
 		pbobp_redirect('plugins.php', array('message' => $message));

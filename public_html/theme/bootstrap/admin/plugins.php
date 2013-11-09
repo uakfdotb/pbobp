@@ -43,16 +43,31 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <table class="table-condensed">
 <tr>
 	<th><?= lang('plugin') ?></th>
+	<th><?= lang('configuration') ?></th>
+	<th><?= lang('update') ?></th>
 	<th><?= lang('delete') ?></th>
 </tr>
 
-<? foreach($plugins as $plugin) { ?>
+<? foreach($plugins as $plugin_id => $plugin) { ?>
 <tr>
 	<td><?= $plugin ?></td>
-	<td><form method="POST">
+	<td>
+		<a href="config.php?object_type=plugin&object_id=<?= $plugin_id ?>">
+			<button type="button" class="btn btn-success"><?= lang('edit') ?></button>
+		</a>
+	</td>
+	<td>
+		<form method="POST">
+		<input type="hidden" name="name" value="<?= $plugin ?>" />
+		<input type="hidden" name="action" value="update" />
+		<button type="submit" class="btn btn-primary"><?= lang('update') ?></button>
+		</form>
+	</td>
+	<td>
+		<form method="POST">
 		<input type="hidden" name="name" value="<?= $plugin ?>" />
 		<input type="hidden" name="action" value="delete" />
-		<input type="submit" value="<?= lang('delete') ?>" />
+		<button type="submit" class="btn btn-danger"><?= lang('delete') ?></button>
 		</form>
 	</td>
 </tr>
@@ -74,7 +89,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		<form method="post">
 		<input type="hidden" name="action" value="add" />
 		<input type="hidden" name="name" value="<?= $plugin ?>" />
-		<input type="submit" value="<?= lang('plugin_add') ?>" />
+		<button type="submit" class="btn btn-primary"><?= lang('plugin_add') ?></button>
 		</form>
 	</td>
 </tr>

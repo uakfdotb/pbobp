@@ -42,8 +42,6 @@ $plugin_views = array();
 $plugin_loaded = array();
 
 function plugin_init() {
-	global $plugin_loaded;
-
 	//want to load all plugins that have been registered in the database
 	//plugins reside in the public_html/plugins/{plugin_name}/{plugin_name}.php
 
@@ -65,6 +63,7 @@ function plugin_sanitize($x) {
 
 //loads a plugin and returns the created object, or false on failure
 function plugin_load($name, $id) {
+	global $plugin_loaded;
 	$name = plugin_sanitize($name);
 
 	if(file_exists(includePath() . "../plugins/$name/$name.php")) {
@@ -72,7 +71,7 @@ function plugin_load($name, $id) {
 
 		$class_name = 'plugin_' . $name;
 		$obj = new $class_name;
-		$plugin_loaded[] = $obj;
+		$plugin_loaded[$name] = $obj;
 
 		//send the plugin it's id if it wants it
 		if(method_exists($obj, 'set_plugin_id')) {
@@ -183,6 +182,16 @@ function plugin_interface_get($interface, $name) {
 	}
 }
 
+function plugin_get($name) {
+	global $plugin_loaded;
+
+	if(isset($plugin_loaded[$name])) {
+		return $plugin_loaded[$name];
+	} else {
+		return false;
+	}
+}
+
 function plugin_view($view_name, $plugin_name = false) {
 	global $plugin_views;
 
@@ -238,8 +247,25 @@ function plugin_add($name) {
 	}
 }
 
+//remove (uninstall) a plugin
 function plugin_delete($name) {
+	//call uninstall function if it exists
+	$plugin = plugin_get($name);
+
+	if($plugin !== false && method_exists($plugin, 'uninstall')) {
+		$plugin->uninstall();
+	}
+
 	database_query("DELETE FROM pbobp_plugins WHERE name = ?", array($name));
+}
+
+//call plugin update function, which some plugins may use
+function plugin_update($name) {
+	$plugin = plugin_get($name);
+
+	if($plugin !== false && method_exists($plugin, 'update')) {
+		$plugin->update();
+	}
 }
 
 //returns list of plugins found in plugins directory

@@ -86,17 +86,29 @@ function auth_check($user_id, $password) {
 	}
 
 	//get actual password, if any
-	$result = database_query("SELECT password FROM pbobp_users WHERE id = ?", array($user_id));
+	$result = database_query("SELECT password, password_type FROM pbobp_users WHERE id = ?", array($user_id), true);
 
 	if($row = $result->fetch()) {
-		//validate password
-		require_once(includePath() . "pbkdf2.php");
-		if(pbkdf2_validate_password($password, $row[0])) {
-			return true;
+		if($row['password_type'] == 'pbkdf2') {
+			require_once(includePath() . "pbkdf2.php");
+			if(pbkdf2_validate_password($password, $row['password'])) {
+				return true;
+			}
+		} else if($row['password_type'] == 'plain') {
+			//this storage mechanism is not recommended for obvious reasons
+			if($password === $row['password']) {
+				return true;
+			}
 		} else {
-			lockAction('login');
-			return false;
+			$interface = plugin_interface_get('password', $row['password_type']);
+
+			if($interface !== false && $interface->validate_password($password, $row['password'])) {
+				return true;
+			}
 		}
+
+		lockAction('login');
+		return false;
 	} else { //account doesn't exist
 		lockAction('login');
 		return false;
@@ -208,7 +220,7 @@ function auth_change_password($user_id, $old_password, $new_password) {
 	$result = auth_check($user_id, $old_password);
 
 	if($result !== true) {
-		return $result;
+		return 'invalid_password';
 	}
 
 	//hash password
@@ -216,7 +228,7 @@ function auth_change_password($user_id, $old_password, $new_password) {
 	$password_hash = pbkdf2_create_hash($new_password);
 
 	//update
-	database_query("UPDATE pbobp_users SET password = ? WHERE id = ?", array($password_hash, $user_id));
+	database_query("UPDATE pbobp_users SET password = ?, password_type = 'pbkdf2' WHERE id = ?", array($password_hash, $user_id));
 
 	return true;
 }

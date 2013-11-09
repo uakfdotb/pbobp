@@ -42,7 +42,7 @@ if(isset($_SESSION['user_id'])) {
 				if($result === true) {
 					$message = lang('success_password_change');
 				} else {
-					$message = $result;
+					$message = lang('error_x', array('x' => lang($result)));
 				}
 			} else {
 				$message = lang('error_passwords_no_match');

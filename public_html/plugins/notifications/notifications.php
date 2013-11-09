@@ -31,6 +31,9 @@ class plugin_notifications {
 	function __construct() {
 		$this->plugin_name = 'notifications';
 		plugin_register_callback('auth_register_success', 'auth_register_success', $this);
+		plugin_register_callback('ticket_opened', 'ticket_opened', $this);
+		plugin_register_callback('ticket_replied', 'ticket_replied', $this);
+		plugin_register_callback('cron_generated_invoice', 'cron_generated_invoice', $this);
 
 		$language_name = language_name();
 		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
@@ -50,11 +53,64 @@ class plugin_notifications {
 		require_once(includePath() . 'user.php');
 		$details = user_get_details($user_id);
 		$name = user_get_name($user_id);
-		$login_url = webPath() . "/login.php";
+		$login_url = config_get('site_address') . "/login.php";
 
 		$subject = lang('auth_register_success_subject', array('site_name' => config_get('site_name', 'pbobp')), $this->language);
 		$body = lang('auth_register_success_content', array('name' => $name, 'login_url' => $login_url), $this->language);
 		$this->notify($subject, $body, $details['email']);
+	}
+
+	function ticket_opened($ticket_id) {
+		require_once(includePath() . 'ticket.php');
+		require_once(includePath() . 'user.php');
+
+		$tickets = ticket_list(array('ticket_id' => $ticket_id));
+		$thread = ticket_thread($ticket_id);
+
+		if(!empty($tickets) && !empty($thread)) {
+			$ticket = $tickets[0];
+			$first_reply = $thread[0];
+
+			$subject = lang('ticket_opened_subject', array('subject' => $ticket['subject']), $this->language);
+			$body = lang('ticket_opened_content', array('department' => $ticket['department_name'], 'body' => $first_reply['content']), $this->language);
+			user_email_admins($subject, $body);
+		}
+	}
+
+	function ticket_replied($user_id, $ticket_id, $content) {
+		require_once(includePath() . 'ticket.php');
+		require_once(includePath() . 'user.php');
+
+		$tickets = ticket_list(array('ticket_id' => $ticket_id));
+
+		if(!empty($tickets)) {
+			$ticket = $tickets[0];
+
+			//only email if the user who owns the ticket did not make the reply
+			// (i.e., if it was staff)
+			if($ticket['user_id'] != $user_id) {
+				$name = user_get_name($ticket['user_id']);
+
+				$subject = lang('ticket_replied_subject', array('ticket_id' => $ticket['ticket_id'], 'subject' => $ticket['subject']), $this->language);
+				$body = lang('ticket_replied_content', array('name' => $name, 'content' => $content), $this->language);
+				$this->notify($subject, $body, $ticket['email']);
+			}
+		}
+	}
+
+	function cron_generated_invoice($invoice_id) {
+		require_once(includePath() . 'ticket.php');
+		require_once(includePath() . 'user.php');
+
+		$invoices = invoice_list(array('invoice_id' => $invoice_id));
+
+		if(!empty($invoices)) {
+			$invoice = $invoices[0];
+			$name = user_get_name($invoice['user_id']);
+			$subject = lang('cron_generated_invoice_subject', array('invoice_id' => $invoice['invoice_id']), $this->language);
+			$body = lang('cron_generated_invoice_content', array('amount' => $invoice['amount_nice'], 'name' => $name, 'site_address' => config_get('site_address')));
+			$this->notify($subject, $body, $invoice['email']);
+		}
 	}
 }
 

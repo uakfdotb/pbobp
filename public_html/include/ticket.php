@@ -93,6 +93,9 @@ function ticket_open($user_identifier, $department_id, $service_id, $subject, $c
 		database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content) VALUES (?, ?, ?)", array($user_id, $ticket_id, $content));
 	}
 
+	//notify plugins
+	plugin_call('ticket_opened', array($ticket_id));
+
 	return $ticket_id;
 }
 
@@ -140,6 +143,9 @@ function ticket_reply($user_id, $ticket_id, $content) {
 
 	database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content, email) VALUES (?, ?, ?, ?)", array($user_id, $ticket_id, $content, $user_email));
 	database_query("UPDATE pbobp_tickets SET modify_time = CURRENT_TIMESTAMP WHERE id = ?", array($ticket_id));
+
+	plugin_call('ticket_replied', array($user_id, $ticket_id, $content));
+
 	return true;
 }
 

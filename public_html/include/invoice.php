@@ -93,6 +93,7 @@ function invoice_lines($invoice_id) {
 }
 
 //try_combine indicates whether or not we should try to combine the new invoice with an existing one
+//returns string error message on failure or integer invoice_id on success
 function invoice_create($user_id, $due_date, $items, $currency_id, $try_combine = false) {
 	//validate user id
 	require_once(includePath() . 'user.php');
@@ -141,7 +142,7 @@ function invoice_create($user_id, $due_date, $items, $currency_id, $try_combine 
 		database_query("INSERT INTO pbobp_invoices_lines (invoice_id, amount, service_id, description) VALUES (?, ?, ?, ?)", array($invoice_id, $item['amount'], $item['service_id'], $item['description']));
 	}
 
-	return true;
+	return intval($invoice_id);
 }
 
 function invoice_status_nice($status) {

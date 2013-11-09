@@ -28,4 +28,13 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 $lang['auth_register_success_subject'] = 'Welcome to $site_name$';
 $lang['auth_register_success_content'] = "Hi \$name\$,\n\nYour account has been registered successfully. To login, please continue to the URL below.\n\n\$login_url\$";
 
+$lang['ticket_opened_subject'] = 'New ticket opened: $subject$';
+$lang['ticket_opened_content'] = "A new ticket has been opened to \$department\$. The content is displayed below.\n\n\$body\$";
+
+$lang['ticket_replied_subject'] = '[Ticket #$ticket_id$] $subject$';
+$lang['ticket_replied_content'] = '$content$';
+
+$lang['cron_invoice_generated_subject'] = 'New invoice notification (#$invoice_id$)';
+$lang['cron_invoice_generated_content'] = "Hi \$name\$,\n\nA new invoice totaling \$amount\$ has been generated on your account. Please login to our billing panel at \$site_address\$ to make a payment.";
+
 ?>

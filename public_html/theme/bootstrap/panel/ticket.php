@@ -52,7 +52,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 </table>
 
 <? foreach($thread as $message) { ?>
-<h2><?= $message['name'] ?>, on <?= $message['time'] ?></h2>
+<h4><?= $message['name'] ?>, on <?= $message['time'] ?></h4>
 <pre class="wordwrap"><?= $message['content'] ?></pre>
 <? } ?>
 

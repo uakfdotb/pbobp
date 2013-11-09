@@ -34,7 +34,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	*/
 	?>
 	<footer>
-	<p>Powered by <a href="https://pbobp.lunanode.com/">pbobp</a>.</p>
+	<center><p>Powered by <a href="https://pbobp.lunanode.com/">pbobp</a>.</p></center>
 	</footer>
 </div>
 

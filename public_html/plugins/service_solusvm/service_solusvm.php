@@ -149,6 +149,47 @@ class plugin_service_solusvm {
 		}
 	}
 
+	function event_inactivate($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		//terminate VM
+		if(!empty($serverid)) {
+			$result = $this->solusActionVM('vserver-terminate', $serverid, array('deleteclient' => 'true'));
+
+			if($result !== true) {
+				return $result;
+			}
+		}
+
+		//clear the server id
+		field_set('service', $service['service_id'], 'serverid', '');
+
+		return true;
+	}
+
+	function event_suspend($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusActionVM('vserver-suspend', $serverid);
+		}
+
+		return true;
+	}
+
+	function event_unsuspend($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusActionVM('vserver-unsuspend', $serverid);
+		}
+
+		return true;
+	}
+
 	//returns a list of actions from action_identifier => function in a class instance
 	function get_actions() {
 		return array(

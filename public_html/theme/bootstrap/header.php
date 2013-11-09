@@ -37,6 +37,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
         padding-bottom: 40px;
       }
     </style>
+	<script src="<?= $themePath ?>/assets/js/jquery.js"></script>
+	<script src="<?= $themePath ?>/assets/js/bootstrap.min.js"></script>
 </head>
 <body>
 

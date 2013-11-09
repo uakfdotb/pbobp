@@ -68,8 +68,26 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		<button type="submit" name="action" value="restart" class="btn btn-warning">Restart</button>
 		</form>
 	</td>
+	<td>
+		<form method="POST">
+		<a href="#" id="vnctoggle"><button type="button" class="btn btn-primary">VNC Info</button></a>
+		</form>
+	</td>
 </tr>
 </table>
+
+<p style="display:none;" id="vncinfo">VNC IP: <?= $vncinfo['vncip'] ?><br />
+VNC port: <?= $vncinfo['vncport'] ?><br />
+VNC password: <?= $vncinfo['vncpassword'] ?></p>
+
+<script>
+$(function(){
+  $("a#vnctoggle").click(function(){
+    $("#vncinfo").removeAttr('style');
+  });
+});
+</script>
+
 
 <form method="POST">
 ISO: <select name="iso">
@@ -89,3 +107,17 @@ Template: <select name="template">
 	</select>
 <button type="submit" class="btn btn-danger" name="action" value="rebuild">Rebuild</button>
 </form>
+
+<form method="POST">
+<input type="hidden" name="action" value="setpassword" />
+Root password: <input type="password" name="password" />
+<button type="submit" class="btn btn-warning">Update password</button>
+</form>
+
+<form method="POST">
+<input type="hidden" name="action" value="sethostname" />
+Hostname: <input type="hostname" name="hostname" />
+<button type="submit" class="btn btn-warning">Update hostname</button>
+</form>
+
+<p><img src="<?= $url_pre ?><?= $state['trafficgraph'] ?>" /></p>

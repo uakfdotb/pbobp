@@ -207,12 +207,22 @@ class plugin_service_solusvm {
 			);
 	}
 
+	//delayed return to give a chance for SolusVM to update the status before we display updated data to client
+	function delayed_return($result) {
+		if($result === true) {
+			sleep(2);
+			return $result;
+		} else {
+			return $result;
+		}
+	}
+
 	function do_start($service) {
 		require_once(includePath() . 'field.php');
 		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
 
 		if(!empty($serverid)) {
-			return $this->solusStart($serverid);
+			return delayed_return($this->solusStart($serverid));
 		} else {
 			return true;
 		}
@@ -223,7 +233,7 @@ class plugin_service_solusvm {
 		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
 
 		if(!empty($serverid)) {
-			return $this->solusStop($serverid);
+			return delayed_return($this->solusStop($serverid));
 		} else {
 			return true;
 		}
@@ -344,14 +354,17 @@ class plugin_service_solusvm {
 			$params['isos'] = explode(',', field_get('product', $service['product_id'], 'ISO(s)', 'plugin_product', $this->id));
 			$params['templates'] = explode(',', field_get('product', $service['product_id'], 'Template(s)', 'plugin_product', $this->id));
 			$params['state'] = $this->solusState($serverid);
+			$params['vncinfo'] = $this->solusVNCInfo($serverid);
 
 			$disk_usage = explode(',', $params['state']['hdd']);
-			$params['disk_used_gb'] = round($disk_usage[1] / 1024 / 1024 / 1024);
-			$params['disk_total_gb'] = round($disk_usage[0] / 1024 / 1024 / 1024);
+			$params['disk_used_gb'] = round($disk_usage[1] / 1024 / 1024 / 1024, 2);
+			$params['disk_total_gb'] = round($disk_usage[0] / 1024 / 1024 / 1024, 2);
 
 			$bandwidth_usage = explode(',', $params['state']['bandwidth']);
-			$params['bandwidth_used_gb'] = round($bandwidth_usage[1] / 1024 / 1024 / 1024);
-			$params['bandwidth_total_gb'] = round($bandwidth_usage[0] / 1024 / 1024 / 1024);
+			$params['bandwidth_used_gb'] = round($bandwidth_usage[1] / 1024 / 1024 / 1024, 2);
+			$params['bandwidth_total_gb'] = round($bandwidth_usage[0] / 1024 / 1024 / 1024, 2);
+
+			$params['url_pre'] = "https://" . config_get('master_hostname', 'plugin', $this->id, false);
 
 			return get_page("view", "main", $params, "/plugins/{$this->plugin_name}", true, true);
 		}
@@ -504,6 +517,10 @@ class plugin_service_solusvm {
 
 	function solusInfo($vserverid) {
 		return $this->solusExecuteVM('vserver-info', $vserverid);
+	}
+
+	function solusVNCInfo($vserverid) {
+		return $this->solusExecuteVM('vserver-vnc', $vserverid);
 	}
 
 	function solusState($vserverid) {

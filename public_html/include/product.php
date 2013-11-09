@@ -196,15 +196,19 @@ function product_service_field_contexts($product_id) {
 	return $array;
 }
 
-function product_service_fields($product_id, $include_prices = false) {
+function product_service_fields($product_id, $include_prices = false, $include_admin = true) {
 	//merge fields of product with those of its groups and its service interface
 	//note that we use array_merge instead of union operator (+) since the array keys overlap
 	require_once(includePath() . 'field.php');
 	$fields = array();
 	$contexts = product_service_field_contexts($product_id);
 
-	foreach($contexts as $context_array) {
-		$fields = array_merge($fields, field_list($context_array));
+	foreach($contexts as $constraints) {
+		if($include_admin) {
+			$constraints['adminonly'] = 0;
+		}
+
+		$fields = array_merge($fields, field_list($constraints));
 	}
 
 	if($include_prices) {

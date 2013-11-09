@@ -46,20 +46,7 @@ class plugin_service_solusvm {
 	}
 
 	function install() {
-		//we want to create our fields in the pbobp_fields table
-		//this way, any products created with our service module will have our fields included
-		require_once(includePath() . 'field.php');
-		field_add('plugin_product', $this->id, 'IP addresses', '1', 'Number of IP addresses for the VPS', 0, true, false);
-		field_add('plugin_product', $this->id, 'Virtualization type', 'KVM', '', 3, true, false, array('KVM', 'OpenVZ', 'Xen-PV', 'Xen-HVM'));
-		field_add('plugin_product', $this->id, 'Username prefix', 'pbobp_', 'The SolusVM username will be the user ID prefixed with this string', 0, true, false);
-		field_add('plugin_product', $this->id, 'Node', 'node1', 'Node name to provision on', 0, true, false);
-		field_add('plugin_product', $this->id, 'Plan', '', 'Select the SolusVM plan to use', 3, true, false); //initialize with empty array; plans will be added when user uses update button after configuring the module
-
-		field_add('plugin_service', $this->id, 'Hostname', '', 'A hostname for your server', 0, true, false);
-
-		config_set('master_hostname', 'example.com:5656', 'SolusVM master hostname or IP address, with port', 0, 'plugin', $this->id);
-		config_set('api_id', '', 'API id', 0, 'plugin', $this->id);
-		config_set('api_key', '', 'API key', 0, 'plugin', $this->id);
+		$this->update();
 	}
 
 	function uninstall() {
@@ -71,16 +58,25 @@ class plugin_service_solusvm {
 	}
 
 	function update() {
-		require_once(includePath() . 'field.php');
-		//update the plan list
-		//first we want to find the field ID
-		$fields = field_list(array('context' => 'plugin_product', 'context_id' => $this->id, 'name' => 'Plan'));
+		//we want to create our fields in the pbobp_fields table
+		//this way, any products created with our service module will have our fields included
 
-		if(!empty($fields)) {
-			$field_id = $fields[0]['field_id'];
-			//and then update
-			field_add('plugin_product', $this->id, 'Plan', '', 'Select the SolusVM plan to use', 3, true, false, $this->solusPlanList(), $field_id);
-		}
+		require_once(includePath() . 'field.php');
+
+		config_set('master_hostname', 'example.com:5656', 'SolusVM master hostname or IP address, with port', 0, 'plugin', $this->id, true);
+		config_set('api_id', '', 'API id', 0, 'plugin', $this->id, true);
+		config_set('api_key', '', 'API key', 0, 'plugin', $this->id, true);
+
+		field_add('plugin_product', $this->id, 'IP addresses', '1', 'Number of IP addresses for the VPS', 0, true, false);
+		field_add('plugin_product', $this->id, 'Virtualization type', 'KVM', '', 3, true, false, array('KVM', 'OpenVZ', 'Xen-PV', 'Xen-HVM'));
+		field_add('plugin_product', $this->id, 'Username prefix', 'pbobp_', 'The SolusVM username will be the user ID prefixed with this string', 0, true, false);
+		field_add('plugin_product', $this->id, 'Node', 'node1', 'Node name to provision on', 0, true, false);
+		field_add('plugin_product', $this->id, 'Plan', '', 'Select the SolusVM plan to use', 3, true, false, $this->solusPlanList());
+		field_add('plugin_product', $this->id, 'ISO(s)', '', 'Comma-separated list of ISO files this user can mount (from pbobp)', 0, true, false);
+		field_add('plugin_product', $this->id, 'Template(s)', '', 'Comma-separated list of templates this user can rebuild with (from pbobp)', 0, true, false);
+
+		field_add('plugin_service', $this->id, 'Hostname', '', 'A hostname for your server', 0, true, false);
+		field_add('plugin_service', $this->id, 'serverid', '', '', 0, false, true);
 	}
 
 	//a friendly name to describe this service interace
@@ -144,7 +140,11 @@ class plugin_service_solusvm {
 			} else {
 				return 'Unknown error while provisioning VM!';
 			}
+		} else if(!isset($result['vserverid'])) {
+			return 'Unknown error (no error set but server ID not received)!';
 		} else {
+			//set server ID
+			field_set('service', $service['service_id'], 'serverid', $result['vserverid']);
 			return true;
 		}
 	}
@@ -152,18 +152,175 @@ class plugin_service_solusvm {
 	//returns a list of actions from action_identifier => function in a class instance
 	function get_actions() {
 		return array(
-			'checkwin' => 'do_check_win'
+			'start' => 'do_start',
+			'stop' => 'do_stop',
+			'restart' => 'do_restart',
+			'unmount' => 'do_unmount',
+			'tunon' => 'do_tunon',
+			'tunoff' => 'do_tunoff',
+			'setbootorder' => 'do_setbootorder',
+			'sethostname' => 'do_sethostname',
+			'setpassword' => 'do_setpassword',
+			'rebuild' => 'do_rebuild',
+			'mount' => 'do_mount'
 			);
+	}
+
+	function do_start($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusStart($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_stop($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusStop($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_restart($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusRestart($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_unmount($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusUnmount($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_tunon($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusTunTapEnable($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_tunoff($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			return $this->solusTunTapDisable($serverid);
+		} else {
+			return true;
+		}
+	}
+
+	function do_setbootorder($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid) && !empty($_REQUEST['bootorder'])) {
+			return $this->solusSetBootOrder($serverid, $_REQUEST['bootorder']);
+		} else {
+			return true;
+		}
+	}
+
+	function do_sethostname($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid) && !empty($_REQUEST['hostname'])) {
+			return $this->solusSetHostname($serverid, $_REQUEST['hostname']);
+		} else {
+			return true;
+		}
+	}
+
+	function do_setpassword($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid) && !empty($_REQUEST['password'])) {
+			return $this->solusSetPassword($serverid, $_REQUEST['password']);
+		} else {
+			return true;
+		}
+	}
+
+	function do_rebuild($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid) && !empty($_REQUEST['template'])) {
+			return $this->solusRebuild($service['product_id'], $serverid, $_REQUEST['template']);
+		} else {
+			return true;
+		}
+	}
+
+	function do_mount($service) {
+		require_once(includePath() . 'field.php');
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid) && !empty($_REQUEST['iso'])) {
+			return $this->solusMount($service['product_id'], $serverid, $_REQUEST['iso']);
+		} else {
+			return true;
+		}
 	}
 
 	//get the HTML code for the view
 	function get_view($service) {
-		//in this case the view is a single button so it would be reasonable to return it directly as a string
-		//but for an example we include it in a separate view file
-		return get_page("view", "main", array('lang_plugin' => $this->language), "/plugins/{$this->plugin_name}", true, true);
+		require_once(includePath() . 'field.php');
+
+		$serverid = field_get('service', $service['service_id'], 'serverid', 'plugin_service', $this->id);
+
+		if(!empty($serverid)) {
+			$params = array();
+			$params['lang_plugin'] = $this->language;
+			$params['url'] = 'service.php?service_id=' . $service['service_id'];
+
+			$params['status'] = $this->solusStatus($serverid);
+			$params['info'] = $this->solusInfo($serverid);
+			$params['isos'] = explode(',', field_get('product', $service['product_id'], 'ISO(s)', 'plugin_product', $this->id));
+			$params['templates'] = explode(',', field_get('product', $service['product_id'], 'Template(s)', 'plugin_product', $this->id));
+			$params['state'] = $this->solusState($serverid);
+
+			$disk_usage = explode(',', $params['state']['hdd']);
+			$params['disk_used_gb'] = round($disk_usage[1] / 1024 / 1024 / 1024);
+			$params['disk_total_gb'] = round($disk_usage[0] / 1024 / 1024 / 1024);
+
+			$bandwidth_usage = explode(',', $params['state']['bandwidth']);
+			$params['bandwidth_used_gb'] = round($bandwidth_usage[1] / 1024 / 1024 / 1024);
+			$params['bandwidth_total_gb'] = round($bandwidth_usage[0] / 1024 / 1024 / 1024);
+
+			return get_page("view", "main", $params, "/plugins/{$this->plugin_name}", true, true);
+		}
 	}
 
 	//SolusVM library
+
+	function solusSanitize($str) {
+		return preg_replace("/[^A-Za-z0-9\\. ]/", '', $str);
+	}
 
 	function solusExecute($command, $array = array()) {
 		// Url to admin API
@@ -175,7 +332,7 @@ class plugin_service_solusvm {
 		$postfields["rdtype"] = "json";
 
 		foreach($array as $key => $value) {
-			$postfields[$key] = $value;
+			$postfields[$this->solusSanitize($key)] = $this->solusSanitize($value);
 		}
 
 		// send the query to solusvm master
@@ -223,8 +380,8 @@ class plugin_service_solusvm {
 		}
 	}
 
-	function solusActionVM($command, $vserverid) {
-		$result = $this->solusExecuteVM($command, $vserverid);
+	function solusActionVM($command, $vserverid, $array = array()) {
+		$result = $this->solusExecuteVM($command, $vserverid, $array);
 
 		if(isset($result['statusmsg'])) {
 			return $result['statusmsg'];
@@ -304,16 +461,76 @@ class plugin_service_solusvm {
 		}
 	}
 
+	function solusInfo($vserverid) {
+		return $this->solusExecuteVM('vserver-info', $vserverid);
+	}
+
+	function solusState($vserverid) {
+		return $this->solusExecuteVM('vserver-infoall', $vserverid);
+	}
+
 	function solusStart($vserverid) {
-		return $this->solusActionVM('vserver-boot');
+		return $this->solusActionVM('vserver-boot', $vserverid);
 	}
 
 	function solusStop($vserverid) {
-		return $this->solusActionVM('vserver-shutdown');
+		return $this->solusActionVM('vserver-shutdown', $vserverid);
 	}
 
 	function solusRestart($vserverid) {
-		return $this->solusActionVM('vserver-reboot');
+		return $this->solusActionVM('vserver-reboot', $vserverid);
+	}
+
+	function solusSetBootOrder($vserverid, $bootorder) {
+		if($bootorder !== 'cd' && $bootorder !== 'dc' && $bootorder !== 'c' && $bootorder !== 'd') {
+			return 'Invalid boot order!';
+		} else {
+			return $this->solusActionVM('vserver-bootorder', $vserverid, array('bootorder' => $bootorder));
+		}
+	}
+
+	function solusMount($product_id, $vserverid, $iso) {
+		$isos = explode(',', field_get('product', $product_id, 'ISO(s)', 'plugin_product', $this->id));
+
+		foreach($isos as $i_iso) {
+			if(trim(strtolower($i_iso)) == strtolower($iso)) {
+				return $this->solusActionVM('vserver-mountiso', $vserverid, array('iso' => $iso));
+			}
+		}
+
+		return 'Error: ISO not found';
+	}
+
+	function solusUnmount($vserverid) {
+		return $this->solusActionVM('vserver-unmountiso', $vserverid);
+	}
+
+	function solusSetHostname($vserverid, $hostname) {
+		return $this->solusActionVM('vserver-hostname', $vserverid, array('hostname' => $hostname));
+	}
+
+	function solusSetPassword($vserverid, $password) {
+		return $this->solusActionVM('vserver-rootpassword', $vserverid, array('rootpassword' => $password));
+	}
+
+	function solusRebuild($product_id, $vserverid, $template) {
+		$templates = explode(',', field_get('product', $product_id, 'Template(s)', 'plugin_product', $this->id));
+
+		foreach($templates as $i_template) {
+			if(trim(strtolower($i_template)) == strtolower($template)) {
+				return $this->solusActionVM('vserver-rebuild', $vserverid, array('template' => $template));
+			}
+		}
+
+		return 'Error: template not found';
+	}
+
+	function solusTunTapEnable($vserverid) {
+		return $this->solusActionVM('vserver-tun-enable', $vserverid);
+	}
+
+	function solusTunTapDisable($vserverid) {
+		return $this->solusActionVM('vserver-tun-disable', $vserverid);
 	}
 }
 

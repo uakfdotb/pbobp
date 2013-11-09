@@ -90,7 +90,14 @@ function config_get_helper($key, $object_type = '', $object_id = 0, $tryglobal =
 
 //sets a configuration value
 //this will NOT update a configuration key's description (description only used if insertion is needed)
-function config_set($key, $val, $description = '', $type = 0, $object_type = '', $object_id = 0) {
+//parameters
+// key, val: the configuration key and value
+// description: a textual description of the configuration
+// type: field type to use when displaying this setting
+// object_type: if this pertains to a specific object, a non-empty string (e.g., 'plugin')
+// object_id: id of the object
+// only_insert: true if we should insert but not update if it already exists (useful for updating list of configuration values for an object)
+function config_set($key, $val, $description = '', $type = 0, $object_type = '', $object_id = 0, $only_insert = false) {
 	$query = "SELECT id FROM pbobp_configuration WHERE k = ? AND object_type = ?";
 	$vars = array($key, $object_type);
 
@@ -103,7 +110,9 @@ function config_set($key, $val, $description = '', $type = 0, $object_type = '',
 	$result = database_query($query, $vars);
 
 	if($row = $result->fetch()) {
-		database_query("UPDATE pbobp_configuration SET v = ? WHERE id = ?", array($val, $row[0]));
+		if(!$only_insert) { //only update the value if user doesn't want to only insert
+			database_query("UPDATE pbobp_configuration SET v = ? WHERE id = ?", array($val, $row[0]));
+		}
 	} else {
 		//don't handle object_id specially since it's ignored parameter anyway
 		database_query("INSERT INTO pbobp_configuration (k, v, description, type, object_type, object_id) VALUES (?, ?, ?, ?, ?, ?)", array($key, $val, $description, $type, $object_type, $object_id));

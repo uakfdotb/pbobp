@@ -55,7 +55,7 @@ function field_extract() {
 
 //validates an input and stores sanitized data in new_fields
 //returns true on success or string error on failure
-function field_parse($fields, $field_context, &$new_fields, $field_context_id = 0) {
+function field_parse($fields, $field_context, &$new_fields, $field_context_id = 0, $admin = false) {
 	global $const;
 
 	$result = database_query("SELECT id, name, type, required, adminonly, `default` FROM pbobp_fields WHERE context = ? AND context_id = ?", array($field_context, $field_context_id), true);
@@ -63,7 +63,7 @@ function field_parse($fields, $field_context, &$new_fields, $field_context_id = 
 	while($row = $result->fetch()) {
 		$type = field_type_nice($row['type']);
 
-		if(!isset($fields[$row['id']])) {
+		if(!isset($fields[$row['id']]) || ($row['adminonly'] && !$admin)) {
 			if($row['required'] != 0) {
 				return array('unset_field', array('name' => $row['name']));
 			} else {
@@ -173,7 +173,7 @@ function field_set($object_context, $object_id, $key, $val) {
 	$result = database_query("SELECT pbobp_fields_values.field_id FROM pbobp_fields_values, pbobp_fields WHERE pbobp_fields.id = pbobp_fields_values.field_id AND pbobp_fields.name = ? AND pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ?", array($key, $object_context, $object_id));
 
 	if($row = $result->fetch()) {
-		field_set_by_field_id($context, $object_id, $row[0], $val);
+		field_set_by_field_id($object_context, $object_id, $row[0], $val);
 	}
 }
 
@@ -230,8 +230,17 @@ function field_list($constraints = array(), $arguments = array()) {
 //add a field (or update existing field)
 function field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options = array(), $field_id = false) {
 	if($field_id === false) {
-		database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly));
-		$field_id = database_insert_id();
+		//make sure this field doesn't exist already
+		$result = database_query("SELECT id FROM pbobp_fields WHERE context = ? AND context_id = ? AND name = ?", array($field_context, $field_context_id, $name));
+
+		if($row = $result->fetch()) {
+			//it already exists! just modify the existing one
+			return field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options, $row[0]);
+		} else {
+			//doesn't exist, proceed with insertion and rest of the function
+			database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly));
+			$field_id = database_insert_id();
+		}
 	} else {
 		//make sure field exists
 		$result = database_query("SELECT COUNT(*) FROM pbobp_fields WHERE id = ?", array($field_id));

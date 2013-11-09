@@ -231,7 +231,7 @@ $lang['admin_area'] = 'Admin area';
 $lang['admin_area_welcome'] = 'Welcome to the admin area.';
 $lang['admin_area_login'] = $lang['admin_area_welcome'] . ' To continue, please re-enter your password.';
 $lang['error_admin_login_failed'] = 'Login failed. Verify that you have entered the correct password or try again later.';
-$lang['success_action_performed'] = 'Action [$name] performed successfully.';
+$lang['success_action_performed'] = 'Action [$name$] performed successfully.';
 
 $lang['main_welcome'] = 'Welcome to our billing panel. Use the tabs above to login or view our cart.';
 

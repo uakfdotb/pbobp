@@ -346,7 +346,7 @@ function service_update_fields($service_id, $fields) {
 		$new_fields = array();
 		foreach(product_service_field_contexts($service_details['product_id']) as $context_array) {
 			$tmp_fields = array();
-			$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id']);
+			$result = field_parse($fields, $context_array['context'], $tmp_fields, $context_array['context_id'], true);
 			$new_fields += $tmp_fields;
 		}
 

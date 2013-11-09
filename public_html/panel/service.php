@@ -77,6 +77,12 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 					if(is_array($result) && isset($result['message_content']) && isset($result['message_type'])) {
 						$message_type = $result['message_type'];
 						$message_content = $result['message_content'];
+					} else if(is_string($result)) {
+						$message_type = 0;
+						$message_content = $result;
+					} else {
+						$message_type = 0;
+						$message_content = lang('success_action_performed', array('name' => $action));
 					}
 				} else {
 					$message_type = -1;

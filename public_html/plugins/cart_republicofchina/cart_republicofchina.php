@@ -149,7 +149,7 @@ class plugin_cart_republicofchina {
 				}
 
 				$prices = price_list('product', $product_id);
-				$fields = product_service_fields($product_id);
+				$fields = product_service_fields($product_id, false, false);
 				get_page("configure", "main", array('product' => $product, 'prices' => $prices, 'fields' => $fields, 'field_selections' => $field_selections, 'lang_plugin' => $this->language, 'plugin_name' => $this->plugin_name, 'message' => $message), "/plugins/{$this->plugin_name}");
 			}
 		}

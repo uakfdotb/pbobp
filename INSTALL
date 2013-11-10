@@ -1,6 +1,6 @@
 Dependencies
  * MySQL
- * PHP
+ * PHP >= 5.4
  * mcrypt library for PHP
  * OpenSSL linked with PHP recommended for random number generation
 

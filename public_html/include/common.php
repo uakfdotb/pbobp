@@ -296,10 +296,7 @@ function pbobp_redirect($url, $get = array(), $statusCode = 303) {
 
 function pbobp_page_requested() {
 	$this_page = basename($_SERVER['REQUEST_URI']);
-	if (strpos($this_page, "?") !== false) {
-		$parts = explode("?", $this_page);
-		$this_page = $parts[0];
-	}
+	if (strpos($this_page, "?") !== false) $this_page = explode("?", $this_page)[0];
 	return $this_page;
 }
 

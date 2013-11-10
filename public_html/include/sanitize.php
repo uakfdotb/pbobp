@@ -21,14 +21,15 @@
 
 */
 
-$GLOBALS['IN_PBOBP'] = true;
+//we assume each post and request element is a string
+//this ensures that assumption is valid
 
-require_once(dirname(__FILE__) . "/config.php");
-require_once(dirname(__FILE__) . "/language.php");
-require_once(dirname(__FILE__) . "/common.php");
-require_once(dirname(__FILE__) . "/database.php");
-require_once(dirname(__FILE__) . "/session.php");
-require_once(dirname(__FILE__) . "/plugin.php");
-require_once(dirname(__FILE__) . "/sanitize.php");
+foreach($_POST as $k => $v) {
+	$_POST[$k] = print_r($v, true);
+}
+
+foreach($_REQUEST as $k => $v) {
+	$_REQUEST[$k] = print_r($v, true);
+}
 
 ?>

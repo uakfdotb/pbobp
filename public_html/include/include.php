@@ -23,15 +23,17 @@
 
 $GLOBALS['IN_PBOBP'] = true;
 
-//require PHP >= 5.4
-// if we didn't have this check, user would see syntax errors instead :)
-if(version_compare(phpversion(), '5.4') < 0) {
-	die('pbobp requires PHP >= 5.4 -- you are running ' . phpversion() . '!');
-}
+if(php_sapi_name() !== 'cli') {
+	//require PHP >= 5.4
+	// if we didn't have this check, user would see syntax errors instead :)
+	if(version_compare(phpversion(), '5.4') < 0) {
+		die('pbobp requires PHP >= 5.4 -- you are running ' . phpversion() . '!');
+	}
 
-//require short open tags
-if(ini_get('short_open_tag') != 1) {
-	die('pbobp requires short_open_tag = On');
+	//require short open tags
+	if(ini_get('short_open_tag') != 1) {
+		die('pbobp requires short_open_tag = On');
+	}
 }
 
 require_once(dirname(__FILE__) . "/config.php");

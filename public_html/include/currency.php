@@ -73,6 +73,7 @@ function currency_format($x, $prefix, $suffix) {
 }
 
 //add a new currency or edit existing one
+//returns the inserted/updated currency_id
 function currency_create($iso_code, $prefix, $suffix, $primary, $rate, $currency_id = false) {
 	//validate primary / rate
 	if($primary && $rate != 1.0) {
@@ -86,9 +87,12 @@ function currency_create($iso_code, $prefix, $suffix, $primary, $rate, $currency
 
 	if($currency_id === false) {
 		database_query("INSERT INTO pbobp_currencies (iso_code, prefix, suffix, `primary`, rate) VALUES (?, ?, ?, ?, ?)", array($iso_code, $prefix, $suffix, $primary, $rate));
+		$currency_id = database_insert_id();
 	} else {
 		database_query("UPDATE pbobp_currencies SET iso_code = ?, prefix = ?, suffix = ?, `primary` = ?, rate = ? WHERE id = ?", array($iso_code, $prefix, $suffix, $primary, $rate, $currency_id));
 	}
+
+	return $currency_id;
 }
 
 function currency_delete($currency_id) {

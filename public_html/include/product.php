@@ -145,6 +145,7 @@ function product_service_field_context_remove($context, $context_id) {
 //returns list of fields pertaining to this product
 // (this is for the configuration of the product itself, not for services of this product)
 function product_fields($product_id) {
+	require_once(includePath() . 'field.php');
 	$product_details = product_get_details($product_id);
 
 	if($product_details !== false) {

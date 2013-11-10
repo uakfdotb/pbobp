@@ -129,7 +129,7 @@ function plugin_register_view($plugin_name, $view_name, $f, $obj = false) {
 }
 
 //internal calls plugin
-function plugin_call($callback, $args) {
+function plugin_call($callback, $args = array()) {
 	global $plugin_callbacks;
 
 	if(isset($plugin_callbacks[$callback])) {

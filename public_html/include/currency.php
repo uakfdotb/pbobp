@@ -26,7 +26,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 }
 
 function currency_get_details($currency_id = false) {
-	$query = "SELECT iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies WHERE ";
+	$query = "SELECT id, iso_code, prefix, suffix, `primary`, rate FROM pbobp_currencies WHERE ";
 	$vars = array();
 
 	if($currency_id === false) {

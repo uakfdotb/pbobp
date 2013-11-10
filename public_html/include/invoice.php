@@ -167,6 +167,9 @@ function invoice_status_map() {
 //false currency means to assume it is in invoice's currency
 //false user ID means to ignore the user owner
 function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = false) {
+	require_once(includePath() . 'user.php');
+	require_once(includePath() . 'currency.php');
+
 	//validate amount
 	if(!is_numeric($amount) || $amount < 0) {
 		return 'invalid_amount';
@@ -193,8 +196,6 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 		$new_paid = $invoice_details['amount'];
 
 		//use invoice's currency here since the parameter may be false and we already did currency validation above
-		require_once(includePath() . 'user.php');
-		require_once(includePath() . 'currency.php');
 		user_apply_credit($invoice_details['user_id'], currency_convert($extra, $invoice_details['currency_id']));
 	}
 
@@ -216,8 +217,11 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 		$lines = invoice_lines($invoice_id);
 
 		foreach($lines as $line) {
-			if($line['service_id']) {
+			if(!is_null($line['service_id'])) {
 				service_paid($line['service_id']);
+			} else {
+				//null indicates add to credit
+				user_apply_credit($invoice_details['user_id'], currency_convert($line['amount'], $invoice_details['currency_id']));
 			}
 		}
 	}

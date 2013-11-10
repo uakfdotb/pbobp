@@ -90,7 +90,11 @@ function plugin_register_callback($callback, $f, $obj = false) {
 			$plugin_callbacks[$callback] = array();
 		}
 
-		$plugin_callbacks[$callback][$f] = $obj;
+		if($obj === false) {
+			$plugin_callbacks[$callback][] = $f;
+		} else {
+			$plugin_callbacks[$callback][] = array($obj, $f);
+		}
 	} else {
 		die('Plugin error: ' . $f . ' is not a function.');
 	}
@@ -133,12 +137,8 @@ function plugin_call($callback, $args = array()) {
 	global $plugin_callbacks;
 
 	if(isset($plugin_callbacks[$callback])) {
-		foreach($plugin_callbacks[$callback] as $f => $obj) {
-			if($obj === false) {
-				call_user_func_array($f, $args);
-			} else {
-				call_user_func_array(array($obj, $f), $args);
-			}
+		foreach($plugin_callbacks[$callback] as $callable) {
+			call_user_func_array($callable, $args);
 		}
 	}
 }
@@ -150,12 +150,8 @@ function plugin_call_reference($callback, &$args) {
 	global $plugin_callbacks;
 
 	if(isset($plugin_callbacks[$callback])) {
-		foreach($plugin_callbacks[$callback] as $f => $obj) {
-			if($obj === false) {
-				call_user_func_array($f, $args);
-			} else {
-				call_user_func_array(array($obj, $f), $args);
-			}
+		foreach($plugin_callbacks[$callback] as $callable) {
+			call_user_func_array($callable, $args);
 		}
 	}
 }

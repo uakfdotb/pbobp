@@ -23,6 +23,12 @@
 
 $GLOBALS['IN_PBOBP'] = true;
 
+//require PHP >= 5.4
+// if we didn't have this check, user would see syntax errors instead :)
+if(version_compare(phpversion(), '5.4') < 0) {
+	die('pbobp requires PHP >= 5.4 -- you are running ' . phpversion() . '!');
+}
+
 require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/language.php");
 require_once(dirname(__FILE__) . "/common.php");

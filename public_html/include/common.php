@@ -279,7 +279,7 @@ function pbobp_redirect($url, $get = array(), $statusCode = 303) {
 	$get_string = '';
 
 	foreach($get as $k => $v) {
-		if(!empty($get_string)) {
+		if(!empty($get_string) || strpos($url, '?') !== false) {
 			$get_string .= '&';
 		} else {
 			$get_string .= '?';

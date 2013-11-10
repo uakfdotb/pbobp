@@ -29,6 +29,9 @@ if(version_compare(phpversion(), '5.4') < 0) {
 	die('pbobp requires PHP >= 5.4 -- you are running ' . phpversion() . '!');
 }
 
+//enable short open tags if not already enabled
+ini_set('short_open_tag', 'On');
+
 require_once(dirname(__FILE__) . "/config.php");
 require_once(dirname(__FILE__) . "/language.php");
 require_once(dirname(__FILE__) . "/common.php");

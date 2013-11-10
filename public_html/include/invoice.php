@@ -241,7 +241,7 @@ function invoice_line_remove($line_id) {
 			if($total <= $amount) {
 				//there is only one line for this invoice, and it's this one
 				//so mark invoice cancelled
-				database_query("UPDATE pbobp_invoices SET status = -2 WHERE id = ?", array($invoice_id));
+				database_query("UPDATE pbobp_invoices SET status = 2 WHERE id = ?", array($invoice_id));
 				return;
 			} else {
 				//delete this line and update the invoice in case it's now able to be marked as paid

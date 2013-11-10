@@ -30,6 +30,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 class plugin_notifications {
 	function __construct() {
 		$this->plugin_name = 'notifications';
+		plugin_register_callback('cron', 'cron', $this);
 		plugin_register_callback('auth_register_success', 'auth_register_success', $this);
 		plugin_register_callback('ticket_opened', 'ticket_opened', $this);
 		plugin_register_callback('ticket_replied', 'ticket_replied', $this);
@@ -49,6 +50,30 @@ class plugin_notifications {
 	function notify($subject, $body, $to) {
 		$body .= "\n\n" . config_get('mail_footer', 'plugin', $this->id);
 		pbobp_mail($subject, $body, $to);
+	}
+
+	function cron() {
+		require_once(includePath() . 'user.php');
+		//we want to run this at most once a day, so make sure we haven't run in the last 23 hours
+		//missing a day shouldn't be critical for any of these notifications
+
+		$last_time = config_get_default('last_time', 0, 'plugin', $this->id, false);
+
+		if(time() - $last_time > 3600 * 23) {
+			//update last_time
+			config_set('last_time', time(), '', 0, 'plugin', $this->id);
+
+			//notify each user who has overdue invoices
+			$result = database_query("SELECT DISTINCT pbobp_invoices.user_id, pbobp_users.email FROM pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id WHERE pbobp_invoices.due_date < NOW() AND pbobp_invoices.status = 0", array(), true);
+
+			while($row = $result->fetch()) {
+				$name = user_get_name($row['user_id']);
+
+				$subject = lang('overdue_invoice_subject', array(), $this->language);
+				$body = lang('overdue_invoice_content', array('name' => $name), $this->language);
+				$this->notify($subject, $body, $row['email']);
+			}
+		}
 	}
 
 	function auth_register_success($user_id) {

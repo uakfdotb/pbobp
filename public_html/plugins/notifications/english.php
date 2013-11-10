@@ -25,6 +25,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	die('Access denied.');
 }
 
+$lang['overdue_invoice_subject'] = 'Overdue invoice notification';
+$lang['overdue_invoice_content'] = "Hi \$name\$,\n\nYou currently have an overdue invoice. To avoid service inactivation, please make a payment as soon as possible.";
+
 $lang['auth_register_success_subject'] = 'Welcome to $site_name$';
 $lang['auth_register_success_content'] = "Hi \$name\$,\n\nYour account has been registered successfully. To login, please continue to the URL below.\n\n\$login_url\$";
 

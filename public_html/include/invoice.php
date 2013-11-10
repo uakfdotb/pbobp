@@ -227,7 +227,7 @@ function invoice_payment($invoice_id, $amount, $currency_id = false, $user_id = 
 
 //removes a given line item and updates/cancels the invoice
 function invoice_line_remove($line_id) {
-	$result = database_query("SELECT invoice_id, amount FROM pbobp_invoice_lines WHERE id = ?", array($line_id));
+	$result = database_query("SELECT invoice_id, amount FROM pbobp_invoices_lines WHERE id = ?", array($line_id));
 
 	if($row = $result->fetch()) {
 		$invoice_id = $row[0];

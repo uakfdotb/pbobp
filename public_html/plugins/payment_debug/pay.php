@@ -28,7 +28,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h1><?= $lang_plugin['pay'] ?></h1>
 
-<? if(isset($message)) { ?>
+<? if(!empty($message)) { ?>
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 

@@ -37,4 +37,10 @@ $lang['ticket_replied_content'] = '$content$';
 $lang['cron_invoice_generated_subject'] = 'New invoice notification (#$invoice_id$)';
 $lang['cron_invoice_generated_content'] = "Hi \$name\$,\n\nA new invoice totaling \$amount\$ has been generated on your account. Please login to our billing panel at \$site_address\$ to make a payment.";
 
+$lang['cron_suspended_service_subject'] = 'Service suspended';
+$lang['cron_suspended_service_content'] = "Hi \$name\$,\n\nService #\$service_id\$ (\$service_name\$) has been suspended due to non-payment. To have your service unsuspended, please login to our billing panel at \$site_address\$ and pay the invoice.";
+
+$lang['cron_inactivated_service_subject'] = 'Service inactivated';
+$lang['cron_inactivated_service_content'] = "Hi \$name\$,\n\nThis is a notice that Service #\$service_id\$ (\$service_name\$) has been inactivated due to non-payment.";
+
 ?>

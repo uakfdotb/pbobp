@@ -34,6 +34,8 @@ class plugin_notifications {
 		plugin_register_callback('ticket_opened', 'ticket_opened', $this);
 		plugin_register_callback('ticket_replied', 'ticket_replied', $this);
 		plugin_register_callback('cron_generated_invoice', 'cron_generated_invoice', $this);
+		plugin_register_callback('cron_inactivated_service', 'cron_inactivated_service', $this);
+		plugin_register_callback('cron_suspended_service', 'cron_suspended_service', $this);
 
 		$language_name = language_name();
 		require_once(includePath() . "../plugins/{$this->plugin_name}/$language_name.php");
@@ -110,6 +112,36 @@ class plugin_notifications {
 			$subject = lang('cron_generated_invoice_subject', array('invoice_id' => $invoice['invoice_id']), $this->language);
 			$body = lang('cron_generated_invoice_content', array('amount' => $invoice['amount_nice'], 'name' => $name, 'site_address' => config_get('site_address')));
 			$this->notify($subject, $body, $invoice['email']);
+		}
+	}
+
+	function cron_inactivated_service($service_id) {
+		require_once(includePath() . 'service.php');
+		require_once(includePath() . 'user.php');
+
+		$services = service_list(array('service_id' => $service_id));
+
+		if(!empty($services)) {
+			$service = $services[0];
+			$name = user_get_name($service['user_id']);
+			$subject = lang('cron_inactivated_service_subject', array(), $this->language);
+			$body = lang('cron_inactivated_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name']));
+			$this->notify($subject, $body, $service['email']);
+		}
+	}
+
+	function cron_suspended_service($service_id) {
+		require_once(includePath() . 'service.php');
+		require_once(includePath() . 'user.php');
+
+		$services = service_list(array('service_id' => $service_id));
+
+		if(!empty($services)) {
+			$service = $services[0];
+			$name = user_get_name($service['user_id']);
+			$subject = lang('cron_suspended_service_subject', array(), $this->language);
+			$body = lang('cron_suspended_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name'], 'site_address' => config_get('site_address')));
+			$this->notify($subject, $body, $service['email']);
 		}
 	}
 }

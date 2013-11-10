@@ -22,6 +22,8 @@ INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('site_name', '
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('site_address', 'https://pbobp.lunanode.com', 'Absolute URL to the base pbobp directory (without trailing slash)', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('ticket_content_maxlen', '20000', 'The maximum length of a ticket', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('invoice_pre_days', '7', 'Time in days to send an invoice before a service due date', 0);
+INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('inactivate_post_days', '4', 'Time in days after invoice due date to inactivate the service', 0);
+INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('suspend_post_days', '1', 'Time in days after invoice due date to suspend the service', 0);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('login_auto_admin', '1', 'Whether to automatically login administrators to the administration area', 2);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('mail_footer', 'Thanks,\npbobp', 'Footer for e-mail messages sent from pbobp', 1);
 INSERT INTO pbobp_configuration (k, v, description, type) VALUES ('auth_password_minlen', '6', 'Minimum length for passwords', 0);

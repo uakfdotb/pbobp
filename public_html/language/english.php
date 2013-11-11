@@ -78,6 +78,7 @@ $lang['inactive'] = 'Inactive';
 $lang['suspended'] = 'Suspended';
 $lang['pending'] = 'Pending';
 $lang['active'] = 'Active';
+$lang['canceling'] = 'Canceling';
 
 $lang['paid'] = 'Paid';
 $lang['unpaid'] = 'Unpaid';

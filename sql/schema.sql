@@ -48,7 +48,7 @@ CREATE TABLE pbobp_products_groups_members (id INT NOT NULL PRIMARY KEY AUTO_INC
 -- parent_type is 0=product, 1=product group
 CREATE TABLE pbobp_products_addons (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, parent_id INT NOT NULL, child_id INT NOT NULL, parent_type INT NOT NULL DEFAULT 0);
 
--- status is 0=not yet active, 1=active, -1=suspended, -2=inactivated, -3=awaiting activation
+-- status is 0=not yet active, 1=active, -1=suspended, -2=inactivated, -3=awaiting activation, -4=cancelled (active)
 CREATE TABLE pbobp_services (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, product_id INT NOT NULL, name VARCHAR(64) NOT NULL, creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, recurring_date TIMESTAMP NOT NULL, recurring_duration INT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, status INT NOT NULL DEFAULT 0, parent_service INT, currency_id INT);
 CREATE TABLE pbobp_services_settings (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, service_id INT NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
 

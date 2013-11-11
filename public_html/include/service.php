@@ -82,6 +82,7 @@ function service_status_nice($status) {
 
 function service_status_map() {
 	return array(
+		-4 => 'canceling',
 		-3 => 'activating',
 		-2 => 'inactive',
 		-1 => 'suspended',
@@ -167,6 +168,7 @@ function service_inactivate($service_id) {
 	}
 
 	//cancel any associated invoices
+	require_once(includePath() . 'invoice.php');
 	$result = database_query("SELECT id FROM pbobp_invoices_lines WHERE service_id = ?", array($service_id));
 
 	while($row = $result->fetch()) {
@@ -199,8 +201,8 @@ function service_list_extra(&$row) {
 
 function service_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_services.id AS service_id, pbobp_services.user_id, pbobp_services.product_id, pbobp_services.name, pbobp_services.creation_date, pbobp_services.recurring_date, pbobp_services.recurring_duration, pbobp_services.recurring_amount, pbobp_services.status, pbobp_services.currency_id, pbobp_users.email, pbobp_products.name AS product_name, pbobp_products.plugin_id, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.prefix AS currency_prefix, pbobp_plugins.name AS plugin_name FROM pbobp_services LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_services.user_id LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_services.product_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_services.currency_id LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id";
-	$where_vars = array('user_id' => 'pbobp_services.user_id', 'status' => 'pbobp_services.status', 'due_date' => 'pbobp_services.recurring_date', 'product_id' => 'pbobp_services.product_id', 'name' => 'pbobp_services.name');
-	$orderby_vars = array('service_id' => 'pbobp_services.id', 'status' => '(CASE WHEN pbobp_services.status = -3 THEN 5 ELSE pbobp_services.status END) DESC, pbobp_services.id');
+	$where_vars = array('user_id' => 'pbobp_services.user_id', 'status' => 'pbobp_services.status', 'due_date' => 'pbobp_services.recurring_date', 'product_id' => 'pbobp_services.product_id', 'name' => 'pbobp_services.name', 'service_id' => 'pbobp_services.id');
+	$orderby_vars = array('service_id' => 'pbobp_services.id', 'status' => '(CASE WHEN pbobp_services.status = -3 THEN 5 WHEN pbobp_services.status = -4 THEN 1 ELSE pbobp_services.status END) DESC, pbobp_services.id');
 	$arguments['limit_type'] = 'service';
 	$arguments['table'] = 'pbobp_services';
 
@@ -418,6 +420,29 @@ function service_activate($service_id) {
 	//update the service
 	database_query("UPDATE pbobp_services SET status = 1 WHERE id = ?", array($service_id));
 	return true;
+}
+
+//marks service as cancelled
+//cron script will terminate it at the due date
+function service_cancel($service_id) {
+	//verify that this service exists
+	$service_details = service_get_details($service_id);
+
+	if($service_details === false) {
+		return lang('invalid_service');
+	}
+
+	//cancel any associated invoices
+	require_once(includePath() . 'invoice.php');
+	$result = database_query("SELECT id FROM pbobp_invoices_lines WHERE service_id = ?", array($service_id));
+
+	while($row = $result->fetch()) {
+		invoice_line_remove($row[0]);
+	}
+
+	//update the service
+	database_query("UPDATE pbobp_services SET status = -4 WHERE id = ?", array($service_id));
+	return $result;
 }
 
 ?>

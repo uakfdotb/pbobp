@@ -87,6 +87,16 @@ function cron_end_overdue_services() {
 		plugin_call('cron_inactivated_service', array($row[0]));
 	}
 
+	//list cancelled services that are overdue and should be terminated
+	$result = database_query("SELECT id FROM pbobp_services WHERE pbobp_services.status = -4 AND recurring_date < NOW()");
+
+	while($row = $result->fetch()) {
+		echo "Inactivating #{$row[0]}\n";
+		service_inactivate($row[0]);
+		plugin_call('cron_inactivated_service', array($row[0]));
+	}
+
+	//list active services that are overdue and should be suspended
 	$result = database_query("SELECT id FROM pbobp_services WHERE pbobp_services.status = 1 AND recurring_date < DATE_SUB(NOW(), INTERVAL ? DAY)", array($suspend_post_days));
 
 	while($row = $result->fetch()) {

@@ -38,16 +38,32 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('date_created') ?></th>
 	<th><?= lang('date_due') ?></th>
 	<th><?= lang('status') ?></th>
+	<th><?= lang('actions') ?></th>
 </tr>
 
-<? foreach($services as $service) { ?>
+<?
+foreach($services as $service) {
+	//only show actions and link if service is active/suspended
+	$service_accessible = $service['status'] == 1 || $service['status'] == -1;
+	?>
 <tr>
-	<td><a href="service.php?service_id=<?= $service['service_id'] ?>"><?= $service['name'] ?></a></td>
+	<td>
+		<? if($service_accessible) { ?><a href="service.php?service_id=<?= $service['service_id'] ?>"><? } ?>
+		<?= $service['name'] ?>
+		<? if($service_accessible) { ?></a><? } ?>
+	</td>
 	<td><?= $service['recurring_amount_nice'] ?></td>
 	<td><?= lang($service['duration_nice']) ?></td>
 	<td><?= $service['creation_date'] ?></td>
 	<td><?= $service['recurring_date'] ?></td>
 	<td><?= lang($service['status_nice']) ?></td>
+	<td>
+		<? if($service_accessible) { ?>
+			<? foreach($actions as $target => $title) { ?>
+			<a href="<?= $target ?><?= $service['service_id'] ?>"><button type="button" class="btn btn-primary"><?= $title ?></button></a>
+			<? } ?>
+		<? } ?>
+	</td>
 </tr>
 <? } ?>
 

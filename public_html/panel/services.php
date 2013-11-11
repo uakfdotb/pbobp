@@ -32,8 +32,15 @@ if(isset($_SESSION['user_id'])) {
 		$limit_page = $_GET['limit_page'];
 	}
 
+	//get list of service action buttons to display
+	$actions = array();
+	foreach(plugin_interface_list('service_action') as $name => $obj) {
+		$info = $obj->service_action_info();
+		$actions[$info['target']] = $info['title'];
+	}
+
 	$services_ext = service_list(array('user_id' => $_SESSION['user_id']), array('order_by' => 'status', 'limit_page' => $limit_page, 'extended' => true));
-	get_page("services", "panel", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count']));
+	get_page("services", "panel", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count'], 'actions' => $actions));
 } else {
 	pbobp_redirect("../");
 }

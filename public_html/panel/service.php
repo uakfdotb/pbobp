@@ -55,6 +55,11 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 
 	$service = $services[0];
 
+	//don't show unless service is active/suspended
+	if($service['status'] != -1 && $service['status'] != 1) {
+		die('Invalid service specified.');
+	}
+
 	//get the service interface object, if any
 	$interface = false;
 

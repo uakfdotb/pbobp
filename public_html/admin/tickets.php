@@ -28,8 +28,10 @@ require_once("../include/ticket.php");
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$message = "";
 	$limit_page = 0;
+	$order_by = 'status';
+	$order_asc = false;
 	$constraints = array();
-	$arguments = array('order_by' => 'status', 'extended' => true);
+	$arguments = array('order_by' => $order_by, 'extended' => true);
 
 	if(isset($_REQUEST['message'])) {
 		$message = $_REQUEST['message'];
@@ -52,12 +54,18 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		}
 	}
 
-	if(isset($_POST['action'])) {
+	if(isset($_REQUEST['order_by'])) {
+		$order_by = $_REQUEST['order_by'];
+		$arguments['order_by'] = $order_by;
+	}
 
+	if(isset($_REQUEST['asc'])) {
+		$order_asc = true;
+		$arguments['order_asc'] = $order_asc;
 	}
 
 	$tickets_ext = ticket_list($constraints, $arguments);
-	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count']));
+	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc));
 } else {
 	pbobp_redirect("../");
 }

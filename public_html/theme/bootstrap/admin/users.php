@@ -37,11 +37,18 @@ E-mail address: <input type="text" name="email" value="<?= $filter_email ?>" />
 
 <table class="table">
 <tr>
-	<th><?= lang('x_id', array('x' => lang('user'))) ?></th>
-	<th><?= lang('email_address') ?></th>
-	<th><?= lang('access') ?></th>
-	<th><?= lang('services_active') ?></th>
-	<th><?= lang('services_total') ?></th>
+<?
+$columns = array(
+	'user_id' => lang('x_id', array('x' => lang('user'))),
+	'email' => lang('email_address'),
+	'access' => lang('access'),
+	'count_services_active' => lang('services_active'),
+	'count_services_total' => lang('services_total')
+	);
+foreach($columns as $key => $title) {
+	?>
+	<th><a href="users.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
+<? } ?>
 </tr>
 
 <? foreach($users as $user) { ?>

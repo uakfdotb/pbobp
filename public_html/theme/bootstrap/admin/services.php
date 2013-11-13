@@ -32,14 +32,21 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table class="table">
 <tr>
-	<th><?= lang('service') ?></th>
-	<th><?= lang('product') ?></th>
-	<th><?= lang('email_address') ?></th>
-	<th><?= lang('status') ?></th>
-	<th><?= lang('date_created') ?></th>
-	<th><?= lang('date_due') ?></th>
-	<th><?= lang('amount_recurring') ?></th>
-	<th><?= lang('duration') ?></th>
+<?
+$columns = array(
+	'service_id' => lang('service'),
+	'product' => lang('product'),
+	'email' => lang('email_address'),
+	'status' => lang('status'),
+	'creation_date' => lang('date_created'),
+	'recurring_date' => lang('date_due'),
+	'recurring_amount' => lang('amount_recurring'),
+	'recurring_duration' => lang('duration')
+	);
+foreach($columns as $key => $title) {
+	?>
+	<th><a href="services.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
+<? } ?>
 </tr>
 
 <? foreach($services as $service) { ?>

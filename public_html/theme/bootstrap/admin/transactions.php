@@ -32,14 +32,21 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table class="table">
 <tr>
-	<th><?= lang('x_id', array('x' => lang('transaction'))) ?></th>
-	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
-	<th><?= lang('email_address') ?></th>
-	<th><?= lang('gateway') ?></th>
-	<th><?= lang('amount') ?></th>
-	<th><?= lang('fees') ?></th>
-	<th><?= lang('iso_code') ?></th>
-	<th><?= lang('time') ?></th>
+<?
+$columns = array(
+	'transaction_id' => lang('x_id', array('x' => lang('transaction'))),
+	'invoice_id' => lang('x_id', array('x' => lang('invoice'))),
+	'email' => lang('email_address'),
+	'gateway' => lang('gateway'),
+	'amount' => lang('amount'),
+	'amount_out' => lang('fees'),
+	'iso_code' => lang('iso_code'),
+	'time' => lang('time')
+	);
+foreach($columns as $key => $title) {
+	?>
+	<th><a href="transactions.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
+<? } ?>
 </tr>
 
 <? foreach($transactions as $transaction) { ?>

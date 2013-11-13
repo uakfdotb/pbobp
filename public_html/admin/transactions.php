@@ -27,6 +27,8 @@ require_once("../include/transaction.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '';
 	$limit_page = 0;
+	$order_by = 'status';
+	$order_asc = false;
 	$constraints = array();
 	$arguments = array('extended' => true);
 
@@ -35,8 +37,18 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '
 		$arguments['limit_page'] = $limit_page;
 	}
 
+	if(isset($_REQUEST['order_by'])) {
+		$order_by = $_REQUEST['order_by'];
+		$arguments['order_by'] = $order_by;
+	}
+
+	if(isset($_REQUEST['asc'])) {
+		$order_asc = true;
+		$arguments['order_asc'] = $order_asc;
+	}
+
 	$transactions_ext = transaction_list($constraints, $arguments);
-	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page));
+	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page, 'order_by' => $order_by, 'order_asc' => $order_asc));
 } else {
 	pbobp_redirect("../");
 }

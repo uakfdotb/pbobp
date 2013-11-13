@@ -163,7 +163,7 @@ function ticket_list($constraints = array(), $arguments = array()) {
 	$where_vars = array('user_id' => 'pbobp_tickets.user_id', 'department_id' => 'pbobp_tickets.department_id', 'service_id' => 'pbobp_tickets.service_id', 'ticket_id' => 'pbobp_tickets.id', 'status' => 'pbobp_tickets.status');
 
 	//for status order by, want opened tickets on top, then replied tickets, then closed last
-	$orderby_vars = array('modify_time' => 'pbobp_tickets.modify_time', 'status' => '(CASE WHEN pbobp_tickets.status = -2 THEN -1 WHEN (pbobp_tickets.status = -1 OR pbobp_tickets.status = 0) THEN 0 ELSE -2 END) DESC, pbobp_tickets.modify_time');
+	$orderby_vars = array('modify_time' => 'pbobp_tickets.modify_time', 'status' => '(CASE WHEN pbobp_tickets.status = -2 THEN -1 WHEN (pbobp_tickets.status = -1 OR pbobp_tickets.status = 0) THEN 0 ELSE -2 END) DESC, pbobp_tickets.modify_time', 'subject' => 'pbobp_tickets.subject', 'email' => 'pbobp_tickets.email', 'service_name' => 'pbobp_services.name', 'department_name' => 'pbobp_tickets_departments.name');
 	$arguments['limit_type'] = 'ticket';
 	$arguments['table'] = 'pbobp_tickets';
 

@@ -36,12 +36,19 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table class="table">
 <tr>
-	<th><?= lang('subject') ?></th>
-	<th><?= lang('email_address') ?></th>
-	<th><?= lang('service') ?></th>
-	<th><?= lang('department') ?></th>
-	<th><?= lang('status') ?></th>
-	<th><?= lang('reply_last') ?></th>
+<?
+$columns = array(
+	'subject' => lang('subject'),
+	'email' => lang('email_address'),
+	'service_name' => lang('service'),
+	'department_name' => lang('department'),
+	'status' => lang('status'),
+	'modify_time' => lang('reply_last')
+	);
+foreach($columns as $key => $title) {
+	?>
+	<th><a href="tickets.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
+<? } ?>
 </tr>
 
 <? foreach($tickets as $ticket) { ?>

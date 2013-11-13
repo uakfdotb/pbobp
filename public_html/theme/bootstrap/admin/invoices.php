@@ -32,13 +32,20 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <table class="table">
 <tr>
-	<th><?= lang('x_id', array('x' => lang('invoice'))) ?></th>
-	<th><?= lang('status') ?></th>
-	<th><?= lang('amount') ?></th>
-	<th><?= lang('email_address') ?></th>
-	<th><?= lang('credit') ?></th>
-	<th><?= lang('date_created') ?></th>
-	<th><?= lang('date_due') ?></th>
+<?
+$columns = array(
+	'invoice_id' => lang('x_id', array('x' => lang('invoice'))),
+	'status' => lang('status'),
+	'amount' => lang('amount'),
+	'email' => lang('email_address'),
+	'paid' => lang('credit'),
+	'date' => lang('date_created'),
+	'due_date' => lang('date_due')
+	);
+foreach($columns as $key => $title) {
+	?>
+	<th><a href="invoices.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
+<? } ?>
 </tr>
 
 <? foreach($invoices as $invoice) { ?>

@@ -28,6 +28,8 @@ require_once("../include/user.php");
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$filter_email = '';
 	$limit_page = 0;
+	$order_by = 'user_id';
+	$order_asc = false;
 	$constraints = array();
 	$arguments = array('extended' => true);
 
@@ -41,8 +43,18 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['limit_page'] = $limit_page;
 	}
 
+	if(isset($_REQUEST['order_by'])) {
+		$order_by = $_REQUEST['order_by'];
+		$arguments['order_by'] = $order_by;
+	}
+
+	if(isset($_REQUEST['asc'])) {
+		$order_asc = true;
+		$arguments['order_asc'] = $order_asc;
+	}
+
 	$users_ext = user_list($constraints, $arguments);
-	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count']));
+	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc));
 } else {
 	pbobp_redirect("../");
 }

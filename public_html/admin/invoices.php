@@ -27,16 +27,28 @@ require_once("../include/invoice.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
+	$order_by = 'status';
+	$order_asc = false;
 	$constraints = array();
-	$arguments = array('extended' => true, 'order_by' => 'status');
+	$arguments = array('extended' => true, 'order_by' => $order_by);
 
 	if(isset($_REQUEST['limit_page'])) {
 		$limit_page = $_REQUEST['limit_page'];
 		$arguments['limit_page'] = $limit_page;
 	}
 
+	if(isset($_REQUEST['order_by'])) {
+		$order_by = $_REQUEST['order_by'];
+		$arguments['order_by'] = $order_by;
+	}
+
+	if(isset($_REQUEST['asc'])) {
+		$order_asc = true;
+		$arguments['order_asc'] = $order_asc;
+	}
+
 	$invoices_ext = invoice_list($constraints, $arguments);
-	get_page("invoices", "admin", array('invoices' => $invoices_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $invoices_ext['count']));
+	get_page("invoices", "admin", array('invoices' => $invoices_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $invoices_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc));
 } else {
 	pbobp_redirect("../");
 }

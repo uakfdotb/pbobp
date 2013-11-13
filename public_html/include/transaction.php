@@ -50,7 +50,7 @@ function transaction_list_extra(&$row) {
 function transaction_list($constraints = array(), $arguments = array()) {
 	$select = "SELECT pbobp_transactions.id AS transaction_id, pbobp_transactions.invoice_id, pbobp_transactions.user_id, pbobp_transactions.gateway, pbobp_transactions.gateway_identifier, pbobp_transactions.notes, pbobp_transactions.amount, pbobp_transactions.amount_out, pbobp_transactions.currency_id, pbobp_transactions.time, pbobp_invoices.status AS invoice_status, pbobp_users.email, pbobp_currencies.iso_code, pbobp_currencies.suffix, pbobp_currencies.prefix FROM pbobp_transactions LEFT JOIN pbobp_invoices ON pbobp_invoices.id = pbobp_transactions.invoice_id LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_transactions.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_transactions.currency_id";
 	$where_vars = array('invoice_id' => 'pbobp_transactions.invoice_id', 'transaction_id' => 'pbobp_transactions.id', 'user_id' => 'pbobp_transactions.user_id', 'gateway_identifier' => 'pbobp_transactions.gateway_identifier');
-	$orderby_vars = array('transaction_id' => 'pbobp_transactions.id');
+	$orderby_vars = array('transaction_id' => 'pbobp_transactions.id', 'invoice_id' => 'pbobp_invoices.id', 'email' => 'pbobp_users.email', 'gateway' => 'pbobp_transactions.gateway', 'amount' => 'pbobp_transactions.amount', 'amount_out' => 'pbobp_transactions.amount_out', 'iso_code' => 'pbobp_currencies.iso_code', 'time' => 'pbobp_transactions.time');
 	$arguments['limit_type'] = 'transaction';
 	$arguments['table'] = 'pbobp_transactions';
 

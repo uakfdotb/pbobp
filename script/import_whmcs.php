@@ -42,6 +42,7 @@ $db_name = 'whmcs';
 $delete_data = true;
 
 //include pbobp
+$GLOBALS['PBOBP_ISSCRIPT'] = true;
 include("/path/to/pbobp/include/include.php");
 
 //
@@ -123,18 +124,22 @@ function getPrices($type, $relid) {
 }
 
 if($delete_data) {
-	$tables = array('pbobp_auth_tokens', 'pbobp_currencies', 'pbobp_fields', 'pbobp_fields_options', 'pbobp_fields_values', 'pbobp_invoices', 'pbobp_invoices_lines', 'pbobp_locks', 'pbobp_prices', 'pbobp_products', 'pbobp_products_addons', 'pbobp_products_groups', 'pbobp_products_groups_members', 'pbobp_services', 'pbobp_tickets', 'pbobp_tickets_departments', 'pbobp_tickets_messages', 'pbobp_transactions');
+	$tables = array('pbobp_auth_tokens', 'pbobp_currencies', 'pbobp_fields_values', 'pbobp_invoices', 'pbobp_invoices_lines', 'pbobp_locks', 'pbobp_prices', 'pbobp_products', 'pbobp_products_addons', 'pbobp_products_groups', 'pbobp_products_groups_members', 'pbobp_services', 'pbobp_tickets', 'pbobp_tickets_departments', 'pbobp_tickets_messages', 'pbobp_transactions');
 
 	foreach($tables as $table) {
 		database_query("DELETE FROM $table");
 	}
 
 	database_query("DELETE FROM pbobp_users WHERE access = 0");
+	database_query("DELETE pbobp_fields_options FROM pbobp_fields_options LEFT JOIN pbobp_fields ON pbobp_fields.id = pbobp_fields_options.field_id WHERE context = 'group' OR context = 'product'");
+	database_query("DELETE FROM pbobp_fields WHERE context = 'group' OR context = 'product'");
 }
 
 $mysqli = new mysqli($db_host, $db_username, $db_password, $db_name);
 
 //import users
+echo "Importing users\n";
+sleep(5);
 $result = $mysqli->query("SELECT id, email, password FROM tblclients");
 $userMap = array(); //maps from WHMCS user ID to pbobp ID
 
@@ -147,6 +152,7 @@ while($row = mysqli_fetch_assoc($result)) {
 }
 
 //import currencies
+echo "Importing currencies\n";
 $currencyMap = array(); //maps from WHMCS currency ID to pbobp ID
 $primaryCurrency = 0; //pbobp primary currency id
 $result = $mysqli->query("SELECT id, code, prefix, suffix, rate, `default` FROM tblcurrencies");
@@ -161,8 +167,12 @@ while($row = mysqli_fetch_assoc($result)) {
 }
 
 //import products
+echo "Importing products\n";
 $productMap = array(); //maps from WHMCS product ID to pbobp ID
-$result = $mysqli->query("SELECT id, name, description, servertype FROM tblproducts");
+$groupMembers = array(); //maps from gid to list of pbobp product ID
+$customFieldMap = array(); //maps from WHMCS customfields ID to pbobp field ID
+$productGroupMap = array(); //maps from WHMCS gid to pbobp products_groups ID
+$result = $mysqli->query("SELECT id, gid, name, description, servertype FROM tblproducts");
 
 while($row = mysqli_fetch_assoc($result)) {
 	$servertype = strtolower($row['servertype']);
@@ -186,6 +196,45 @@ while($row = mysqli_fetch_assoc($result)) {
 			if(!empty($products)) {
 				$product_id = $products[0]['product_id'];
 				$productMap[$row['id']] = $product_id;
+
+				//add to appropriate group
+				if(!isset($groupMembers[$row['gid']])) {
+					//create group if necessary
+					$groupMembers[$row['gid']] = array();
+
+					$group_result = $mysqli->query("SELECT name, hidden FROM tblproductgroups WHERE id = {$row['gid']}");
+
+					if($group_row = mysqli_fetch_assoc($group_result)) {
+						$group_id = product_group_create($group_row['name'], '', !empty($group_row['hidden']));
+						$productGroupMap[$row['gid']] = $group_id;
+					} else {
+						print "Warning: skipping product group with id={$row['gid']} since group data could not be found\n";
+					}
+				}
+
+				if(isset($productGroupMap[$row['gid']])) {
+					database_query("INSERT INTO pbobp_products_groups_members (group_id, product_id) VALUES (?, ?)", array($productGroupMap[$row['gid']], $product_id));
+				}
+
+				//import custom fields
+				$field_result = $mysqli->query("SELECT id, fieldname, fieldtype, description, adminonly, required, fieldoptions FROM tblcustomfields WHERE type = 'product' AND relid = {$row['id']}");
+
+				while($field_row = mysqli_fetch_assoc($field_result)) {
+					$pbobp_type = 0; //default to textbox
+					$options = array();
+
+					if($field_row['fieldtype'] == 'dropdown') {
+						$pbobp_type = 3;
+						$options = explode(',', $field_row['fieldoptions']);
+					} else if($field_row['fieldtype'] == 'tickbox') {
+						$pbobp_type = 2;
+					} else if($field_row['fieldtype'] == 'textarea') {
+						$pbobp_type = 1;
+					}
+
+					$field_id = field_add('product', $row['id'], $field_row['fieldname'], '', $field_row['description'], $pbobp_type, !empty($row['required']), !empty($row['adminonly']), $options);
+					$customFieldMap[$field_row['id']] = $field_id;
+				}
 			} else {
 				print "Warning: supposedly created product [{$row['name']}] but can't find database ID!\n";
 			}
@@ -198,8 +247,10 @@ while($row = mysqli_fetch_assoc($result)) {
 }
 
 //import product config options
+echo "Importing WHMCS product configoptions\n";
 $configOptionMap = array(); //maps from WHMCS tblproductconfigoptions to pbobp field ID
-$productGroupMap = array(); //maps from WHMCS gid to pbobp products_groups ID
+$configOptionInfo = array(); //from tblproductconfigoptions.id to array(type, option map)
+$configGroupMap = array(); //from tblproductconfiggroups.id to pbobp product group ID
 $result = $mysqli->query("SELECT id, gid, optionname, optiontype, hidden FROM tblproductconfigoptions");
 
 while($row = mysqli_fetch_assoc($result)) {
@@ -216,30 +267,41 @@ while($row = mysqli_fetch_assoc($result)) {
 
 	if($pbobp_type == 3 || $pbobp_type == 4) { //dropdown/radio
 		//need to find options
-		$option_result = $mysqli->query("SELECT optionname FROM tblproductconfigoptionssub WHERE configid = {$row['id']}");
+		$option_result = $mysqli->query("SELECT id, optionname FROM tblproductconfigoptionssub WHERE configid = {$row['id']}");
 
 		while($option_row = mysqli_fetch_assoc($option_result)) {
-			$options[] = $option_row['optionname'];
+			$options[$option_row['id']] = $option_row['optionname'];
 		}
 	}
 
 	//create group if necessary
-	if(!isset($productGroupMap[$row['gid']])) {
-		$group_result = $mysqli->query("SELECT name, hidden FROM tblproductgroups WHERE id = {$row['gid']}");
+	if(!isset($configGroupMap[$row['gid']])) {
+		$group_result = $mysqli->query("SELECT name, description FROM tblproductconfiggroups WHERE id = {$row['gid']}");
 
 		if($group_row = mysqli_fetch_assoc($group_result)) {
-			$id = product_group_create($group_row['name'], '', !empty($group_row['hidden']));
-			$productGroupMap[$row['gid']] = $id;
+			$group_id = product_group_create($group_row['name'], $group_row['description'], true); //hidden group
+			$configGroupMap[$row['gid']] = $group_id;
+
+			//add products in this group to this group
+			$group_result = $mysqli->query("SELECT pid FROM tblproductconfiglinks WHERE gid = {$row['gid']}");
+			while($group_row = mysqli_fetch_assoc($group_result)) {
+				if(isset($productMap[$group_row['pid']])) {
+					database_query("INSERT INTO pbobp_products_groups_members (group_id, product_id) VALUES (?, ?)", array($group_id, $productMap[$group_row['pid']]));
+				}
+			}
 		} else {
-			print "Warning: skipping configoption [{$row['optionname']}] since group with id={$row['gid']} could not be found\n";
+			print "Warning: skipping configoption [{$row['optionname']}] since configgroup with id={$row['gid']} could not be found\n";
+			continue;
 		}
 	}
 
-	$id = field_add('group', $productGroupMap[$row['gid']], $row['optionname'], '', '', $pbobp_type, false, !empty($row['hidden']), $options);
+	$id = field_add('group', $configGroupMap[$row['gid']], $row['optionname'], '', '', $pbobp_type, false, !empty($row['hidden']), $options);
 	$configOptionMap[$row['id']] = $id;
+	$configOptionInfo[$row['id']] = array('type' => $row['optiontype'], 'options' => $options);
 }
 
 //import services
+echo "Importing services\n";
 $result = $mysqli->query("SELECT id, userid, packageid, server, regdate, domain, firstpaymentamount, amount, billingcycle, nextduedate, domainstatus FROM tblhosting");
 $serviceMap = array(); //WHMCS tblhosting to pbobp_services.id
 $serviceInfo = array(); //temporary data about a given server instance (keys are pbobp_services.id)
@@ -274,9 +336,41 @@ while($row = mysqli_fetch_assoc($result)) {
 
 	database_query("INSERT INTO pbobp_services (user_id, product_id, name, creation_date, recurring_date, recurring_duration, recurring_amount, status, parent_service, currency_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", $params);
 
-	$id = database_insert_id();
-	$serviceMap[$row['id']] = $id;
-	$serviceInfo[$id] = array('server' => $row['server'], 'domain' => $row['domain']);
+	$service_id = database_insert_id();
+	$serviceMap[$row['id']] = $service_id;
+	$serviceInfo[$service_id] = array('server' => $row['server'], 'domain' => $row['domain']);
+
+	//copy configoptions
+	$co_result = $mysqli->query("SELECT configid, optionid, qty FROM tblhostingconfigoptions WHERE relid = {$row['id']}");
+
+	while($co_row = mysqli_fetch_assoc($co_result)) {
+		if(isset($configOptionMap[$co_row['configid']])) {
+			$option_type = $configOptionInfo[$co_row['configid']]['type'];
+			$option_options = $configOptionInfo[$co_row['configid']]['options'];
+			$option_value = '';
+
+			if($option_type == 1 || $option_type == 2) { //dropdown / radio
+				if(isset($option_options[$co_row['optionid']])) {
+					$option_value = $option_options[$co_row['optionid']];
+				}
+			} else if($option_type == 3) { //yesno
+				$option_value = $co_row['qty'] > 0; //qty=1 indicates yes, qty=0 indicates no
+			} else if($option_type == 4) { //quantity
+				$option_value = $co_row['qty'];
+			}
+
+			database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($service_id, 'service', $configOptionMap[$co_row['configid']], $option_value));
+		}
+	}
+
+	//copy custom field values
+	$cf_result = $mysqli->query("SELECT fieldid, value FROM tblcustomfieldsvalues WHERE relid = {$row['id']}");
+
+	while($cf_row = mysqli_fetch_assoc($cf_result)) {
+		if(isset($customFieldMap[$cf_row['fieldid']])) {
+			database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($service_id, 'service', $customFieldMap[$cf_row['fieldid']], $cf_row['value']));
+		}
+	}
 }
 
 ?>

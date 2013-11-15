@@ -21,7 +21,7 @@
 -- object_type is blank if this is a global configuration
 -- it is not blank for things like user-specific or product-specific settings
 -- also not blank for plugin settings
-CREATE TABLE pbobp_configuration (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, k VARCHAR(64) NOT NULL UNIQUE, v VARCHAR(256) NOT NULL, object_id INT NOT NULL DEFAULT 0, object_type VARCHAR(64) NOT NULL DEFAULT '', description VARCHAR(1024) NOT NULL DEFAULT '', type INT NOT NULL DEFAULT 0);
+CREATE TABLE pbobp_configuration (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, k VARCHAR(64) NOT NULL, v VARCHAR(256) NOT NULL, object_id INT NOT NULL DEFAULT 0, object_type VARCHAR(64) NOT NULL DEFAULT '', description VARCHAR(1024) NOT NULL DEFAULT '', type INT NOT NULL DEFAULT 0);
 
 -- password_type specifies how the password is stored
 --  value may be a service interface or a built-in password storage mechanism
@@ -50,7 +50,6 @@ CREATE TABLE pbobp_products_addons (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
 
 -- status is 0=not yet active, 1=active, -1=suspended, -2=inactivated, -3=awaiting activation, -4=cancelled (active)
 CREATE TABLE pbobp_services (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, product_id INT NOT NULL, name VARCHAR(64) NOT NULL, creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, recurring_date TIMESTAMP NOT NULL, recurring_duration INT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, status INT NOT NULL DEFAULT 0, parent_service INT, currency_id INT);
-CREATE TABLE pbobp_services_settings (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, service_id INT NOT NULL, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL DEFAULT '');
 
 -- status is 0=open, 1=closed, -1=flagged (forced open), -2=on hold (marked as replied)
 CREATE TABLE pbobp_tickets (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, department_id INT NOT NULL, service_id INT NOT NULL, subject VARCHAR(128) NOT NULL DEFAULT '', email VARCHAR(128) NOT NULL DEFAULT '', time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, modify_time TIMESTAMP NOT NULL, status INT NOT NULL DEFAULT 0);

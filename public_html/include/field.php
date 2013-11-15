@@ -279,6 +279,8 @@ function field_add($field_context, $field_context_id, $name, $default, $descript
 	foreach($options as $option) {
 		database_query("INSERT INTO pbobp_fields_options (field_id, val) VALUES (?, ?)", array($field_id, $option));
 	}
+
+	return $field_id;
 }
 
 //returns list of field ID's deleted

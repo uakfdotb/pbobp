@@ -319,9 +319,12 @@ function product_group_get_details($group_id) {
 function product_group_create($name, $description, $hidden, $group_id = false) {
 	if($group_id === false) {
 		database_query("INSERT INTO pbobp_products_groups (name, description, hidden) VALUES (?, ?, ?)", array($name, $description, $hidden));
+		$group_id = database_insert_id();
 	} else {
 		database_query("UPDATE pbobp_products_groups SET name = ?, description = ?, hidden = ? WHERE id = ?", array($name, $description, $hidden, $group_id));
 	}
+
+	return $group_id;
 }
 
 function product_group_delete($group_id) {

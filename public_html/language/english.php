@@ -113,6 +113,7 @@ $lang['success_configuration_updated'] = 'Configuration has been updated success
 
 $lang['user'] = 'User';
 $lang['users'] = 'Users';
+$lang['morph'] = 'Morph';
 
 $lang['services'] = 'Services';
 $lang['service'] = 'Service';

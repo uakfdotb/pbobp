@@ -72,6 +72,12 @@ if(isset($_SESSION['site_id'])) {
 	$_SESSION['site_id'] = __FILE__;
 }
 
+//unmorph if morphed and in admin area
+if(basename(dirname($_SERVER["SCRIPT_FILENAME"])) == 'admin' && isset($_SESSION['morph_original_id'])) {
+	require_once(includePath() . 'auth.php');
+	auth_unmorph();
+}
+
 $_SESSION['active'] = time();
 
 //CSRF guard library

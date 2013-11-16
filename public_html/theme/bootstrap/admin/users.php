@@ -29,7 +29,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <h1><?= lang('users') ?></h1>
 
 <form method="GET">
-E-mail address: <input type="text" name="email" value="<?= $filter_email ?>" />
+E-mail address: <input type="text" name="constraint_email" value="<?= isset($constraints['email']) ? $constraints['email'] : '' ?>" />
 <button type="submit" class="btn btn-primary">Filter</button>
 </form>
 
@@ -49,6 +49,7 @@ foreach($columns as $key => $title) {
 	?>
 	<th><a href="users.php?order_by=<?= $key ?><?= ($key == $order_by && !$order_asc) ? '&asc' : '' ?>"><?= $title ?></a></th>
 <? } ?>
+	<th><?= lang('morph') ?></th>
 </tr>
 
 <? foreach($users as $user) { ?>
@@ -58,6 +59,12 @@ foreach($columns as $key => $title) {
 	<td><?= $user['access'] ?></td>
 	<td><?= $user['count_services_active'] ?></td>
 	<td><?= $user['count_services_total'] ?></td>
+	<td>
+		<form method="POST">
+		<input type="hidden" name="user_id" value="<?= $user['user_id'] ?>" />
+		<button type="submit" class="btn btn-primary" name="action" value="morph"><?= lang('morph') ?></button>
+		</form>
+	</td>
 </tr>
 <? } ?>
 </table>

@@ -277,4 +277,20 @@ function auth_logout() {
 	}
 }
 
+function auth_morph($user_id) {
+	if(isset($_SESSION['admin']) && isset($_SESSION['user_id'])) {
+		$_SESSION['morph_original_id'] = $_SESSION['user_id'];
+		$_SESSION['user_id'] = $user_id;
+		unset($_SESSION['admin']);
+	}
+}
+
+function auth_unmorph() {
+	if(isset($_SESSION['morph_original_id'])) {
+		$_SESSION['user_id'] = $_SESSION['morph_original_id'];
+		$_SESSION['admin'] = true;
+		unset($_SESSION['morph_original_id']);
+	}
+}
+
 ?>

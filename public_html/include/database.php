@@ -280,16 +280,26 @@ function database_object_list($vars, $table, $constraints, $arguments, $f_extra 
 //returns array of possible constraints from request variables
 // these are not sanitized in any way
 // only like (~) relationships are supported
-function database_extract_constraints() {
+function database_filter_constraints($array) {
 	$constraints = array();
 
-	foreach($_REQUEST as $k => $v) {
-		if(string_begins_with($k, "constraint_")) {
-			$constraints[substr($k, 11)] = array('~', "%$v%");
-		}
+	foreach($array as $k => $v) {
+		$constraints[$k] = array('~', "%$v%");
 	}
 
 	return $constraints;
+}
+
+function database_extract_constraints() {
+	$array = array();
+
+	foreach($_REQUEST as $k => $v) {
+		if(string_begins_with($k, "constraint_")) {
+			$array[substr($k, 11)] = $v;
+		}
+	}
+
+	return $array;
 }
 
 ?>

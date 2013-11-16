@@ -64,7 +64,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$tickets_ext = ticket_list($constraints, $arguments);
+	$tickets_ext = ticket_list(database_filter_constraints($constraints), $arguments);
 	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");

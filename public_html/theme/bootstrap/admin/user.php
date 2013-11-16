@@ -54,10 +54,18 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 
 <h3><?= lang('services') ?></h3>
 
-<p>
-	<a href="service_add.php?user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('service_add_new') ?></button></a>
-	<a href="ticket_open.php?user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('ticket_open') ?></button></a>
-</p>
+<table>
+<tr>
+	<td><a href="service_add.php?user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('service_add_new') ?></button></a></td>
+	<td><a href="ticket_open.php?user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('ticket_open') ?></button></a></td>
+	<td>
+		<form method="POST">
+		<input type="hidden" name="user_id" value="<?= $user['user_id'] ?>" />
+		<button type="submit" class="btn btn-primary" name="action" value="morph"><?= lang('morph') ?></button>
+		</form>
+	</td>
+</tr>
+</table>
 
 <table class="table">
 <tr>

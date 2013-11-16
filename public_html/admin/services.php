@@ -47,7 +47,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$services_ext = service_list($constraints, $arguments);
+	$services_ext = service_list(database_filter_constraints($constraints), $arguments);
 	get_page("services", "admin", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");

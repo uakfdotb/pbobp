@@ -41,6 +41,14 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 		die('Invalid user specified.');
 	}
 
+	if(isset($_POST['action'])) {
+		if($_POST['action'] == 'morph') {
+			require_once('../include/auth.php');
+			auth_morph($_REQUEST['user_id']);
+			pbobp_redirect(basePath() . '/panel/');
+		}
+	}
+
 	$user = $users[0];
 	$name = user_get_name($user_id);
 	$fields = field_list_object('user', $user_id);

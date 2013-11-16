@@ -48,15 +48,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	if(isset($_POST['action'])) {
-		if($_POST['action'] == 'morph' && isset($_POST['user_id'])) {
-			require_once('../include/auth.php');
-			auth_morph($_POST['user_id']);
-			pbobp_redirect(basePath() . '/panel/');
-		}
-	}
-
-	$users_ext = user_list($constraints, $arguments);
+	$users_ext = user_list(database_filter_constraints($constraints), $arguments);
 	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");

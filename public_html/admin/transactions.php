@@ -47,7 +47,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$transactions_ext = transaction_list($constraints, $arguments);
+	$transactions_ext = transaction_list(database_filter_constraints($constraints), $arguments);
 	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page, 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");

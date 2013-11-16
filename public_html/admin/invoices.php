@@ -47,7 +47,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$invoices_ext = invoice_list($constraints, $arguments);
+	$invoices_ext = invoice_list(database_filter_constraints($constraints), $arguments);
 	get_page("invoices", "admin", array('invoices' => $invoices_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $invoices_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");

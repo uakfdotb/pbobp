@@ -32,6 +32,18 @@ if(php_sapi_name() !== 'cli') {
 //maps from server_type to service interface plugin name
 $serviceInterfaceMap = array('solusvmpro' => 'service_solusvm');
 
+//maps from server_type to dictionary of config WHMCS key => config pbobp key
+//config WHMCS key comprises of keytype_keyname
+// keytype can be config (for tblproductconfigoptions), field (for tblcustomfields), or special (e.g., special_server for tblhosting.server)
+// the key should be lowercase; when checking array, use lowercase
+//config pbobp key should just be the field key
+$serviceInterfaceConfig = array(
+	'service_solusvm' => array(
+		'special_domain' => 'hostname',
+		'field_vserverid' => 'serverid'
+		),
+	);
+
 //WHMCS database info
 $db_host = 'localhost';
 $db_username = 'root';
@@ -135,11 +147,29 @@ if($delete_data) {
 	database_query("DELETE FROM pbobp_fields WHERE context = 'group' OR context = 'product'");
 }
 
+//pre-import to add serviceInterfaceConfig data
+foreach($serviceInterfaceConfig as $interface => $options) {
+	$plugin_id = plugin_id_by_name($interface);
+
+	if($plugin_id === false) {
+		die("Error: plugin [$interface] does not exist!\n");
+	}
+
+	foreach($options as $k => $v) {
+		$result = database_query("SELECT id FROM pbobp_fields WHERE context = ? AND context_id = ? AND name = ?", array('plugin_service', $plugin_id, $v));
+
+		if($row = $result->fetch()) {
+			$serviceInterfaceConfig[$interface][$k] = $row[0];
+		} else {
+			die("Error: could not find ID corresponding to [$interface/$k]\n");
+		}
+	}
+}
+
 $mysqli = new mysqli($db_host, $db_username, $db_password, $db_name);
 
 //import users
 echo "Importing users\n";
-sleep(5);
 $result = $mysqli->query("SELECT id, email, password FROM tblclients");
 $userMap = array(); //maps from WHMCS user ID to pbobp ID
 
@@ -169,8 +199,10 @@ while($row = mysqli_fetch_assoc($result)) {
 //import products
 echo "Importing products\n";
 $productMap = array(); //maps from WHMCS product ID to pbobp ID
+$productInfo = array(); //maps from pbobp product ID to dictionary of info
 $groupMembers = array(); //maps from gid to list of pbobp product ID
 $customFieldMap = array(); //maps from WHMCS customfields ID to pbobp field ID
+$customFieldInfo = array(); //maps from WHMCS customfields ID to field name
 $productGroupMap = array(); //maps from WHMCS gid to pbobp products_groups ID
 $result = $mysqli->query("SELECT id, gid, name, description, servertype FROM tblproducts");
 
@@ -196,6 +228,7 @@ while($row = mysqli_fetch_assoc($result)) {
 			if(!empty($products)) {
 				$product_id = $products[0]['product_id'];
 				$productMap[$row['id']] = $product_id;
+				$productInfo[$product_id] = array('plugin_id' => $plugin_id, 'plugin_name' => $plugin_name);
 
 				//add to appropriate group
 				if(!isset($groupMembers[$row['gid']])) {
@@ -234,6 +267,7 @@ while($row = mysqli_fetch_assoc($result)) {
 
 					$field_id = field_add('product', $row['id'], $field_row['fieldname'], '', $field_row['description'], $pbobp_type, !empty($row['required']), !empty($row['adminonly']), $options);
 					$customFieldMap[$field_row['id']] = $field_id;
+					$customFieldInfo[$field_row['id']] = $field_row['fieldname'];
 				}
 			} else {
 				print "Warning: supposedly created product [{$row['name']}] but can't find database ID!\n";
@@ -297,7 +331,7 @@ while($row = mysqli_fetch_assoc($result)) {
 
 	$id = field_add('group', $configGroupMap[$row['gid']], $row['optionname'], '', '', $pbobp_type, false, !empty($row['hidden']), $options);
 	$configOptionMap[$row['id']] = $id;
-	$configOptionInfo[$row['id']] = array('type' => $row['optiontype'], 'options' => $options);
+	$configOptionInfo[$row['id']] = array('type' => $row['optiontype'], 'options' => $options, 'name' => $row['optionname']);
 }
 
 //import services
@@ -322,9 +356,12 @@ while($row = mysqli_fetch_assoc($result)) {
 		continue;
 	}
 
+	$product_id = $productMap[$row['packageid']];
+	$user_id = $userMap[$row['userid']];
+
 	$params = array();
-	$params[] = $userMap[$row['userid']];
-	$params[] = $productMap[$row['packageid']];
+	$params[] = $user_id;
+	$params[] = $product_id;
 	$params[] = $row['domain'];
 	$params[] = $row['regdate'];
 	$params[] = $row['nextduedate'];
@@ -339,6 +376,10 @@ while($row = mysqli_fetch_assoc($result)) {
 	$service_id = database_insert_id();
 	$serviceMap[$row['id']] = $service_id;
 	$serviceInfo[$service_id] = array('server' => $row['server'], 'domain' => $row['domain']);
+
+	$service_options = array(); //list of service configoptions, custom field, special
+	$service_options['special_domain'] = $row['domain'];
+	$service_options['special_server'] = $row['server'];
 
 	//copy configoptions
 	$co_result = $mysqli->query("SELECT configid, optionid, qty FROM tblhostingconfigoptions WHERE relid = {$row['id']}");
@@ -359,6 +400,7 @@ while($row = mysqli_fetch_assoc($result)) {
 				$option_value = $co_row['qty'];
 			}
 
+			$service_options['config_' . $configOptionInfo[$co_row['configid']]['name']] = $option_value;
 			database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($service_id, 'service', $configOptionMap[$co_row['configid']], $option_value));
 		}
 	}
@@ -368,7 +410,22 @@ while($row = mysqli_fetch_assoc($result)) {
 
 	while($cf_row = mysqli_fetch_assoc($cf_result)) {
 		if(isset($customFieldMap[$cf_row['fieldid']])) {
+			$service_options['field_' . $customFieldInfo[$cf_row['fieldid']]] = $cf_row['value'];
 			database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($service_id, 'service', $customFieldMap[$cf_row['fieldid']], $cf_row['value']));
+		}
+	}
+
+	//set service interface fields
+	$plugin_id = $productInfo[$product_id]['plugin_id'];
+	$plugin_name = $productInfo[$product_id]['plugin_name'];
+
+	if(isset($serviceInterfaceConfig[$plugin_name])) {
+		foreach($serviceInterfaceConfig[$plugin_name] as $whmcs_key => $field_id) {
+			if(isset($service_options[$whmcs_key])) {
+				database_query("INSERT INTO pbobp_fields_values (object_id, context, field_id, val) VALUES (?, ?, ?, ?)", array($service_id, 'service', $field_id, $service_options[$whmcs_key]));
+			} else {
+				print "Warning: for server [$service_id], field [$whmcs_key/$field_id] not set\n";
+			}
 		}
 	}
 }

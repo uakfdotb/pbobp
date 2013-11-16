@@ -7,7 +7,7 @@ Dependencies
 Installation instructions
  1. Create a database
         mysql -u root -p < "CREATE DATABASE pbobp; GRANT ALL ON pbobp.* TO 'pbobp'@'localhost' IDENTIFIED BY 'password';"
-        mysql -u root -p < `cat sql/schema.sql sql/data_config.sql`
+        mysql -u root -p pbobp < `cat sql/schema.sql sql/data_config.sql`
  2. Copy config.sample.php to config.php and configure the required settings.
         cd /path/to/pbobp/public_html; cp config.sample.php config.php
  3. Copy the public_html directory to your web root directory.
@@ -19,3 +19,7 @@ Installation instructions
         echo '0 * * * * cd /path/to/pbobp && /usr/bin/php5 cron.php > /dev/null' > /etc/cron.d/pbobp
  6. Enable desired plugins from admin panel.
  7. Set desired configuration from admin panel.
+
+Optional instructions
+ * Optimize your database
+        mysql -u root -p pbobp < `cat sql/optimize.sql`

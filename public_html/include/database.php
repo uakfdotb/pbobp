@@ -29,7 +29,7 @@ function database_die($ex = NULL) {
 	global $config;
 
 	if($ex == NULL || !$config['debug']) {
-		$pre = "Encountered database error.";
+		$pre = "Encountered database error." . ".<pre>" . pbobp_get_backtrace() . "</pre>";
 	} else {
 		$pre = "Encountered database error: " . $ex->getMessage() . ".<pre>" . pbobp_get_backtrace() . "</pre>";
 	}
@@ -92,7 +92,21 @@ function database_insert_id() {
 	return $database->lastInsertId();
 }
 
-function database_create_where($key_map, $constraints, &$vars) {
+function database_create_select($vars) {
+	$select = "";
+
+	foreach($vars as $key => $var) {
+		if(!empty($select)) {
+			$select .= ', ';
+		}
+
+		$select .= "$var as `$key`";
+	}
+
+	return 'SELECT ' . $select;
+}
+
+function database_create_where($key_map, $constraints, &$params) {
 	$where = "";
 
 	foreach($constraints as $key_desc => $constraint) {
@@ -131,13 +145,13 @@ function database_create_where($key_map, $constraints, &$vars) {
 				}
 
 				$where .= "?";
-				$vars[] = $x;
+				$params[] = $x;
 			}
 
 			$where .= ")";
 		} else {
 			$where .= $key . " " . $constraint[0] . " ?";
-			$vars[] = $constraint[1];
+			$params[] = $constraint[1];
 		}
 	}
 
@@ -172,10 +186,30 @@ function database_create_limit($context, &$limit_max, $limit_page = 0) {
 //    -1 means unlimited
 //  limit_page: zero-based index to start
 //  extended: if in addition to the actual list we should return the number of pages and other information
-function database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, $f_extra = false, $groupby = '') {
-	$vars = array();
-	$where = database_create_where($where_vars, $constraints, $vars);
+//  order_by_vars/select_vars/where_vars: extra variables to order by, select, or constrain
+//  count: if extended and want to count by different thing from COUNT(*)
+function database_object_list($vars, $table, $constraints, $arguments, $f_extra = false, $groupby = '') {
+	$params = array(); //to the stored procedure
 
+	$order_by_vars = $vars;
+	if(isset($arguments['order_by_vars'])) {
+		$order_by_vars = array_merge($order_by_vars, $arguments['order_by_vars']);
+	}
+
+	$select_vars = $vars;
+	if(isset($arguments['select_vars'])) {
+		$select_vars = array_merge($select_vars, $arguments['select_vars']);
+	}
+
+	$where_vars = $vars;
+	if(isset($arguments['where_vars'])) {
+		$where_vars = array_merge($where_vars, $arguments['where_vars']);
+	}
+
+	//where
+	$where = database_create_where($where_vars, $constraints, $params);
+
+	//limit
 	$limit_type = 'generic';
 	$limit_max = -1;
 	$limit_page = 0;
@@ -194,20 +228,23 @@ function database_object_list($select, $where_vars, $orderby_vars, $constraints,
 
 	$limit = database_create_limit($limit_type, $limit_max, $limit_page);
 
+	//select
+	$select = database_create_select($select_vars);
+
 	//orderby
 	$orderby = "";
 
-	if(isset($arguments['order_by']) && isset($orderby_vars[$arguments['order_by']])) {
-		$orderby = "ORDER BY " . $orderby_vars[$arguments['order_by']];
-	} else if(!empty($orderby_vars)) {
-		$orderby = "ORDER BY " . reset($orderby_vars);
+	if(isset($arguments['order_by']) && isset($order_by_vars[$arguments['order_by']])) {
+		$orderby = "ORDER BY " . $order_by_vars[$arguments['order_by']];
+	} else if(!empty($order_by_vars)) {
+		$orderby = "ORDER BY " . reset($order_by_vars);
 	}
 
-	if(!isset($arguments['order_asc']) || !$arguments['order_asc']) {
+	if(!empty($orderby) && !isset($arguments['order_asc']) || !$arguments['order_asc']) {
 		$orderby .= " DESC";
 	}
 
-	$result = database_query($select . " " . $where . " " . $groupby . " " . $orderby . " " . $limit, $vars, true);
+	$result = database_query("$select FROM $table $where $groupby $orderby $limit", $params, true);
 	$array = array();
 
 	while($row = $result->fetch()) {
@@ -219,12 +256,18 @@ function database_object_list($select, $where_vars, $orderby_vars, $constraints,
 	}
 
 	//check if we should return other information
-	if(isset($arguments['extended']) && isset($arguments['table'])) {
+	if(isset($arguments['extended'])) {
 		$extended_array = array();
 		$extended_array['list'] = &$array;
 
 		//get number of pages
-		$result = database_query("SELECT COUNT(*) FROM " . $arguments['table'] . " " . $where, $vars);
+		if(empty($groupby)) {
+			$result = database_query("SELECT COUNT(*) FROM $table $where", $params);
+		} else {
+			//non-empty group by, means we have to do subquery count
+			$result = database_query("SELECT COUNT(*) FROM (SELECT 0 FROM $table $where $groupby) sub");
+		}
+
 		$row = $result->fetch();
 		$extended_array['count'] = ceil($row[0] / $limit_max);
 
@@ -232,6 +275,21 @@ function database_object_list($select, $where_vars, $orderby_vars, $constraints,
 	} else {
 		return $array;
 	}
+}
+
+//returns array of possible constraints from request variables
+// these are not sanitized in any way
+// only like (~) relationships are supported
+function database_extract_constraints() {
+	$constraints = array();
+
+	foreach($_REQUEST as $k => $v) {
+		if(string_begins_with($k, "constraint_")) {
+			$constraints[substr($k, 11)] = array('~', "%$v%");
+		}
+	}
+
+	return $constraints;
 }
 
 ?>

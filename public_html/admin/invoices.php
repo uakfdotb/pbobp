@@ -29,7 +29,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
 	$order_by = 'status';
 	$order_asc = false;
-	$constraints = array();
+	$constraints = database_extract_constraints();
 	$arguments = array('extended' => true, 'order_by' => $order_by);
 
 	if(isset($_REQUEST['limit_page'])) {
@@ -48,7 +48,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	}
 
 	$invoices_ext = invoice_list($constraints, $arguments);
-	get_page("invoices", "admin", array('invoices' => $invoices_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $invoices_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc));
+	get_page("invoices", "admin", array('invoices' => $invoices_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $invoices_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");
 }

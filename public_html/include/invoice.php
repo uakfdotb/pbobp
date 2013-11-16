@@ -57,13 +57,12 @@ function invoice_list_extra(&$row) {
 }
 
 function invoice_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_invoices.id AS invoice_id, pbobp_invoices.user_id, pbobp_invoices.due_date, pbobp_invoices.status, pbobp_invoices.paid, pbobp_users.email, pbobp_invoices.amount, pbobp_invoices.`date`, pbobp_invoices.currency_id, pbobp_currencies.prefix AS currency_prefix, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.iso_code AS currency_code FROM pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_invoices.currency_id";
-	$where_vars = array('user_id' => 'pbobp_invoices.user_id', 'status' => 'pbobp_invoices.status', 'due_date' => 'pbobp_invoices.due_date', 'invoice_id' => 'pbobp_invoices.id');
-	$orderby_vars = array('invoice_id' => 'pbobp_invoices.id', 'status' => 'pbobp_invoices.status, pbobp_invoices.id', 'amount' => 'pbobp_invoices.amount', 'email' => 'pbobp_users.email', 'paid' => 'pbobp_invoices.paid', 'date' => 'pbobp_invoices.`date`', 'due_date' => 'pbobp_invoices.due_date');
+	$vars = array('invoice_id' => 'pbobp_invoices.id', 'user_id' => 'pbobp_invoices.user_id', 'due_date' => 'pbobp_invoices.due_date', 'status' => 'pbobp_invoices.status', 'paid' => 'pbobp_invoices.paid', 'email' => 'pbobp_users.email', 'amount' => 'pbobp_invoices.amount', 'date' => 'pbobp_invoices.`date`', 'currency_id' => 'pbobp_invoices.currency_id', 'currency_prefix' => 'pbobp_currencies.prefix', 'currency_suffix' => 'pbobp_currencies.suffix', 'currency_code' => 'pbobp_currencies.iso_code');
+	$table = 'pbobp_invoices LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_invoices.user_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_invoices.currency_id';
+	$arguments['order_by_vars'] = array('status' => 'pbobp_invoices.status, pbobp_invoices.id');
 	$arguments['limit_type'] = 'invoice';
-	$arguments['table'] = 'pbobp_invoices';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'invoice_list_extra');
+	return database_object_list($vars, $table, $constraints, $arguments, 'invoice_list_extra');
 }
 
 function invoice_lines($invoice_id) {

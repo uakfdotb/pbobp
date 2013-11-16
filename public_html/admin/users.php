@@ -30,13 +30,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
 	$order_by = 'user_id';
 	$order_asc = false;
-	$constraints = array();
+	$constraints = database_extract_constraints();
 	$arguments = array('extended' => true);
-
-	if(isset($_REQUEST['email'])) {
-		$filter_email = $_REQUEST['email'];
-		$constraints['email'] = array('~', '%' . $_REQUEST['email'] . '%');
-	}
 
 	if(isset($_REQUEST['limit_page'])) {
 		$limit_page = $_REQUEST['limit_page'];
@@ -54,7 +49,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	}
 
 	$users_ext = user_list($constraints, $arguments);
-	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc));
+	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");
 }

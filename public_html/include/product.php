@@ -36,13 +36,11 @@ function product_get_details($product_id) {
 }
 
 function product_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_products.id AS product_id, pbobp_products.name, pbobp_products.description, pbobp_products.uniqueid, pbobp_products.plugin_id, pbobp_products.addon, pbobp_plugins.name AS plugin_name FROM pbobp_products LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id";
-	$where_vars = array('name' => 'pbobp_products.name', 'product_id' => 'pbobp_products.id', 'uniqueid' => 'pbobp_products.uniqueid', 'addon' => 'pbobp_products.addon');
-	$orderby_vars = array('product_id' => 'pbobp_products.id');
+	$vars = array('product_id' => 'pbobp_products.id', 'name' => 'pbobp_products.name', 'description' => 'pbobp_products.description', 'uniqueid' => 'pbobp_products.uniqueid', 'plugin_id' => 'pbobp_products.plugin_id', 'addon' => 'pbobp_products.addon', 'plugin_name' => 'pbobp_plugins.name');
+	$table = 'pbobp_products LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id';
 	$arguments['limit_type'] = 'product';
-	$arguments['table'] = 'pbobp_products';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments);
+	return database_object_list($vars, $table, $constraints, $arguments);
 }
 
 //lists products for product list
@@ -337,13 +335,11 @@ function product_group_delete($group_id) {
 }
 
 function product_group_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_products_groups.id AS group_id, pbobp_products_groups.name, pbobp_products_groups.description, pbobp_products_groups.hidden FROM pbobp_products_groups";
-	$where_vars = array('group_id' => 'pbobp_products_groups.id', 'hidden' => 'pbobp_products_groups.hidden');
-	$orderby_vars = array('group_id' => 'pbobp_products_groups.id');
+	$vars = array('group_id' => 'pbobp_products_groups.id', 'name' => 'pbobp_products_groups.name', 'description' => 'pbobp_products_groups.description', 'hidden' => 'pbobp_products_groups.hidden');
+	$table = 'pbobp_products_groups';
 	$arguments['limit_type'] = 'pgroup';
-	$arguments['table'] = 'pbobp_products_groups';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments);
+	return database_object_list($vars, $table, $constraints, $arguments);
 }
 
 //lists products in a given group

@@ -200,13 +200,12 @@ function service_list_extra(&$row) {
 }
 
 function service_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_services.id AS service_id, pbobp_services.user_id, pbobp_services.product_id, pbobp_services.name, pbobp_services.creation_date, pbobp_services.recurring_date, pbobp_services.recurring_duration, pbobp_services.recurring_amount, pbobp_services.status, pbobp_services.currency_id, pbobp_users.email, pbobp_products.name AS product_name, pbobp_products.plugin_id, pbobp_currencies.suffix AS currency_suffix, pbobp_currencies.prefix AS currency_prefix, pbobp_plugins.name AS plugin_name FROM pbobp_services LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_services.user_id LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_services.product_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_services.currency_id LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id";
-	$where_vars = array('user_id' => 'pbobp_services.user_id', 'status' => 'pbobp_services.status', 'due_date' => 'pbobp_services.recurring_date', 'product_id' => 'pbobp_services.product_id', 'name' => 'pbobp_services.name', 'service_id' => 'pbobp_services.id');
-	$orderby_vars = array('service_id' => 'pbobp_services.id', 'status' => '(CASE WHEN pbobp_services.status = -3 THEN 5 WHEN pbobp_services.status = -4 THEN 1 ELSE pbobp_services.status END) DESC, pbobp_services.id', 'email' => 'pbobp_users.email', 'product' => 'pbobp_products.name', 'creation_date' => 'pbobp_services.creation_date', 'recurring_date' => 'pbobp_services.recurring_date', 'recurring_amount' => 'pbobp_services.recurring_amount', 'recurring_duration' => 'pbobp_services.recurring_duration');
+	$vars = array('service_id' => 'pbobp_services.id', 'user_id' => 'pbobp_services.user_id', 'product_id' => 'pbobp_services.product_id', 'name' => 'pbobp_services.name', 'creation_date' => 'pbobp_services.creation_date', 'recurring_date' => 'pbobp_services.recurring_date', 'recurring_duration' => 'pbobp_services.recurring_duration', 'recurring_amount' => 'pbobp_services.recurring_amount', 'status' => 'pbobp_services.status', 'currency_id' => 'pbobp_services.currency_id', 'email' => 'pbobp_users.email', 'product_name' => 'pbobp_products.name', 'plugin_id' => 'pbobp_products.plugin_id', 'currency_suffix' => 'pbobp_currencies.suffix', 'currency_prefix' => 'pbobp_currencies.prefix', 'plugin_name' => 'pbobp_plugins.name');
+	$table = 'pbobp_services LEFT JOIN pbobp_users ON pbobp_users.id = pbobp_services.user_id LEFT JOIN pbobp_products ON pbobp_products.id = pbobp_services.product_id LEFT JOIN pbobp_currencies ON pbobp_currencies.id = pbobp_services.currency_id LEFT JOIN pbobp_plugins ON pbobp_plugins.id = pbobp_products.plugin_id';
+	$arguments['order_by_vars'] = array('status' => '(CASE WHEN pbobp_services.status = -3 THEN 5 WHEN pbobp_services.status = -4 THEN 1 ELSE pbobp_services.status END) DESC, pbobp_services.id');
 	$arguments['limit_type'] = 'service';
-	$arguments['table'] = 'pbobp_services';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'service_list_extra');
+	return database_object_list($vars, $table, $constraints, $arguments, 'service_list_extra');
 }
 
 //creates a new service with the given parameters

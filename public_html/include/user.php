@@ -81,13 +81,12 @@ function user_list_extra(&$row) {
 }
 
 function user_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_users.id AS user_id, pbobp_users.email, pbobp_users.credit, pbobp_users.`access`, COUNT(DISTINCT active_services.id) AS count_services_active, COUNT(DISTINCT total_services.id) AS count_services_total FROM pbobp_users LEFT JOIN pbobp_services AS active_services ON active_services.user_id = pbobp_users.id AND active_services.status = 1 LEFT JOIN pbobp_services AS total_services ON total_services.user_id = pbobp_users.id";
-	$where_vars = array('email' => 'pbobp_users.email', 'user_id' => 'pbobp_users.id', 'access' => 'pbobp_users.`access`');
-	$orderby_vars = array('user_id' => 'pbobp_users.id', 'email' => 'pbobp_users.email', 'access' => 'pbobp_users.access', 'count_services_active' => 'count_services_active', 'count_services_total' => 'count_services_total');
+	$vars = array('user_id' => 'pbobp_users.id', 'email' => 'pbobp_users.email', 'credit' => 'pbobp_users.credit', 'access' => 'pbobp_users.`access`', 'count_services_active' => 'COUNT(DISTINCT active_services.id)', 'count_services_total' => 'COUNT(DISTINCT total_services.id)');
+	$table = 'pbobp_users LEFT JOIN pbobp_services AS active_services ON active_services.user_id = pbobp_users.id AND active_services.status = 1 LEFT JOIN pbobp_services AS total_services ON total_services.user_id = pbobp_users.id';
+	$arguments['order_by_vars'] = array('count_services_active' => 'count_services_active', 'count_services_total' => 'count_services_total');
 	$arguments['limit_type'] = 'user';
-	$arguments['table'] = 'pbobp_users';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'user_list_extra', 'GROUP BY pbobp_users.id');
+	return database_object_list($vars, $table, $constraints, $arguments, 'user_list_extra', 'GROUP BY pbobp_users.id');
 }
 
 //emails everyone with access > 0

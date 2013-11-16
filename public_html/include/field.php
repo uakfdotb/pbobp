@@ -218,13 +218,11 @@ function field_list_extra(&$row) {
 }
 
 function field_list($constraints = array(), $arguments = array()) {
-	$select = "SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields.context, pbobp_fields.context_id FROM pbobp_fields";
-	$where_vars = array('context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id', 'field_id' => 'pbobp_fields.id', 'name' => 'pbobp_fields.name');
-	$orderby_vars = array('field_id' => 'pbobp_fields.id');
+	$vars = array('field_id' => 'pbobp_fields.id', 'name' => 'pbobp_fields.name', 'default' => 'pbobp_fields.`default`', 'description' => 'pbobp_fields.description', 'type' => 'pbobp_fields.type', 'required' => 'pbobp_fields.required', 'adminonly' => 'pbobp_fields.adminonly', 'context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id');
+	$table = 'pbobp_fields';
 	$arguments['limit_type'] = 'field';
-	$arguments['table'] = 'pbobp_fields';
 
-	return database_object_list($select, $where_vars, $orderby_vars, $constraints, $arguments, 'field_list_extra');
+	return database_object_list($vars, $table, $constraints, $arguments, 'field_list_extra');
 }
 
 //add a field (or update existing field)

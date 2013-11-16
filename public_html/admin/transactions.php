@@ -29,7 +29,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '
 	$limit_page = 0;
 	$order_by = 'status';
 	$order_asc = false;
-	$constraints = array();
+	$constraints = database_extract_constraints();
 	$arguments = array('extended' => true);
 
 	if(isset($_REQUEST['limit_page'])) {
@@ -48,7 +48,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {	$filter_email = '
 	}
 
 	$transactions_ext = transaction_list($constraints, $arguments);
-	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page, 'order_by' => $order_by, 'order_asc' => $order_asc));
+	get_page("transactions", "admin", array('transactions' => $transactions_ext['list'], 'pagination_total' => $transactions_ext['count'], 'pagination_current' => $limit_page, 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
 } else {
 	pbobp_redirect("../");
 }

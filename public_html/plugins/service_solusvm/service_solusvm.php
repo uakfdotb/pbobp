@@ -378,7 +378,13 @@ class plugin_service_solusvm {
 
 	function solusExecute($command, $array = array()) {
 		// Url to admin API
-		$url = "https://" . config_get('master_hostname', 'plugin', $this->id, false) . "/api/admin";
+		$master_hostname = config_get('master_hostname', 'plugin', $this->id, false);
+
+		if($master_hostname == 'example.com:5656') {
+			return;
+		}
+
+		$url = "https://$master_hostname/api/admin";
 		$postfields["id"] = config_get('api_id', 'plugin', $this->id, false);
 		$postfields["key"] = config_get('api_key', 'plugin', $this->id, false);
 

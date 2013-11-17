@@ -6,15 +6,15 @@ Dependencies
 
 Installation instructions
  1. Create a database
-        mysql -u root -p < "CREATE DATABASE pbobp; GRANT ALL ON pbobp.* TO 'pbobp'@'localhost' IDENTIFIED BY 'password';"
-        mysql -u root -p pbobp < `cat sql/schema.sql sql/data_config.sql`
+        echo "CREATE DATABASE pbobp; GRANT ALL ON pbobp.* TO 'pbobp'@'localhost' IDENTIFIED BY 'password';" | mysql -u root -p
+        cat sql/schema.sql sql/data_config.sql | mysql -u root -p pbobp
  2. Copy config.sample.php to config.php and configure the required settings.
         cd /path/to/pbobp/public_html; cp config.sample.php config.php
  3. Copy the public_html directory to your web root directory.
         cd /path/to/pbobp/public_html; cp -r * /var/www/pbobp/
  4. Create an initial user
         Navigate to http://localhost/pbobp/register.php and create an account.
-        mysql -u pbobp -p < "UDPATE pbobp_users SET `access` = 1;";
+        echo "UDPATE pbobp_users SET `access` = 1;" | mysql -u pbobp -p
  5. Add cron entry for pbobp (at least once a day)
         echo '0 * * * * cd /path/to/pbobp && /usr/bin/php5 cron.php > /dev/null' > /etc/cron.d/pbobp
  6. Enable desired plugins from admin panel.
@@ -22,4 +22,4 @@ Installation instructions
 
 Optional instructions
  * Optimize your database
-        mysql -u root -p pbobp < `cat sql/optimize.sql`
+        cat sql/optimize.sql | mysql -u root -p pbobb

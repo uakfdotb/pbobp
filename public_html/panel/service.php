@@ -87,7 +87,7 @@ if(isset($_SESSION['user_id']) && isset($_REQUEST['service_id'])) {
 						$message_content = $result;
 					} else {
 						$message_type = 0;
-						$message_content = lang('success_action_performed', array('name' => $action));
+						$message_content = lang('success_action_performed', array('name' => $_POST['action']));
 					}
 				} else {
 					$message_type = -1;

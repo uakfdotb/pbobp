@@ -53,4 +53,6 @@ $config['lock_time_overload'] = array();
 $config['lock_time_reset'] = 300;
 $config['lock_time_max'] = 3600;
 
+date_default_timezone_set('UTC');
+
 ?>

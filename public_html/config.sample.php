@@ -42,6 +42,10 @@ $config['email_web'] = 'support@example.com';
 //whether to enable debug mode
 $config['debug'] = true;
 
+//whether to use manual redirects (display link)
+// this could be useful for debugging
+$config['manual_redirects'] = false;
+
 //lock settings
 //these determine settings that prevent brute force attacks by a single IP address
 // the first three options are per-action and can be customized for each action

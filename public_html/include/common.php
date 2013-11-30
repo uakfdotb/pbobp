@@ -276,6 +276,7 @@ function recursiveDelete($dirPath) {
 }
 
 function pbobp_redirect($url, $get = array(), $statusCode = 303) {
+	global $config;
 	$get_string = '';
 
 	foreach($get as $k => $v) {
@@ -290,7 +291,14 @@ function pbobp_redirect($url, $get = array(), $statusCode = 303) {
 		$get_string .= urlencode($v);
 	}
 
-	header('Location: ' . $url . $get_string, true, $statusCode);
+	$manual_redirect = isset($config['manual_redirects']) && $config['manual_redirects'];
+
+	if($manual_redirect) {
+		echo "<a href=\"$url$get_string\">Click here to continue.</a>";
+	} else {
+		header('Location: ' . $url . $get_string, true, $statusCode);
+	}
+
 	exit;
 }
 

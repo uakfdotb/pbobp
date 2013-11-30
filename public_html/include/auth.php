@@ -207,7 +207,8 @@ function auth_register($email, $password, $fields, $captcha = false) {
 	return true;
 }
 
-function auth_change_password($user_id, $old_password, $new_password) {
+//force skips old password checking
+function auth_change_password($user_id, $old_password, $new_password, $force = false) {
 	//validate password
 	// we have a maximum length to prevent hashing long data
 	if(strlen($new_password) < config_get("auth_password_minlen")) {
@@ -217,10 +218,12 @@ function auth_change_password($user_id, $old_password, $new_password) {
 	}
 
 	//check old password
-	$result = auth_check($user_id, $old_password);
+	if(!$force) {
+		$result = auth_check($user_id, $old_password);
 
-	if($result !== true) {
-		return 'invalid_password';
+		if($result !== true) {
+			return 'invalid_password';
+		}
 	}
 
 	//hash password

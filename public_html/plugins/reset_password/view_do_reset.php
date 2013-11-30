@@ -21,14 +21,22 @@
 
 */
 
-include("include/include.php");
-
-$message = '';
-
-if(isset($_REQUEST['message'])) {
-	$message = $_REQUEST['message'];
+if(!isset($GLOBALS['IN_PBOBP'])) {
+	die('Access denied.');
 }
-
-get_page("home", "main", array('message' => $message));
-
 ?>
+
+<h1><?= $lang_plugin['reset_password'] ?></h1>
+
+<? if(!empty($message)) { ?>
+<p><b><i><?= $message ?></i></b></p>
+<? } ?>
+
+<form method="post">
+<input type="hidden" name="action" value="reset" />
+<input type="hidden" name="token" value="<?= $token ?>" />
+<?= lang('email_address') ?> <input type="text" name="email" /><br />
+<?= lang('new_password') ?> <input type="password" name="password" /><br />
+<?= lang('confirm_password') ?> <input type="password" name="password_confirm" /><br />
+<input type="submit" value="<?= $lang_plugin['reset_password'] ?>" />
+</form>

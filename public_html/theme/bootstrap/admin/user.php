@@ -64,6 +64,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 		<button type="submit" class="btn btn-primary" name="action" value="morph"><?= lang('morph') ?></button>
 		</form>
 	</td>
+	<td><a href="tickets.php?constraint_user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('tickets') ?></button></a></td>
+	<td><a href="services.php?constraint_user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('services') ?></button></a></td>
+	<td><a href="invoices.php?constraint_user_id=<?= $user['user_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('invoices') ?></button></a></td>
 </tr>
 </table>
 

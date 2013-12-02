@@ -135,7 +135,7 @@ class plugin_notifications {
 			$invoice = $invoices[0];
 			$name = user_get_name($invoice['user_id']);
 			$subject = lang('cron_generated_invoice_subject', array('invoice_id' => $invoice['invoice_id']), $this->language);
-			$body = lang('cron_generated_invoice_content', array('amount' => $invoice['amount_nice'], 'name' => $name, 'site_address' => config_get('site_address')));
+			$body = lang('cron_generated_invoice_content', array('amount' => $invoice['amount_nice'], 'name' => $name, 'site_address' => config_get('site_address')), $this->language);
 			$this->notify($subject, $body, $invoice['email']);
 		}
 	}
@@ -150,7 +150,7 @@ class plugin_notifications {
 			$service = $services[0];
 			$name = user_get_name($service['user_id']);
 			$subject = lang('cron_inactivated_service_subject', array(), $this->language);
-			$body = lang('cron_inactivated_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name']));
+			$body = lang('cron_inactivated_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name']), $this->language);
 			$this->notify($subject, $body, $service['email']);
 		}
 	}
@@ -165,7 +165,7 @@ class plugin_notifications {
 			$service = $services[0];
 			$name = user_get_name($service['user_id']);
 			$subject = lang('cron_suspended_service_subject', array(), $this->language);
-			$body = lang('cron_suspended_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name'], 'site_address' => config_get('site_address')));
+			$body = lang('cron_suspended_service_content', array('name' => $name, 'service_id' => $service['service_id'], 'service_name' => $service['name'], 'site_address' => config_get('site_address')), $this->language);
 			$this->notify($subject, $body, $service['email']);
 		}
 	}

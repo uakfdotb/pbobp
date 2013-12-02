@@ -30,7 +30,9 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
 	$order_by = 'user_id';
 	$order_asc = false;
-	$constraints = database_extract_constraints();
+	$constraints_raw = database_extract_constraints();
+	$constraints = database_filter_constraints($constraints_raw);
+	$active_service = false;
 	$arguments = array('extended' => true);
 
 	if(isset($_REQUEST['limit_page'])) {
@@ -48,8 +50,13 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$users_ext = user_list(database_filter_constraints($constraints), $arguments);
-	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
+	if(isset($_REQUEST['active_service'])) {
+		$active_service = true;
+		$constraints['count_services_active'] = array('>=', 1);
+	}
+
+	$users_ext = user_list($constraints, $arguments);
+	get_page("users", "admin", array('users' => $users_ext['list'], 'filter_email' => $filter_email, 'pagination_current' => $limit_page, 'pagination_total' => $users_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints_raw, 'active_service' => $active_service));
 } else {
 	pbobp_redirect("../");
 }

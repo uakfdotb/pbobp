@@ -63,6 +63,7 @@ $lang['unknown'] = 'Unknown';
 $lang['edit'] = 'Edit';
 $lang['fees'] = 'Fees';
 $lang['error_x'] = 'Error: $x$.';
+$lang['filter'] = 'Filter';
 
 $lang['one-time'] = 'One-time';
 $lang['monthly'] = 'Monthly';
@@ -114,6 +115,7 @@ $lang['success_configuration_updated'] = 'Configuration has been updated success
 $lang['user'] = 'User';
 $lang['users'] = 'Users';
 $lang['morph'] = 'Morph';
+$lang['only_show_users_with_active_services'] = 'Only show users with active services';
 
 $lang['services'] = 'Services';
 $lang['service'] = 'Service';

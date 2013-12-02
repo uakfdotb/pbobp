@@ -84,6 +84,7 @@ function user_list($constraints = array(), $arguments = array()) {
 	$vars = array('user_id' => 'pbobp_users.id', 'email' => 'pbobp_users.email', 'credit' => 'pbobp_users.credit', 'access' => 'pbobp_users.`access`', 'count_services_active' => 'COUNT(DISTINCT active_services.id)', 'count_services_total' => 'COUNT(DISTINCT total_services.id)');
 	$table = 'pbobp_users LEFT JOIN pbobp_services AS active_services ON active_services.user_id = pbobp_users.id AND active_services.status = 1 LEFT JOIN pbobp_services AS total_services ON total_services.user_id = pbobp_users.id';
 	$arguments['order_by_vars'] = array('count_services_active' => 'count_services_active', 'count_services_total' => 'count_services_total');
+	$arguments['where_vars'] = array('count_services_active' => '(SELECT COUNT(*) FROM pbobp_services AS x WHERE x.user_id = pbobp_users.id AND status = 1)', 'count_services_total' => '(SELECT COUNT(*) FROM pbobp_services AS x WHERE x.user_id = pbobp_users.id)');
 	$arguments['limit_type'] = 'user';
 
 	return database_object_list($vars, $table, $constraints, $arguments, 'user_list_extra', 'GROUP BY pbobp_users.id');

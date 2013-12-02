@@ -265,7 +265,7 @@ function database_object_list($vars, $table, $constraints, $arguments, $f_extra 
 			$result = database_query("SELECT COUNT(*) FROM $table $where", $params);
 		} else {
 			//non-empty group by, means we have to do subquery count
-			$result = database_query("SELECT COUNT(*) FROM (SELECT 0 FROM $table $where $groupby) sub");
+			$result = database_query("SELECT COUNT(*) FROM (SELECT 0 FROM $table $where $groupby) sub", $params);
 		}
 
 		$row = $result->fetch();
@@ -284,7 +284,9 @@ function database_filter_constraints($array) {
 	$constraints = array();
 
 	foreach($array as $k => $v) {
-		$constraints[$k] = array('~', "%$v%");
+		if(!empty($v)) {
+			$constraints[$k] = array('~', "%$v%");
+		}
 	}
 
 	return $constraints;

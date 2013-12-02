@@ -29,7 +29,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
 	$order_by = 'status';
 	$order_asc = false;
-	$constraints = database_extract_constraints();
+	$constraints_raw = database_extract_constraints();
+	$constraints = database_filter_constraints($constraints_raw);
 	$arguments = array('extended' => true, 'order_by' => $order_by);
 
 	if(isset($_REQUEST['limit_page'])) {
@@ -47,8 +48,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$services_ext = service_list(database_filter_constraints($constraints), $arguments);
-	get_page("services", "admin", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
+	$services_ext = service_list($constraints, $arguments);
+	get_page("services", "admin", array('services' => $services_ext['list'], 'pagination_current' => $limit_page, 'pagination_total' => $services_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints_raw));
 } else {
 	pbobp_redirect("../");
 }

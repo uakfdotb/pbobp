@@ -29,8 +29,11 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <h1><?= lang('users') ?></h1>
 
 <form method="GET">
-E-mail address: <input type="text" name="constraint_email" value="<?= isset($constraints['email']) ? $constraints['email'] : '' ?>" />
-<button type="submit" class="btn btn-primary">Filter</button>
+<fieldset>
+<label class="text"><?= lang('email_address') ?>: <input type="text" name="constraint_email" value="<?= isset($constraints['email']) ? $constraints['email'] : '' ?>" /></label>
+<label class="checkbox"><input type="checkbox" name="active_service" <?= $active_service ? 'checked' : '' ?> /> <?= lang('only_show_users_with_active_services') ?></label>
+<button type="submit" class="btn btn-primary"><?= lang('filter') ?></button>
+</fieldset>
 </form>
 
 <? include($themePath . '/include/pagination.php'); ?>

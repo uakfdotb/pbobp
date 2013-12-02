@@ -30,7 +30,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 	$limit_page = 0;
 	$order_by = 'status';
 	$order_asc = false;
-	$constraints = database_extract_constraints();
+	$constraints_raw = database_extract_constraints();
+	$constraints = database_filter_constraints($constraints_raw);
 	$arguments = array('order_by' => $order_by, 'extended' => true);
 
 	if(isset($_REQUEST['message'])) {
@@ -64,8 +65,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		$arguments['order_asc'] = $order_asc;
 	}
 
-	$tickets_ext = ticket_list(database_filter_constraints($constraints), $arguments);
-	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints));
+	$tickets_ext = ticket_list($constraints, $arguments);
+	get_page("tickets", "admin", array('tickets' => $tickets_ext['list'], 'message' => $message, 'pagination_current' => $limit_page, 'pagination_total' => $tickets_ext['count'], 'order_by' => $order_by, 'order_asc' => $order_asc, 'constraints' => $constraints_raw));
 } else {
 	pbobp_redirect("../");
 }

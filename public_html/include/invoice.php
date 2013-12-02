@@ -248,8 +248,8 @@ function invoice_line_remove($line_id) {
 				return;
 			} else {
 				//delete this line and update the invoice in case it's now able to be marked as paid
-				database_query("DELETE FROM pbobp_invoice_lines WHERE id = ?", array($line_id));
-				database_query("UPDATE ipbobp_invoices SET total = total - ? WHERE id = ?", array($amount, $invoice_id));
+				database_query("DELETE FROM pbobp_invoices_lines WHERE id = ?", array($line_id));
+				database_query("UPDATE pbobp_invoices SET amount = amount - ? WHERE id = ?", array($amount, $invoice_id));
 				invoice_payment($invoice_id, 0);
 			}
 		} else {

@@ -46,6 +46,10 @@ $config['debug'] = true;
 // this could be useful for debugging
 $config['manual_redirects'] = false;
 
+//if not false, all emails will be redirected to this email address
+// this could be useful for testing
+$config['redirect_email'] = false;
+
 //lock settings
 //these determine settings that prevent brute force attacks by a single IP address
 // the first three options are per-action and can be customized for each action

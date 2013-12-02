@@ -338,6 +338,12 @@ function pbobp_get_backtrace() {
 function pbobp_mail($subject, $body, $to) {
 	$config = $GLOBALS['config'];
 	$from = filter_var(config_get('mail_from'), FILTER_SANITIZE_EMAIL);
+
+	if(isset($config['redirect_email']) && $config['redirect_email'] !== false) {
+		$body = "This is a redirected email: original to $to\n\n" . $body;
+		$to = $config['redirect_email'];
+	}
+
 	$to = filter_var($to, FILTER_SANITIZE_EMAIL);
 
 	if($to === false || $from === false) {

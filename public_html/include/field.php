@@ -218,25 +218,30 @@ function field_list_extra(&$row) {
 }
 
 function field_list($constraints = array(), $arguments = array()) {
-	$vars = array('field_id' => 'pbobp_fields.id', 'name' => 'pbobp_fields.name', 'default' => 'pbobp_fields.`default`', 'description' => 'pbobp_fields.description', 'type' => 'pbobp_fields.type', 'required' => 'pbobp_fields.required', 'adminonly' => 'pbobp_fields.adminonly', 'context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id');
+	$vars = array('field_id' => 'pbobp_fields.id', 'name' => 'pbobp_fields.name', 'default' => 'pbobp_fields.`default`', 'description' => 'pbobp_fields.description', 'type' => 'pbobp_fields.type', 'required' => 'pbobp_fields.required', 'adminonly' => 'pbobp_fields.adminonly', 'context' => 'pbobp_fields.context', 'context_id' => 'pbobp_fields.context_id', 'order_id' => 'pbobp_fields.order_id');
 	$table = 'pbobp_fields';
 	$arguments['limit_type'] = 'field';
+
+	if(!isset($arguments['order_by'])) {
+		$arguments['order_by'] = 'order_id';
+		$arguments['order_asc'] = true;
+	}
 
 	return database_object_list($vars, $table, $constraints, $arguments, 'field_list_extra');
 }
 
 //add a field (or update existing field)
-function field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options = array(), $field_id = false) {
+function field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options = array(), $order_id = 0, $field_id = false) {
 	if($field_id === false) {
 		//make sure this field doesn't exist already
 		$result = database_query("SELECT id FROM pbobp_fields WHERE context = ? AND context_id = ? AND name = ?", array($field_context, $field_context_id, $name));
 
 		if($row = $result->fetch()) {
 			//it already exists! just modify the existing one
-			return field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options, $row[0]);
+			return field_add($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $options, $order_id, $row[0]);
 		} else {
 			//doesn't exist, proceed with insertion and rest of the function
-			database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly));
+			database_query("INSERT INTO pbobp_fields (context, context_id, name, `default`, description, type, required, adminonly, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", array($field_context, $field_context_id, $name, $default, $description, $type, $required, $adminonly, $order_id));
 			$field_id = database_insert_id();
 		}
 	} else {
@@ -248,7 +253,7 @@ function field_add($field_context, $field_context_id, $name, $default, $descript
 			return;
 		}
 
-		database_query("UPDATE pbobp_fields SET name = ?, `default` = ?, description = ?, type = ?, required = ?, adminonly = ? WHERE id = ?", array($name, $default, $description, $type, $required, $adminonly, $field_id));
+		database_query("UPDATE pbobp_fields SET name = ?, `default` = ?, description = ?, type = ?, required = ?, adminonly = ?, order_id = ? WHERE id = ?", array($name, $default, $description, $type, $required, $adminonly, $order_id, $field_id));
 
 		//get a list of existing option ID's
 		// we will attempt to replace as many as we can
@@ -302,7 +307,7 @@ function field_delete($field_id) {
 }
 
 function field_list_object($object_context, $object_id) {
-	$result = database_query("SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields_values.val FROM pbobp_fields, pbobp_fields_values WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields.id = pbobp_fields_values.field_id", array($object_context, $object_id), true);
+	$result = database_query("SELECT pbobp_fields.id AS field_id, pbobp_fields.name, pbobp_fields.`default`, pbobp_fields.description, pbobp_fields.type, pbobp_fields.required, pbobp_fields.adminonly, pbobp_fields_values.val FROM pbobp_fields, pbobp_fields_values WHERE pbobp_fields_values.context = ? AND pbobp_fields_values.object_id = ? AND pbobp_fields.id = pbobp_fields_values.field_id ORDER BY pbobp_fields.order_id", array($object_context, $object_id), true);
 	$array = array();
 
 	while($row = $result->fetch()) {
@@ -345,7 +350,7 @@ function field_process_updates($field_context, $field_context_id, $reqvars) {
 	}
 
 	foreach($field_ids as $field_id) {
-		if(!empty($reqvars["field_{$field_id}_name"]) && isset($reqvars["field_{$field_id}_default"]) && isset($reqvars["field_{$field_id}_description"]) && isset($reqvars["field_{$field_id}_type"]) && isset($reqvars["field_{$field_id}_options"]) && !isset($reqvars["delete_field_{$field_id}"])) {
+		if(!empty($reqvars["field_{$field_id}_name"]) && isset($reqvars["field_{$field_id}_default"]) && isset($reqvars["field_{$field_id}_description"]) && isset($reqvars["field_{$field_id}_type"]) && isset($reqvars["field_{$field_id}_options"]) && isset($reqvars["field_{$field_id}_orderid"]) && !isset($reqvars["delete_field_{$field_id}"])) {
 			$field_id_actual = $field_id;
 
 			if($field_id_actual == "new") { //this actually indicates we want to insert a field
@@ -364,7 +369,7 @@ function field_process_updates($field_context, $field_context_id, $reqvars) {
 				}
 			}
 
-			field_add($field_context, $field_context_id, $reqvars["field_{$field_id}_name"], $reqvars["field_{$field_id}_default"], $reqvars["field_{$field_id}_description"], $reqvars["field_{$field_id}_type"], isset($reqvars["field_{$field_id}_required"]), isset($reqvars["field_{$field_id}_adminonly"]), $field_options, $field_id_actual);
+			field_add($field_context, $field_context_id, $reqvars["field_{$field_id}_name"], $reqvars["field_{$field_id}_default"], $reqvars["field_{$field_id}_description"], $reqvars["field_{$field_id}_type"], isset($reqvars["field_{$field_id}_required"]), isset($reqvars["field_{$field_id}_adminonly"]), $field_options, $reqvars["field_{$field_id}_orderid"], $field_id_actual);
 		}
 	}
 

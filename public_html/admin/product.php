@@ -42,7 +42,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	}
 
 	if(isset($_POST['action'])) {
-		if($_POST['action'] == 'edit' && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['uniqueid']) && isset($_POST['interface'])) {
+		if($_POST['action'] == 'edit' && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['uniqueid']) && isset($_POST['interface']) && isset($_POST['order_id'])) {
 			$prices = array();
 
 			for($i = 0; $i < 99; $i++) {
@@ -66,7 +66,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 			}
 
 			//update the product attributes
-			$result = product_create($_POST['name'], $_POST['uniqueid'], $_POST['description'], $_POST['interface'], $prices, $groups, $product_id);
+			$result = product_create($_POST['name'], $_POST['uniqueid'], $_POST['description'], $_POST['interface'], $prices, $groups, $_POST['order_id'], $product_id);
 
 			//update any service fields for this product
 			field_process_updates('product', $product_id, $_POST);

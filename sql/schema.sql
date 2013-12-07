@@ -31,7 +31,7 @@ CREATE TABLE pbobp_users (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, email VARC
 -- type is 0=text box; 1=text area; 2=checkbox; 3=dropdown (needs options); 4=radiobutton (needs options)
 -- context may be "user", "product", "group", "plugin"
 --  if user, then context_id=0; otherwise, context_id = related table id or plugin name
-CREATE TABLE pbobp_fields (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, name VARCHAR(128) NOT NULL, `default` VARCHAR(1024) NOT NULL DEFAULT '', description VARCHAR(1024) NOT NULL DEFAULT '', type INT NOT NULL DEFAULT 0, required INT NOT NULL DEFAULT 0, adminonly INT NOT NULL DEFAULT 0);
+CREATE TABLE pbobp_fields (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, name VARCHAR(128) NOT NULL, `default` VARCHAR(1024) NOT NULL DEFAULT '', description VARCHAR(1024) NOT NULL DEFAULT '', type INT NOT NULL DEFAULT 0, required INT NOT NULL DEFAULT 0, adminonly INT NOT NULL DEFAULT 0, order_id INT NOT NULL DEFAULT 0);
 CREATE TABLE pbobp_fields_options (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, field_id INT NOT NULL, val VARCHAR(1024) NOT NULL);
 -- context may be "user", "service"
 -- meaning of object_id depends on the context (user id or service id)
@@ -42,8 +42,8 @@ CREATE TABLE pbobp_currencies (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, iso_c
 -- amount is setup fee for recurring products
 CREATE TABLE pbobp_prices (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, context VARCHAR(32) NOT NULL, context_id INT NOT NULL, duration INT NOT NULL DEFAULT 0, amount FLOAT NOT NULL DEFAULT 0, recurring_amount FLOAT NOT NULL DEFAULT 0, currency_id INT NOT NULL);
 
-CREATE TABLE pbobp_products (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(128) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', uniqueid VARCHAR(32) NOT NULL DEFAULT '', plugin_id INT, addon INT NOT NULL DEFAULT 0);
-CREATE TABLE pbobp_products_groups (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', hidden INT NOT NULL DEFAULT 0);
+CREATE TABLE pbobp_products (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(128) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', uniqueid VARCHAR(32) NOT NULL DEFAULT '', plugin_id INT, addon INT NOT NULL DEFAULT 0, order_id INT NOT NULL DEFAULT 0);
+CREATE TABLE pbobp_products_groups (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL, description VARCHAR(1024) NOT NULL DEFAULT '', hidden INT NOT NULL DEFAULT 0, order_id INT NOT NULL DEFAULT 0);
 CREATE TABLE pbobp_products_groups_members (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, product_id INT NOT NULL, group_id INT NOT NULL);
 -- parent_type is 0=product, 1=product group
 CREATE TABLE pbobp_products_addons (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, parent_id INT NOT NULL, child_id INT NOT NULL, parent_type INT NOT NULL DEFAULT 0);
@@ -54,7 +54,7 @@ CREATE TABLE pbobp_services (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id
 -- status is 0=open, 1=closed, -1=flagged (forced open), -2=on hold (marked as replied)
 CREATE TABLE pbobp_tickets (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, department_id INT NOT NULL, service_id INT NOT NULL, subject VARCHAR(128) NOT NULL DEFAULT '', email VARCHAR(128) NOT NULL DEFAULT '', time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, modify_time TIMESTAMP NOT NULL, status INT NOT NULL DEFAULT 0);
 CREATE TABLE pbobp_tickets_messages (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, ticket_id INT NOT NULL, content TEXT NOT NULL DEFAULT '', email VARCHAR(128) NOT NULL DEFAULT '', time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
-CREATE TABLE pbobp_tickets_departments (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL);
+CREATE TABLE pbobp_tickets_departments (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, name VARCHAR(64) NOT NULL, order_id INT NOT NULL DEFAULT 0);
 
 -- status is 0=unpaid, 1=paid, 2=cancelled
 CREATE TABLE pbobp_invoices (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, user_id INT NOT NULL, `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, due_date TIMESTAMP NOT NULL, status INT NOT NULL DEFAULT 0, amount FLOAT NOT NULL DEFAULT 0, paid FLOAT NOT NULL DEFAULT 0, currency_id INT NOT NULL);

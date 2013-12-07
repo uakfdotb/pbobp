@@ -39,12 +39,12 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 		} else if($_POST['action'] == 'delete' && isset($_POST['product_id'])) {
 			product_delete($_POST['product_id']);
 			$message = lang('success_product_deleted');
-		} else if($_POST['action'] == 'create_group' && isset($_POST['name']) && isset($_POST['description'])) {
-			product_group_create($_POST['name'], $_POST['description'], isset($_POST['hidden']));
+		} else if($_POST['action'] == 'create_group' && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order_id'])) {
+			product_group_create($_POST['name'], $_POST['description'], isset($_POST['hidden']), $_POST['order_id']);
 			$message = lang('success_product_group_created');
-		} else if($_POST['action'] == 'update_group' && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['group_id'])) {
+		} else if($_POST['action'] == 'update_group' && isset($_POST['name']) && isset($_POST['description']) && isset($_POST['order_id']) && isset($_POST['group_id'])) {
 			$message = lang('success_product_group_updated');
-			product_group_create($_POST['name'], $_POST['description'], isset($_POST['hidden']), $_POST['group_id']);
+			product_group_create($_POST['name'], $_POST['description'], isset($_POST['hidden']), $_POST['order_id'], $_POST['group_id']);
 		} else if($_POST['action'] == 'delete_group' && isset($_POST['group_id'])) {
 			product_group_delete($_POST['group_id']);
 			$message = lang('success_product_group_deleted');

@@ -66,6 +66,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<th><?= lang('name') ?></th>
 	<th><?= lang('description') ?></th>
 	<th><?= lang('hidden') ?></th>
+	<th><?= lang('x_id', array('x' => lang('order'))) ?></th>
 	<th><?= lang('edit_fields') ?></th>
 	<th><?= lang('update') ?></th>
 	<th><?= lang('delete') ?></th>
@@ -78,6 +79,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><input type="text" name="name" value="<?= $group['name'] ?>" /></td>
 	<td><input type="text" name="description" value="<?= $group['description'] ?>" /></td>
 	<td><input type="checkbox" name="hidden" value="true" <?= $group['hidden'] ? "checked" : "" ?> /></td>
+	<td><input type="text" name="order_id" value="<?= $group['order_id'] ?>" /></td>
 	<td><a href="product_group_fields.php?group_id=<?= $group['group_id'] ?>"><button type="button" class="btn btn-success"><?= lang('edit') ?></button></a></td>
 	<td><button type="submit" class="btn btn-primary" name="action" value="update_group"><?= lang('update') ?></button></td>
 	<td><button type="submit" class="btn btn-danger" name="action" value="delete_group"><?= lang('delete') ?></button></td>
@@ -89,6 +91,7 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <form method="POST">
 	<td><input type="text" name="name" /></td>
 	<td><input type="text" name="description" /></td>
+	<td><input type="text" name="order_id" value="0" /></td>
 	<td><input type="checkbox" name="hidden" value="true" /></td>
 	<td><button type="submit" class="btn" name="action" value="create_group"><?= lang('add') ?></button></td>
 	<td></td>

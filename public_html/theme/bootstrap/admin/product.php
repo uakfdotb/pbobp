@@ -58,6 +58,9 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 </tr><tr>
 	<td><?= lang('description') ?></td>
 	<td><textarea class="input-block-level" name="description"><?= $product['description'] ?></textarea></td>
+</tr><tr>
+	<td><?= lang('x_id', array('x' => lang('order'))) ?></td>
+	<td><input class="input-block-level" type="text" name="order_id" value="<?= $product['order_id'] ?>" /></td>
 </tr>
 </table>
 

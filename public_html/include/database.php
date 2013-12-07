@@ -240,7 +240,7 @@ function database_object_list($vars, $table, $constraints, $arguments, $f_extra 
 		$orderby = "ORDER BY " . reset($order_by_vars);
 	}
 
-	if(!empty($orderby) && !isset($arguments['order_asc']) || !$arguments['order_asc']) {
+	if(!empty($orderby) && (!isset($arguments['order_asc']) || !$arguments['order_asc'])) {
 		$orderby .= " DESC";
 	}
 

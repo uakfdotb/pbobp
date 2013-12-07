@@ -46,6 +46,7 @@ if(!isset($include_display_prices)) {
 	<th><?= lang('admin_only') ?></th>
 	<th><?= lang('options') ?></th>
 	<? if($include_display_prices) { ?><th><?= lang('pricing') ?></th><? } ?>
+	<th><?= lang('x_id', array('x' => lang('order'))) ?>
 	<th><?= lang('delete') ?></th>
 </tr>
 
@@ -67,6 +68,7 @@ if(!isset($include_display_prices)) {
 		<textarea class="input-block-level" name="field_<?= $include_field['field_id'] ?>_options"><? foreach($include_field['options'] as $i_field_option) { echo $i_field_option['val'] . "\n"; } ?></textarea>
 	</td>
 	<? if($include_display_prices) { ?><td><a href="field_pricing.php?field_id=<?= $include_field['field_id'] ?>"><button type="button" class="btn btn-primary"><?= lang('edit') ?></button></a></td><? } ?>
+	<td><input class="input-block-level" class="input-block-level" type="text" name="field_<?= $include_field['field_id'] ?>_orderid" value="<?= $include_field['order_id'] ?>" /></td>
 	<td><input class="input-block-level" type="checkbox" name="delete_field_<?= $include_field['field_id'] ?>" value="true" /></td>
 </tr>
 <? } ?>
@@ -86,6 +88,7 @@ if(!isset($include_display_prices)) {
 	<td><input class="input-block-level" type="checkbox" name="field_new_adminonly" /></td>
 	<td><textarea class="input-block-level" name="field_new_options"></textarea></td>
 	<? if($include_display_prices) { ?><td></td><? } ?>
+	<td><input class="input-block-level" type="text" name="field_new_orderid" value="0" /></td>
 	<td></td>
 </tr>
 </table>

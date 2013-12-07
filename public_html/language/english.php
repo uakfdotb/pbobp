@@ -64,6 +64,7 @@ $lang['edit'] = 'Edit';
 $lang['fees'] = 'Fees';
 $lang['error_x'] = 'Error: $x$.';
 $lang['filter'] = 'Filter';
+$lang['order'] = 'Order';
 
 $lang['one-time'] = 'One-time';
 $lang['monthly'] = 'Monthly';

@@ -125,7 +125,7 @@ function service_paid($service_id) {
 		//don't use recurring_date since it may be in the future or the past
 		$newstatus = -3; //activating
 
-		if(config_get('service_activate_immediate', false, 'service', $service_id)) {
+		if(config_get('service_activate_immediate', 'service', $service_id)) {
 			//notify service module if any
 			$result = service_module_event($service_id, 'activate');
 

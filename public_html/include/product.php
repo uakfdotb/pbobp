@@ -208,7 +208,7 @@ function product_service_fields($product_id, $include_prices = false, $include_a
 	$contexts = product_service_field_contexts($product_id);
 
 	foreach($contexts as $constraints) {
-		if($include_admin) {
+		if(!$include_admin) {
 			$constraints['adminonly'] = 0;
 		}
 

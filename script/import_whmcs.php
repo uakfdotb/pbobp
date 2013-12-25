@@ -430,4 +430,59 @@ while($row = mysqli_fetch_assoc($result)) {
 	}
 }
 
+//import departments
+echo "Importing support departments\n";
+$result = $mysqli->query("SELECT id, name FROM tblticketdepartments");
+$departmentMap = array(); //WHMCS tblticketdepartments to pbobp_tickets_departments.id
+
+while($row = mysqli_fetch_assoc($result)) {
+	$department_id = ticket_department_add($row['name']);
+	$departmentMap[$row['id']] = $department_id;
+}
+
+//import tickets
+echo "Importing tickets\n";
+$result = $mysqli->query("SELECT id, did, userid, email, date, title, message, status, lastreply FROM tbltickets WHERE userid != 0");
+$ticketMap = array(); //WHMCS tbltickets.id to pbobp_tickets.id
+
+while($row = mysqli_fetch_assoc($result)) {
+	if(!isset($departmentMap[$row['did']])) {
+		print "Warning: skipping ticket [{$row['id']}] since department [{$row['did']}] does not exist\n";
+		continue;
+	}
+	if(!isset($userMap[$row['userid']])) {
+		print "Warning: skipping ticket [{$row['id']}] since user [{$row['userid']}] does not exist\n";
+		continue;
+	}
+
+	$status = -1;
+	$user_id = $userMap[$row['userid']];
+	$email = $row['email'];
+
+	if($row['status'] == 'Answered') {
+		$status = -2;
+	} else if($row['status'] == 'Customer-Reply' || $row['status'] == 'Open') {
+		$status = 0;
+	} else if($row['status'] == 'Closed') {
+		$status = 1;
+	}
+
+	database_query("INSERT INTO pbobp_tickets (user_id, department_id, service_id, subject, email, time, modify_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", array($user_id, $departmentMap[$row['did']], 0, $row['title'], $email, $row['date'], $row['lastreply'], $status));
+	$ticket_id = database_insert_id();
+
+	database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content, email, time) VALUES (?, ?, ?, ?, ?)", array($user_id, $ticket_id, $row['message'], $row['email'], $row['date']));
+
+	$reply_result = $mysqli->query("SELECT userid, email, date, message FROM tblticketreplies WHERE tid = {$row['id']} ORDER BY id");
+
+	while($reply_row = mysqli_fetch_assoc($reply_result)) {
+		if(isset($userMap[$reply_row['userid']])) {
+			$reply_user_id = $userMap[$reply_row['userid']];
+		} else {
+			$reply_user_id = $user_id;
+		}
+
+		database_query("INSERT INTO pbobp_tickets_messages (user_id, ticket_id, content, email, time) VALUES (?, ?, ?, ?, ?)", array($reply_user_id, $ticket_id, $reply_row['message'], $reply_row['email'], $reply_row['date']));
+	}
+}
+
 ?>

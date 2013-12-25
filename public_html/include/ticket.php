@@ -203,6 +203,7 @@ function ticket_departments() {
 
 function ticket_department_add($name) {
 	database_query("INSERT INTO pbobp_tickets_departments (name) VALUES (?)", array($name));
+	return database_insert_id();
 }
 
 function ticket_department_delete($department_id) {

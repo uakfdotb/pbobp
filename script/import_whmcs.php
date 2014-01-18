@@ -65,6 +65,7 @@ require_once(includePath() . 'currency.php');
 require_once(includePath() . 'product.php');
 require_once(includePath() . 'service.php');
 require_once(includePath() . 'field.php');
+require_once(includePath() . 'ticket.php');
 
 function getDuration($duration) {
 	$duration = strtolower($duration);

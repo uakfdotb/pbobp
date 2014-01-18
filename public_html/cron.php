@@ -25,6 +25,7 @@ if(php_sapi_name() !== 'cli') {
 	die('Access denied.');
 }
 
+$GLOBALS['PBOBP_ISSCRIPT'] = true;
 include("include/include.php");
 include("include/cron.php");
 

@@ -77,6 +77,17 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 
 			invoice_update_lines($invoice_id, $lines, $new_lines);
 			$message = lang('success_invoice_updated');
+		} else if($_POST['action'] == 'add_payment' && isset($_POST['amount']) && isset($_POST['gateway']) && isset($_POST['trans_id']) && isset($_POST['fee'])) {
+			//assume submitter has already put into native currency
+			$invoice = invoice_list(array('invoice_id' => $invoice_id))[0];
+			$result = invoice_payment($invoice['invoice_id'], $_POST['amount'], $invoice['currency_id']);
+
+			if($result === true) { //only add the transaction instance if the payment to invoice went through
+				transaction_add($invoice['invoice_id'], $invoice['user_id'], $_POST['gateway'], $_POST['trans_id'], "Transaction ID: {$_POST['trans_id']}", $_POST['amount'], $_POST['fee'], $invoice['currency_id']);
+				$message = lang('payment_added_successfully');
+			} else {
+				$message = lang($result);
+			}
 		}
 
 		pbobp_redirect('invoice.php', array('invoice_id' => $invoice_id, 'message' => $message));
@@ -92,7 +103,15 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 	$invoice = $invoices[0];
 	$lines = invoice_lines($invoice_id);
 
-	get_page("invoice", "admin", array('message' => $message, 'invoice' => $invoice, 'lines' => $lines, 'invoice_status_map' => invoice_status_map()));
+	//get list of payment gateways that we can use
+	$gateways = array();
+	$payment_interfaces = plugin_interface_list('payment');
+
+	foreach($payment_interfaces as $name => $obj) {
+		$gateways[] = $obj->friendly_name();
+	}
+
+	get_page("invoice", "admin", array('message' => $message, 'invoice' => $invoice, 'lines' => $lines, 'gateways' => $gateways, 'invoice_status_map' => invoice_status_map()));
 } else {
 	pbobp_redirect("../");
 }

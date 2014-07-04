@@ -68,6 +68,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 </tr>
 </table>
 
+<h3><?= lang('invoice_items') ?></h3>
+
 <table class="table">
 <tr>
 	<th><?= lang('item_description') ?></th>
@@ -92,4 +94,36 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 </table>
 
 <button type="submit" class="btn btn-primary"><?= lang('update') ?></button>
+</form>
+
+<h3><?= lang('payment_add') ?></h3>
+
+<form method="post">
+<input type="hidden" name="action" value="add_payment" />
+<table class="table-condensed">
+<tr>
+	<td><?= lang('amount') ?></td>
+	<td><input class="input-block-level" type="text" name="amount" value="<?= $invoice['amount'] ?>" /></td>
+</tr>
+<tr>
+	<td><?= lang('fee') ?></td>
+	<td><input class="input-block-level" type="text" name="fee" value="0.00" /></td>
+</tr>
+<tr>
+	<td><?= lang('gateway') ?></td>
+	<td>
+		<select name="gateway">
+		<? foreach($gateways as $gateway_name) { ?>
+			<option value="<?= $gateway_name ?>"><?= $gateway_name ?></option>
+		<? } ?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td><?= lang('x_id', array('x' => lang('transaction'))) ?></td>
+	<td><input class="input-block-level" type="text" name="trans_id" /></td>
+</tr>
+</table>
+
+<button type="submit" class="btn btn-success"><?= lang('payment_add') ?></button>
 </form>

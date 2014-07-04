@@ -54,8 +54,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 	<td><input class="input-block-level" type="text" name="suffix" value="<?= $currency['suffix'] ?>" /></td>
 	<td><input class="input-block-level" type="text" name="rate" value="<?= round($currency['rate'], 5) ?>" /></td>
 	<td><input class="input-block-level" type="checkbox" name="primary" <?= $currency['primary'] ? "checked" : "" ?> /></td>
-	<td><button type="submit" class="btn btn-success" name="action" value="update">Update</button></td>
-	<td><button type="submit" class="btn btn-danger" name="action" value="delete">Delete</button></td>
+	<td><button type="submit" class="btn btn-success" name="action" value="update"><?= lang('update') ?></button></td>
+	<td><button type="submit" class="btn btn-danger" name="action" value="delete"><?= lang('delete') ?></button></td>
 </form>
 </tr>
 <? } ?>

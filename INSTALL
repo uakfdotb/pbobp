@@ -14,7 +14,7 @@ Installation instructions
         cd /path/to/pbobp/public_html; cp -r * /var/www/pbobp/
  4. Create an initial user
         Navigate to http://localhost/pbobp/register.php and create an account.
-        echo "UDPATE pbobp_users SET `access` = 1;" | mysql -u pbobp -p
+        echo "UPDATE pbobp_users SET `access` = 1;" | mysql -u root -p pbobp
  5. Add cron entry for pbobp (at least once a day)
         echo '0 * * * * cd /path/to/pbobp && /usr/bin/php5 cron.php > /dev/null' > /etc/cron.d/pbobp
  6. Enable desired plugins from admin panel.

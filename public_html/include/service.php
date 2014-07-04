@@ -310,7 +310,7 @@ function service_create($name, $user_id, $product_id, $price_id, $fields, $paren
 	$item = array('amount' => $price_array['amount'] + $price_array['recurring_amount'], 'service_id' => $service_id, 'description' => "Payment for $name (" . service_duration_nice($price_array['duration']) . ").");
 	invoice_create($user_id, false, array($item), $price_array['currency_id'], true); //false indicates due asap
 
-	return $service_id;
+	return intval($service_id);
 }
 
 //we have multiple update functions for services since some such as name are accessible to client while others are not

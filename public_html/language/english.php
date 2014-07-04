@@ -88,6 +88,7 @@ $lang['cancelled'] = 'Cancelled';
 
 $lang['product'] = 'Product';
 $lang['products'] = 'Products';
+$lang['product_groups'] = 'Product groups';
 $lang['product_details'] = 'Product details';
 $lang['product_name'] = 'Product name';
 $lang['product_update'] = 'Update product';

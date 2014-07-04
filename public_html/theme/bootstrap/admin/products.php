@@ -61,6 +61,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <? } ?>
 </table>
 
+<h3><?= lang('product_groups') ?></h3>
+
 <table class="table">
 <tr>
 	<th><?= lang('name') ?></th>

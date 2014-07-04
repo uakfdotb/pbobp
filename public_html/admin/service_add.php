@@ -78,9 +78,9 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['
 				if(!$fail) {
 					$result = service_create($_POST['name'], $user_id, $product_id, $price_id, field_extract());
 
-					if($result === true) {
+					if(is_int($result)) {
 						$message = lang('success_service_created');
-						pbobp_redirect('service.php', array('service_id' => $service_id, 'message' => $message));
+						pbobp_redirect('service.php', array('service_id' => $result, 'message' => $message));
 					} else {
 						$message = $result;
 					}

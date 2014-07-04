@@ -170,6 +170,7 @@ $lang['update'] = 'Update';
 $lang['success_currency_updated'] = 'Currency updated successfully.';
 $lang['success_currency_created'] = 'Currency created successfully.';
 $lang['success_currency_deleted'] = 'Currency deleted successfully.';
+$lang['admin_currency_main_help_text'] = 'This page allows you to manage currencies. The ISO code is usually a three-letter code like "USD". Prefix for USD would be "$", and suffix would be " USD" (or blank if you don\'t need multiple currencies). The rate is factor that the currency needs to be multiplied by to equal the primary currency (rate for primary currency must be 1.0).';
 
 $lang['account'] = 'Account';
 $lang['change_password'] = 'Change password';

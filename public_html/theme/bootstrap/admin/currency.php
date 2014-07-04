@@ -32,6 +32,8 @@ if(!isset($GLOBALS['IN_PBOBP'])) {
 <p><b><i><?= $message ?></i></b></p>
 <? } ?>
 
+<p><?= lang('admin_currency_main_help_text') ?></p>
+
 <table class="table">
 <tr>
 	<th><?= lang('iso_code') ?></th>

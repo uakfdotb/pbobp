@@ -34,7 +34,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 
 	if(isset($_POST['action'])) {
 		if($_POST['action'] == "update" && isset($_POST['iso_code']) && isset($_POST['prefix']) && isset($_POST['suffix']) && isset($_POST['rate']) && isset($_POST['currency_id'])) {
-			$result = currency_create($_POST['iso_code'], $_POST['prefix'], $_POST['suffix'], $_POST['rate'], isset($_POST['primary']), $_POST['currency_id']);
+			$result = currency_create($_POST['iso_code'], $_POST['prefix'], $_POST['suffix'], isset($_POST['primary']), $_POST['rate'], $_POST['currency_id']);
 
 			if(is_string($result)) {
 				$message = lang($result);
@@ -42,7 +42,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['admin'])) {
 				$message = lang('success_currency_updated');
 			}
 		} else if($_POST['action'] == "create" && isset($_POST['iso_code']) && isset($_POST['prefix']) && isset($_POST['suffix']) && isset($_POST['rate'])) {
-			$result = currency_create($_POST['iso_code'], $_POST['prefix'], $_POST['suffix'], $_POST['rate'], isset($_POST['primary']));
+			$result = currency_create($_POST['iso_code'], $_POST['prefix'], $_POST['suffix'], isset($_POST['primary']), $_POST['rate']);
 
 			if(is_string($result)) {
 				$message = lang($result);

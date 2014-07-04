@@ -24,6 +24,7 @@
 include("../include/include.php");
 
 require_once("../include/invoice.php");
+require_once("../include/transaction.php");
 
 if(isset($_SESSION['user_id']) && isset($_SESSION['admin']) && isset($_REQUEST['invoice_id'])) {
 	$message = "";

@@ -40,10 +40,7 @@ class plugin_tax_canada {
 		$this->id = $id;
 	}
 
-	function invoice_create($array) {
-		$user_id = $array['user_id'];
-		$items = &$array['items'];
-
+	function invoice_create($user_id, $due_date, &$items, $currency_id, $try_combine) {
 		$tax_rate = 0;
 
 		require_once(includePath() . 'field.php');

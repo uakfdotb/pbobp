@@ -40,7 +40,7 @@ class plugin_tax_canada {
 		$this->id = $id;
 	}
 
-	function tax_canada($array) {
+	function invoice_create($array) {
 		$user_id = $array['user_id'];
 		$items = &$array['items'];
 

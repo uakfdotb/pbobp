@@ -106,6 +106,10 @@ function invoice_create($user_id, $due_date, $items, $currency_id, $try_combine 
 		return 'invalid_currency';
 	}
 
+	//allow plugin tampering
+	$plugin_args = array('user_id' => $user_id, 'due_date' => $due_date, 'items' => &$items, 'currency_id' => $currency_id, 'try_combine' => $try_combine);
+	plugin_call_reference("invoice_create", $plugin_args);
+
 	//calculate total
 	$total = 0.0;
 	foreach($items as $item) {
